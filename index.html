@@ -1,4 +1,4 @@
-index<!DOCTYPE html>
+<!DOCTYPE html>
 <html data-init="no-js">
 <head>
 <meta charset="UTF-8" />
@@ -111,101 +111,85 @@ html, body {
 	margin: 0;
 	padding: 0;
 	width: 100%;
-	height: 100%;
 	min-height: 100vh;
 	background: #000;
 	overflow-x: hidden;
+	overflow-y: auto;
 	font-family: Georgia, serif;
 	color: #f5f1e8;
 }
 
 /* REMOVE UI DO TWINE */
 #ui-bar {
-	display: none;
+	display: none !important;
 }
 
 #story, #passages, .passage {
 	margin: 0 !important;
 	padding: 0 !important;
-	max-width: none;
+	width: 100% !important;
+	max-width: none !important;
+	min-height: 100vh !important;
+	background: transparent !important;
+}
+
+/* FUNDO DAS PÁGINAS */
+.pagina-fundo {
+	position: relative;
 	width: 100%;
 	min-height: 100vh;
-	background: transparent;
-}
-
-/* FUNDO FIXO (resolve faixa preta) */
-.fundo-pagina {
-	position: fixed;
-	inset: 0;
-	width: 100vw;
-	height: 100vh;
 	background-size: cover;
-	background-position: center;
+	background-position: center top;
 	background-repeat: no-repeat;
-	z-index: 0;
 }
 
-.fundo-pagina::after {
+/* ESCURECIMENTO GLOBAL (leve) */
+.pagina-fundo::before {
 	content: "";
 	position: absolute;
 	inset: 0;
-	background: rgba(0,0,0,0.25);
+	background: rgba(0, 0, 0, 0.30);
+	z-index: 0;
 }
 
-/* CONTAINER PRINCIPAL */
-    .tela-central {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      min-height: 100vh;
-
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-
-      text-align: center;
-      box-sizing: border-box;
-      padding: 2rem;
-  }
-
-/* AJUSTES POR PÁGINA */
-    .tela-chama { padding-top: 30vh; }
-    .tela-chave { padding-top: 28vh; }
-    .tela-sombra { padding-top: 34vh; }
-    .tela-caminho {
-        position: relative;
-        z-index: 2;
-        justify-content: center;
-        align-items: center;
-        padding: 2rem;
-    }
-
-    .texto-caminho {
-        max-width: 720px;
-        font-size: 1.35rem;
-        line-height: 1.9;
-        text-align: center;
-        color: #f5f1e8;
-        text-shadow: 0 0 10px rgba(0,0,0,0.45);
-        margin-bottom: 2.5rem;
-    }
-
+/* CONTEÚDO */
+.tela-central {
+	position: relative;
+	z-index: 1;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	padding: 2rem;
+	box-sizing: border-box;
+}
 
 /* TÍTULO */
 .titulo {
 	font-family: 'Cinzel Decorative', serif;
-	font-size: 3rem;
+	font-size: 2.8rem;
 	color: #d4b15a;
 	margin-bottom: 1rem;
+	text-shadow: 0 2px 10px rgba(0,0,0,0.7);
 }
 
 /* TEXTO */
 .texto-entrada {
-	max-width: 720px;
+	max-width: 700px;
+	font-size: 1.05rem;
+	line-height: 1.5;
+	margin-bottom: 2rem;
+	text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+
+.texto-caminho {
+	max-width: 700px;
 	font-size: 1.15rem;
-	line-height: 1.9;
-	margin-bottom: 2.5rem;
+	line-height: 1.6;
+	margin-bottom: 2rem;
+	text-shadow: 0 2px 10px rgba(0,0,0,0.7);
 }
 
 /* BOTÃO */
@@ -215,7 +199,7 @@ html, body {
 }
 
 .area-botao a {
-	padding: 14px 26px;
+	padding: 12px 24px;
 	border: 1px solid #d4b15a;
 	background: rgba(0,0,0,0.35);
 	color: #d4b15a;
@@ -226,26 +210,7 @@ html, body {
 
 .area-botao a:hover {
 	background: rgba(212,177,90,0.15);
-	box-shadow: 0 0 12px rgba(212,177,90,0.35);
-}
-
-/* ANIMAÇÕES */
-.fade {
-	animation: fadeIn 2s ease-out;
-}
-
-.brilho {
-	animation: brilhoDourado 2s infinite alternate;
-}
-
-@keyframes fadeIn {
-	from { opacity: 0; transform: translateY(10px); }
-	to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes brilhoDourado {
-	from { text-shadow: 0 0 4px rgba(212,177,90,0.25); }
-	to { text-shadow: 0 0 18px rgba(212,177,90,0.75); }
+	box-shadow: 0 0 10px rgba(212,177,90,0.3);
 }
 
 /* CARTAS */
@@ -258,19 +223,17 @@ html, body {
 }
 
 .carta-tarot {
-	width: 220px;
-	height: 320px;
+	width: 200px;
+	height: 300px;
 	background: rgba(0, 0, 0, 0.55);
 	border: 1px solid rgba(212,175,55,0.6);
-	box-shadow: 0 0 20px rgba(0,0,0,0.6);
-	backdrop-filter: blur(4px);
-	transition: 0.4s;
+	transition: 0.3s;
 	cursor: pointer;
 }
 
 .carta-tarot:hover {
 	transform: scale(1.05);
-	box-shadow: 0 0 25px rgba(212,175,55,0.4);
+	box-shadow: 0 0 20px rgba(212,175,55,0.3);
 }
 
 .carta-link {
@@ -286,29 +249,47 @@ html, body {
 
 .arcano-numero {
 	font-family: 'Cinzel Decorative', serif;
-	font-size: 1.4rem;
-	margin-bottom: 1rem;
+	font-size: 1.2rem;
+	margin-bottom: 0.8rem;
 }
 
 .nome-carta {
 	font-family: 'Cinzel Decorative', serif;
-	font-size: 1.1rem;
-	margin-bottom: 1rem;
+	font-size: 1rem;
+	margin-bottom: 0.6rem;
 }
 
 .simbolo-carta {
 	font-size: 0.9rem;
-	line-height: 1.6;
+	line-height: 1.4;
 }
 
+/* JURAMENTO */
 .juramento {
-	margin-top: 2rem;
-	font-size: 1.1rem;
-	line-height: 1.8;
-	color: #d4b15a;
-	font-style: italic;
+	margin-top: 2.5rem;
+	padding: 1.5rem 2rem;
 	max-width: 600px;
-	text-shadow: 0 0 10px rgba(0,0,0,0.4);
+	font-size: 1.05rem;
+	line-height: 1.6;
+	font-style: italic;
+	color: #d4b15a;
+	border: 1px solid rgba(212,177,90,0.5);
+	background: rgba(0,0,0,0.35);
+	box-shadow: 0 0 12px rgba(0,0,0,0.5);
+	text-align: center;
+}
+
+/* VARIAÇÕES */
+.juramento-chave {
+	color: #d8c58a;
+	border: 1px solid rgba(216,197,138,0.5);
+	background: rgba(10, 16, 28, 0.35);
+}
+
+.juramento-sombra {
+	color: #b8a9d9;
+	border: 1px solid rgba(184,169,217,0.4);
+	background: rgba(20, 10, 35, 0.4);
 }</style><script role="script" id="twine-user-script" type="text/twine-javascript">setup.bgAudio = null;
 
 setup.startBgAudio = function () {
@@ -389,7 +370,7 @@ $(document).on(':passagedisplay', function (ev) {
 	if (tags.includes('sombra')) {
 		document.body.classList.add('bg-sombra');
 	}
-});</script><tw-tag name="entrada" color="red"></tw-tag><tw-tag name="chamado" color="red"></tw-tag><tw-tag name="encruzilhada" color="blue"></tw-tag><tw-tag name="chama" color="green"></tw-tag><tw-tag name="Chave" color="green"></tw-tag><tw-tag name="chave" color="green"></tw-tag><tw-tag name="sombra" color="purple"></tw-tag><tw-tag name="caminho-chama" color="blue"></tw-tag><tw-tag name="caminho-chave" color="blue"></tw-tag><tw-tag name="caminho-sombra" color="red"></tw-tag><tw-passagedata pid="1" name="entrada- A Chegada" tags="entrada" position="625,25" size="100,100">&lt;div class=&quot;tela-central&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/IMG_8695%20(1).PNG&#39;); background-size:cover; background-position:center; background-repeat:no-repeat;&quot;&gt;
+});</script><tw-tag name="entrada" color="red"></tw-tag><tw-tag name="chamado" color="red"></tw-tag><tw-tag name="encruzilhada" color="blue"></tw-tag><tw-tag name="chama" color="green"></tw-tag><tw-tag name="Chave" color="green"></tw-tag><tw-tag name="chave" color="green"></tw-tag><tw-tag name="sombra" color="purple"></tw-tag><tw-tag name="caminho-chama" color="blue"></tw-tag><tw-tag name="caminho-chave" color="blue"></tw-tag><tw-tag name="caminho-sombra" color="red"></tw-tag><tw-passagedata pid="1" name="entrada- A Chegada" tags="entrada" position="625,25" size="100,100">&lt;div class=&quot;tela-central&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/IMG_8695%20(1).PNG&#39;);&quot;&gt;
 	&lt;div class=&quot;titulo fade brilho&quot;&gt;Olho da Coruja&lt;/div&gt;
 
 	&lt;div class=&quot;texto-entrada fade&quot;&gt;
@@ -398,11 +379,12 @@ $(document).on(':passagedisplay', function (ev) {
 		Você avança mesmo assim.
 	&lt;/div&gt;
 
-&lt;div class=&quot;area-botao fade&quot;&gt;
-	&lt;&lt;link &quot;Li e aceito os termos do Olho da Coruja&quot;&gt;&gt;
-		&lt;&lt;run setup.startBgAudio()&gt;&gt;
-		&lt;&lt;goto &quot;Chamado&quot;&gt;&gt;
-	&lt;&lt;/link&gt;&gt;
+	&lt;div class=&quot;area-botao fade&quot;&gt;
+		&lt;&lt;link &quot;Li e aceito os termos do Olho da Coruja&quot;&gt;&gt;
+			&lt;&lt;run setup.startBgAudio()&gt;&gt;
+			&lt;&lt;goto &quot;Chamado&quot;&gt;&gt;
+		&lt;&lt;/link&gt;&gt;
+	&lt;/div&gt;
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="2" name="Chamado" tags="chamado" position="625,150" size="100,100">&lt;&lt;run setup.startBgAudio()&gt;&gt;
 
 &lt;&lt;run (() =&gt; {
@@ -422,9 +404,7 @@ $(document).on(':passagedisplay', function (ev) {
 	&lt;div class=&quot;area-botao fade&quot;&gt;
 		[[Prosseguir-&gt;Encruzilhada]]
 	&lt;/div&gt;
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="3" name="Encruzilhada" tags="encruzilhada" position="500,275" size="100,100">&lt;div class=&quot;fundo-pagina&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Encruzilhada.png&#39;);&quot;&gt;&lt;/div&gt;
-
-&lt;div class=&quot;tela-central&quot;&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="3" name="Encruzilhada" tags="encruzilhada" position="500,275" size="100,100">&lt;div class=&quot;tela-central&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Encruzilhada.png&#39;);&quot;&gt;
 
 	&lt;div class=&quot;titulo fade brilho&quot;&gt;Encruzilhada&lt;/div&gt;
 
@@ -465,334 +445,263 @@ $(document).on(':passagedisplay', function (ev) {
 
 	&lt;/div&gt;
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="4" name="Chama" tags="chama" position="375,400" size="100,100">        &lt;div class=&quot;fundo-pagina&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Chama%201.png&#39;);&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="4" name="Chama" tags="chama" position="375,400" size="100,100">&lt;div class=&quot;pagina-fundo&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Chama%201.png&#39;);&quot;&gt;
 
-&lt;div class=&quot;tela-central tela-chama&quot;&gt;
-	&lt;div class=&quot;titulo fade brilho&quot;&gt;Chama&lt;/div&gt;
+	&lt;div class=&quot;tela-central&quot;&gt;
 
-	&lt;div class=&quot;texto-entrada fade&quot;&gt;
-		A chama não espera.&lt;br&gt;
-		Ela consome.&lt;br&gt;
-		Ela transforma.
+		&lt;div class=&quot;titulo&quot;&gt;Chama&lt;/div&gt;
+
+		&lt;div class=&quot;texto-entrada&quot;&gt;
+			A chama não espera.&lt;br&gt;
+			Ela consome.&lt;br&gt;
+			Ela transforma.
+		&lt;/div&gt;
+
+		&lt;div class=&quot;area-botao&quot;&gt;
+			[[PROSSEGUIR-&gt;CAMINHO DA CHAMA RECONHECIMENTO]]
+		&lt;/div&gt;
+
 	&lt;/div&gt;
 
-	&lt;div class=&quot;area-botao fade&quot;&gt;
-		[[PROSSEGUIR-&gt;CAMINHO DA CHAMA RECONHECIMENTO]]
-	&lt;/div&gt;
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="5" name="Chave" tags="chave" position="500,400" size="100,100">&lt;div style=&quot;position:fixed; inset:0; z-index:0;&quot;&gt;
-	&lt;img src=&quot;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Chave.png&quot;
-	     style=&quot;width:100vw; height:100vh; object-fit:cover;&quot;&gt;
-&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="5" name="Chave" tags="chave" position="500,400" size="100,100">	&lt;div class=&quot;pagina-fundo&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Chave.png&#39;);&quot;&gt;
 
-&lt;div style=&quot;position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1;&quot;&gt;&lt;/div&gt;
+	&lt;div class=&quot;tela-central&quot;&gt;
 
-&lt;div class=&quot;tela-central tela-chave&quot;&gt;
+		&lt;div class=&quot;titulo&quot;&gt;Chave&lt;/div&gt;
 
-	&lt;div class=&quot;titulo fade brilho&quot;&gt;Chave&lt;/div&gt;
-
-	&lt;div class=&quot;texto-entrada fade&quot;&gt;
-		Uma porta se apresenta.&lt;br&gt;
+		&lt;div class=&quot;texto-entrada&quot;&gt;
+        Uma porta se apresenta.&lt;br&gt;
 		Nem tudo deve ser aberto.&lt;br&gt;&lt;br&gt;
 		Mas você decide tentar.
 	&lt;/div&gt;
-
-	&lt;div class=&quot;area-botao fade&quot;&gt;
+    
+   	&lt;div class=&quot;area-botao fade&quot;&gt;
 		[[CONTINUAR-&gt;CAMINHO DA CHAVE RECONHECIMENTO]]
 	&lt;/div&gt;
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="6" name="Sombra" tags="sombra" position="625,400" size="100,100">&lt;div style=&quot;position:fixed; inset:0; z-index:0;&quot;&gt;
-	&lt;img src=&quot;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Sombras.png&quot;
-	     style=&quot;width:100vw; height:100vh; object-fit:cover;&quot;&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="6" name="Sombra" tags="sombra" position="625,400" size="100,100">&lt;div class=&quot;pagina-fundo&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Sombras.png&#39;);&quot;&gt;
+
+	&lt;div class=&quot;tela-central&quot;&gt;
+
+		&lt;div class=&quot;titulo&quot;&gt;Sombra&lt;/div&gt;
+
+		&lt;div class=&quot;texto-entrada&quot;&gt;
+			Nada acontece.&lt;br&gt;&lt;br&gt;
+			E ainda assim... tudo muda.&lt;br&gt;&lt;br&gt;
+			Você permanece.
+		&lt;/div&gt;
+
+		&lt;div class=&quot;area-botao&quot;&gt;
+			[[CONTINUAR-&gt;CAMINHO DA SOMBRA RECONHECIMENTO]]
+		&lt;/div&gt;
+
+	&lt;/div&gt;
+
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="7" name="Final Chama" tags="" position="300,650" size="100,100">&lt;div class=&quot;pagina-fundo&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Chama%201.png&#39;);&quot;&gt;
+
+	&lt;div class=&quot;tela-central&quot;&gt;
+
+		&lt;div class=&quot;texto-caminho&quot;&gt;
+			A chama não te consumiu.&lt;br&gt;
+			Ela te reconheceu.&lt;br&gt;&lt;br&gt;
+
+			Entre aqueles que avançam,&lt;br&gt;
+			você agora permanece.&lt;br&gt;&lt;br&gt;
+
+			🔥 &lt;strong&gt;Função:&lt;/strong&gt; Portador do Impulso
+		&lt;/div&gt;
+
+		&lt;div class=&quot;juramento&quot;&gt;
+			Eu avanço quando outros hesitam.&lt;br&gt;
+			Eu sustento a chama sem me perder nela.&lt;br&gt;
+			Eu aceito o risco de iluminar.
+		&lt;/div&gt;
+
+		&lt;div class=&quot;area-botao&quot;&gt;
+			[[Atravessar-&gt;Convergência]]
+		&lt;/div&gt;
+
+	&lt;/div&gt;
+
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="8" name="Final Chave" tags="" position="500,650" size="100,100">&lt;div class=&quot;pagina-fundo&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Chave.png&#39;);&quot;&gt;
+
+	&lt;div class=&quot;tela-central&quot;&gt;
+
+		&lt;div class=&quot;texto-caminho&quot;&gt;
+			Nem toda porta se abriu.&lt;br&gt;
+			Mas você compreendeu.&lt;br&gt;&lt;br&gt;
+
+			Entre aqueles que observam,&lt;br&gt;
+			você agora permanece.&lt;br&gt;&lt;br&gt;
+
+			🗝️ &lt;strong&gt;Função:&lt;/strong&gt; Guardião das Passagens
+		&lt;/div&gt;
+
+		&lt;div class=&quot;juramento&quot;&gt;
+			Eu não forço o que deve ser compreendido.&lt;br&gt;
+			Eu leio antes de agir.&lt;br&gt;
+			Eu abro apenas as portas que devem ser abertas.
+		&lt;/div&gt;
+
+		&lt;div class=&quot;area-botao&quot;&gt;
+			[[Atravessar-&gt;Convergência]]
+		&lt;/div&gt;
+
+	&lt;/div&gt;
+
+&lt;/div&gt;
+</tw-passagedata><tw-passagedata pid="9" name="Final Sombra" tags="" position="675,650" size="100,100">&lt;div class=&quot;pagina-fundo&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Sombras.png&#39;);&quot;&gt;
+
+	&lt;div class=&quot;tela-central&quot;&gt;
+
+		&lt;div class=&quot;texto-caminho&quot;&gt;
+			A sombra não te afastou.&lt;br&gt;
+			Ela te revelou.&lt;br&gt;&lt;br&gt;
+
+			Entre aquilo que não se diz,&lt;br&gt;
+			você agora permanece.&lt;br&gt;&lt;br&gt;
+
+			🌑 &lt;strong&gt;Função:&lt;/strong&gt; Guardião do Silêncio
+		&lt;/div&gt;
+
+		&lt;div class=&quot;juramento juramento-sombra&quot;&gt;
+			Eu não temo o que não se revela.&lt;br&gt;
+			Eu permaneço quando outros recuam.&lt;br&gt;
+			Eu escuto aquilo que não se diz.
+		&lt;/div&gt;
+
+		&lt;div class=&quot;area-botao&quot;&gt;
+			[[Atravessar-&gt;Convergência]]
+		&lt;/div&gt;
+
+	&lt;/div&gt;
+
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="10" name="Convergência" tags="" position="525,775" size="100,100">&lt;div class=&quot;pagina-fundo&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Converg%C3%AAncia.png&#39;);&quot;&gt;
+
+	&lt;div class=&quot;tela-central&quot;&gt;
+
+		&lt;div class=&quot;texto-caminho&quot;&gt;
+			Os caminhos não se anulam.&lt;br&gt;&lt;br&gt;
+			Eles se reconhecem.&lt;br&gt;&lt;br&gt;
+			Aquilo que arde,&lt;br&gt;
+			aquilo que revela,&lt;br&gt;
+			aquilo que permanece.&lt;br&gt;&lt;br&gt;
+			Você não escolheu apenas um caminho.&lt;br&gt;&lt;br&gt;
+			Você atravessou uma forma de ver.&lt;br&gt;&lt;br&gt;
+			E aquilo que você se tornou…&lt;br&gt;&lt;br&gt;
+			não pertence mais à encruzilhada.&lt;br&gt;&lt;br&gt;
+			Sob as três luas,&lt;br&gt;&lt;br&gt;
+			tudo converge.&lt;br&gt;&lt;br&gt;
+			E você também.
+		&lt;/div&gt;
+
+		&lt;div class=&quot;area-botao&quot;&gt;
+			[[Responder ao chamado-&gt;Hécate]]
+		&lt;/div&gt;
+
+	&lt;/div&gt;
+
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="11" name="Hécate" tags="" position="525,925" size="100,100">&lt;div class=&quot;pagina-fundo&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/hecate.PNG&#39;);&quot;&gt;
+
+	&lt;div class=&quot;tela-central&quot;&gt;
+
+		&lt;div class=&quot;texto-caminho&quot;&gt;
+			Você chegou onde os caminhos deixam de ser caminhos.&lt;br&gt;&lt;br&gt;
+			Aqui, não há direção.&lt;br&gt;&lt;br&gt;
+			Apenas presença.&lt;br&gt;&lt;br&gt;
+			Ela não se impõe.&lt;br&gt;
+			Ela não chama.&lt;br&gt;
+			Ela não responde.&lt;br&gt;&lt;br&gt;
+			Mas está.
+		&lt;/div&gt;
+
+		&lt;div class=&quot;area-botao&quot;&gt;
+			[[Aceitar o olhar-&gt;Conselho]]
+		&lt;/div&gt;
+
+	&lt;/div&gt;
+
 &lt;/div&gt;
 
-&lt;div style=&quot;position:fixed; inset:0; background:rgba(10,0,20,0.45); z-index:1;&quot;&gt;&lt;/div&gt;
+</tw-passagedata><tw-passagedata pid="12" name="Conselho" tags="" position="500,1075" size="100,100">&lt;div class=&quot;pagina-fundo&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Conselho.PNG&#39;);&quot;&gt;
 
-&lt;div class=&quot;tela-central tela-sombra&quot;&gt;
+	&lt;div class=&quot;tela-central&quot;&gt;
 
-	&lt;div class=&quot;titulo fade brilho&quot;&gt;Sombra&lt;/div&gt;
+		&lt;div class=&quot;texto-caminho&quot;&gt;
+			Nem todos chegaram até aqui.&lt;br&gt;&lt;br&gt;
 
-	&lt;div class=&quot;texto-entrada fade&quot;&gt;
-		Nada acontece.&lt;br&gt;&lt;br&gt;
-		E ainda assim... tudo muda.&lt;br&gt;&lt;br&gt;
-		Você permanece.
+			Alguns escolheram.&lt;br&gt;
+			Alguns compreenderam.&lt;br&gt;
+			Alguns permaneceram.&lt;br&gt;&lt;br&gt;
+
+			Mas poucos integraram.&lt;br&gt;&lt;br&gt;
+
+			O Conselho não julga.&lt;br&gt;&lt;br&gt;
+
+			Ele observa.&lt;br&gt;&lt;br&gt;
+
+			E reconhece.&lt;br&gt;&lt;br&gt;
+
+			Você não pertence a um caminho.&lt;br&gt;&lt;br&gt;
+
+			Você pertence ao entre.&lt;br&gt;&lt;br&gt;
+
+			Entre o impulso e o gesto.&lt;br&gt;
+			Entre a chave e o que se revela.&lt;br&gt;
+			Entre a sombra e o que permanece.&lt;br&gt;&lt;br&gt;
+
+			Bem-vindo.&lt;br&gt;&lt;br&gt;
+
+			Você agora vê.
+		&lt;/div&gt;
+
+		&lt;div class=&quot;area-botao&quot;&gt;
+			&lt;a href=&quot;https://view.genially.com/68d17b08024f1f31d7464d48&quot;&gt;
+				Retornar ao mundo visível
+			&lt;/a&gt;
+		&lt;/div&gt;
+
 	&lt;/div&gt;
 
-	&lt;div class=&quot;area-botao fade&quot;&gt;
-		[[CONTINUAR-&gt;CAMINHO DA SOMBRA RECONHECIMENTO]]
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="13" name="CAMINHO DA CHAMA RECONHECIMENTO" tags="caminho-chama" position="375,525" size="100,100">&lt;div class=&quot;pagina-fundo&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Chama%201.png&#39;);&quot;&gt;
+
+	&lt;div class=&quot;tela-central&quot;&gt;
+
+		&lt;div class=&quot;texto-entrada&quot;&gt;
+			A chama não chama todos.&lt;br&gt;&lt;br&gt;
+			Ela consome.&lt;br&gt;
+			Ela ilumina.&lt;br&gt;
+			Ela exige.&lt;br&gt;&lt;br&gt;
+			Muitos recuam diante dela.&lt;br&gt;
+			Outros hesitam.&lt;br&gt;&lt;br&gt;
+			Mas há aqueles que avançam.&lt;br&gt;&lt;br&gt;
+			Se você seguiu este caminho...&lt;br&gt;&lt;br&gt;
+			é porque há coragem em você —&lt;br&gt;
+			mesmo quando outros se acovardam.
+		&lt;/div&gt;
+
+		&lt;div class=&quot;area-botao&quot;&gt;
+			[[Continuar-&gt;Final Chama]]
+		&lt;/div&gt;
+
 	&lt;/div&gt;
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="7" name="Final Chama" tags="" position="300,650" size="100,100">&lt;div style=&quot;position:fixed; inset:0; z-index:0;&quot;&gt;
-	&lt;img src=&quot;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Chama%201.png&quot;
-	     style=&quot;width:100vw; height:100vh; object-fit:cover; filter:brightness(0.4);&quot;&gt;
-&lt;/div&gt;
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="14" name="CAMINHO DA CHAVE RECONHECIMENTO" tags="caminho-chave" position="500,525" size="100,100">&lt;div class=&quot;pagina-fundo&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Chave.png&#39;);&quot;&gt;
 
-&lt;div style=&quot;position:fixed; inset:0; background:rgba(40,10,0,0.45); z-index:1;&quot;&gt;&lt;/div&gt;
-
-&lt;div class=&quot;tela-central tela-caminho&quot;&gt;
-
-	&lt;div class=&quot;texto-caminho fade&quot;&gt;
-		A chama não te consumiu.&lt;br&gt;
-		Ela te reconheceu.&lt;br&gt;&lt;br&gt;
-
-		Entre aqueles que avançam,&lt;br&gt;
-		você agora permanece.&lt;br&gt;&lt;br&gt;
-
-		🔥 &lt;strong&gt;Função:&lt;/strong&gt; Portador do Impulso
-	&lt;/div&gt;
-
-	&lt;div class=&quot;juramento fade&quot;&gt;
-		Eu avanço quando outros hesitam.&lt;br&gt;
-		Eu sustento a chama sem me perder nela.&lt;br&gt;
-		Eu aceito o risco de iluminar.
-	
-    &lt;/div&gt;
+	&lt;div class=&quot;tela-central tela-caminho&quot;&gt;
     
-&lt;div class=&quot;area-botao fade&quot;&gt;
-	[[Atravessar-&gt;Convergência]]
-&lt;/div&gt;
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="8" name="Final Chave" tags="" position="500,650" size="100,100">
-&lt;div style=&quot;position:fixed; inset:0; z-index:0;&quot;&gt;
-	&lt;img src=&quot;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Chave.png&quot;
-	     style=&quot;width:100vw; height:100vh; object-fit:cover; filter:brightness(0.4);&quot;&gt;
-&lt;/div&gt;
-
-&lt;div style=&quot;position:fixed; inset:0; background:rgba(10,20,40,0.45); z-index:1;&quot;&gt;&lt;/div&gt;
-
-&lt;div class=&quot;tela-central tela-caminho&quot;&gt;
-
-	&lt;div class=&quot;texto-caminho fade&quot;&gt;
-		Nem toda porta se abriu.&lt;br&gt;
-		Mas você compreendeu.&lt;br&gt;&lt;br&gt;
-
-		Entre aqueles que observam,&lt;br&gt;
-		você agora permanece.&lt;br&gt;&lt;br&gt;
-
-		🗝️ &lt;strong&gt;Função:&lt;/strong&gt; Guardião das Passagens
-	&lt;/div&gt;
-
-	&lt;div class=&quot;juramento fade&quot;&gt;
-		Eu não forço o que deve ser compreendido.&lt;br&gt;
-		Eu leio antes de agir.&lt;br&gt;
-		Eu abro apenas as portas que devem ser abertas.
-	&lt;/div&gt;
-
-&lt;div class=&quot;area-botao fade&quot;&gt;
-	[[Atravessar-&gt;Convergência]]
-&lt;/div&gt;
-
-&lt;/div&gt;
-</tw-passagedata><tw-passagedata pid="9" name="Final Sombra" tags="" position="675,650" size="100,100">&lt;div style=&quot;position:fixed; inset:0; z-index:0;&quot;&gt;
-	&lt;img src=&quot;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Sombras.png&quot;
-	     style=&quot;width:100vw; height:100vh; object-fit:cover; filter:brightness(0.85);&quot;&gt;
-&lt;/div&gt;
-
-&lt;div style=&quot;position:fixed; inset:0; background:rgba(10,0,20,0.5); z-index:1;&quot;&gt;&lt;/div&gt;
-
-&lt;div class=&quot;tela-central tela-caminho&quot;&gt;
-
-	&lt;div class=&quot;texto-caminho fade&quot;&gt;
-		Nada foi revelado.&lt;br&gt;
-		E ainda assim, você permaneceu.&lt;br&gt;&lt;br&gt;
-
-		Entre aqueles que resistem ao vazio,&lt;br&gt;
-		você agora permanece.&lt;br&gt;&lt;br&gt;
-
-		🌑 &lt;strong&gt;Função:&lt;/strong&gt; Guardião do Silêncio
-	&lt;/div&gt;
-
-	&lt;div class=&quot;juramento fade&quot;&gt;
-		Eu permaneço quando nada responde.&lt;br&gt;
-		Eu não fujo do que não compreendo.&lt;br&gt;
-		Eu sustento o que não se revela.
-	&lt;/div&gt;
-    
-    &lt;div class=&quot;area-botao fade&quot;&gt;
-	[[Atravessar-&gt;Convergência]]
-&lt;/div&gt;
-
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="10" name="Convergência" tags="" position="525,775" size="100,100">&lt;div style=&quot;position:fixed; inset:0; z-index:0;&quot;&gt;
-	&lt;img src=&quot;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Converg%C3%AAncia.png&quot;
-	     style=&quot;width:100vw; height:100vh; object-fit:cover;&quot;&gt;
-&lt;/div&gt;
-	     
-&lt;div style=&quot;position:fixed; inset:0; background:rgba(10,0,20,0.55); z-index:1;&quot;&gt;&lt;/div&gt;
-
-&lt;div class=&quot;tela-central tela-caminho&quot;&gt;
-
-	&lt;div class=&quot;texto-caminho fade&quot;&gt;
-
-		Os caminhos não se anulam.&lt;br&gt;&lt;br&gt;
-
-		Eles se reconhecem.&lt;br&gt;&lt;br&gt;
-
-		Aquilo que arde,&lt;br&gt;
-		aquilo que revela,&lt;br&gt;
-		aquilo que permanece &lt;br&gt;&lt;br&gt;
-
-		Você não escolheu apenas um caminho.&lt;br&gt;&lt;br&gt;
-
-		Você atravessou uma forma de ver.&lt;br&gt;&lt;br&gt;
-
-		E aquilo que você se tornou…&lt;br&gt;&lt;br&gt;
-
-		não pertence mais à encruzilhada.&lt;br&gt;&lt;br&gt;
-
-		Sob as três luas,&lt;br&gt;&lt;br&gt;
-
-		tudo converge.&lt;br&gt;&lt;br&gt;
-
-		E você também.
-
-	&lt;/div&gt;
-    
-    &lt;div class=&quot;area-botao fade&quot;&gt;
-    [[Responder ao chamado-&gt;Hécate]]
-	&lt;/div&gt;
-
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="11" name="Hécate" tags="" position="525,925" size="100,100">&lt;div style=&quot;position:fixed; inset:0; z-index:0;&quot;&gt;
-	&lt;img src=&quot;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/refs/heads/main/H%C3%A9cate.PNG&quot;
-	     style=&quot;width:100vw; height:100vh; object-fit:cover; filter:brightness(1);&quot;&gt;
-&lt;/div&gt;
-
-&lt;div style=&quot;position:fixed; inset:0; background:rgba(10,0,20,0.6); z-index:1;&quot;&gt;&lt;/div&gt;
-
-&lt;div class=&quot;tela-central tela-caminho&quot;&gt;
-
-	&lt;div class=&quot;texto-caminho fade&quot;&gt;
-
-		Você chegou onde os caminhos deixam de ser caminhos.&lt;br&gt;&lt;br&gt;
-
-		Aqui, não há direção.&lt;br&gt;&lt;br&gt;
-		Apenas presença.&lt;br&gt;&lt;br&gt;
-		Ela não se impõe.&lt;br&gt;
-		Ela não chama.&lt;br&gt;
-		Ela não responde.&lt;br&gt;&lt;br&gt;
-
-		Mas está.&lt;br&gt;&lt;br&gt;
-
-		Entre o que foi escolhido,&lt;br&gt;
-		o que foi compreendido,&lt;br&gt;
-		e o que permaneceu &lt;br&gt;&lt;br&gt;
-
-		ela observa.&lt;br&gt;&lt;br&gt;
-
-		Hécate não abre caminhos.&lt;br&gt;&lt;br&gt;
-
-		Ela revela quem pode atravessá-los.&lt;br&gt;&lt;br&gt;
-
-		E você atravessou.&lt;br&gt;&lt;br&gt;
-	
-		Não como quem busca.&lt;br&gt;&lt;br&gt;
-
-		Mas como quem compreende.
-
-	&lt;/div&gt;
-
-	&lt;div class=&quot;area-botao fade&quot;&gt;
-		[[Aceitar o olhar-&gt;Conselho]]
-	&lt;/div&gt;
-
-&lt;/div&gt;
-</tw-passagedata><tw-passagedata pid="12" name="Conselho" tags="" position="500,1075" size="100,100">&lt;div style=&quot;position:fixed; inset:0; z-index:0;&quot;&gt;
-	&lt;img src=&quot;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Conselho.PNG&quot;
-	     style=&quot;width:100vw; height:100vh; object-fit:cover; filter:brightness(0.9);&quot;&gt;
-&lt;/div&gt;
-
-&lt;div style=&quot;position:fixed; inset:0; background:rgba(0,10,20,0.6); z-index:1;&quot;&gt;&lt;/div&gt;
-
-&lt;div class=&quot;tela-central tela-caminho&quot;&gt;
-
-	&lt;div class=&quot;texto-caminho fade&quot;&gt;
-
-		Nem todos chegaram até aqui.&lt;br&gt;&lt;br&gt;
-
-		Alguns escolheram.&lt;br&gt;
-		Alguns compreenderam.&lt;br&gt;
-		Alguns permaneceram.&lt;br&gt;&lt;br&gt;
-
-		Mas poucos integraram.&lt;br&gt;&lt;br&gt;
-		
-		O Conselho não julga.&lt;br&gt;&lt;br&gt;
-
-		Ele observa.&lt;br&gt;&lt;br&gt;
-
-		E reconhece.&lt;br&gt;&lt;br&gt;
-	
-		Você não pertence a um caminho.&lt;br&gt;&lt;br&gt;
-
-		Você pertence ao entre.&lt;br&gt;&lt;br&gt;
-
-		Entre o impulso e o gesto.&lt;br&gt;
-		Entre a chave e o que se revela.&lt;br&gt;
-		Entre a sombra e o que permanece.&lt;br&gt;&lt;br&gt;
-	
-		Bem-vindo.&lt;br&gt;&lt;br&gt;
-
-		Você agora vê.
-
-	&lt;/div&gt;
-
-	&lt;div class=&quot;area-botao fade&quot;&gt;
-		&lt;a href=&quot;https://view.genially.com/68d17b08024f1f31d7464d48&quot;&gt;Retornar ao mundo visível
-	&lt;/a&gt;
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="13" name="CAMINHO DA CHAMA RECONHECIMENTO" tags="caminho-chama" position="375,525" size="100,100">&lt;div style=&quot;position:fixed; inset:0; z-index:0;&quot;&gt;
-	&lt;img src=&quot;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Chama%201.png&quot;
-	     style=&quot;width:100vw; height:100vh; object-fit:cover; filter:brightness(0.32) blur(1px);&quot;&gt;
-&lt;/div&gt;
-
-&lt;div style=&quot;position:fixed; inset:0; background:rgba(20,8,0,0.45); z-index:1;&quot;&gt;&lt;/div&gt;
-
-&lt;div class=&quot;tela-central tela-caminho&quot;&gt;
-
-	&lt;div class=&quot;texto-caminho fade&quot;&gt;
-		A chama não chama todos.&lt;br&gt;&lt;br&gt;
-
-		Ela consome.&lt;br&gt;
-		Ela ilumina.&lt;br&gt;
-		Ela exige.&lt;br&gt;&lt;br&gt;
-
-		Muitos recuam diante dela.&lt;br&gt;
-		Outros hesitam.&lt;br&gt;&lt;br&gt;
-
-		Mas há aqueles que avançam.&lt;br&gt;&lt;br&gt;
-
-		Se você seguiu este caminho...&lt;br&gt;&lt;br&gt;
-
-		é porque há coragem em você —&lt;br&gt;
-		mesmo quando outros se acovardam.
-	&lt;/div&gt;
-
-	&lt;div class=&quot;area-botao fade&quot;&gt;
-		[[Continuar-&gt;Final Chama]]
-	&lt;/div&gt;
-
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="14" name="CAMINHO DA CHAVE RECONHECIMENTO" tags="caminho-chave" position="500,525" size="100,100">&lt;div style=&quot;position:fixed; inset:0; z-index:0;&quot;&gt;
-	&lt;img src=&quot;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Chave.png&quot;
-	     style=&quot;width:100vw; height:100vh; object-fit:cover; filter:brightness(0.34) blur(1px);&quot;&gt;
-&lt;/div&gt;
-
-&lt;div style=&quot;position:fixed; inset:0; background:rgba(8,10,18,0.42); z-index:1;&quot;&gt;&lt;/div&gt;
-
-&lt;div class=&quot;tela-central tela-caminho&quot;&gt;
-
-	&lt;div class=&quot;texto-caminho fade&quot;&gt;
+		&lt;div class=&quot;texto-entrada&quot;&gt;
 		Nem toda chave foi feita para abrir.&lt;br&gt;&lt;br&gt;
-
 		Algumas existem para lembrar&lt;br&gt;
 		que há portas.&lt;br&gt;&lt;br&gt;
-
 		A chave não força.&lt;br&gt;
 		Ela exige atenção.&lt;br&gt;
 		Ela exige leitura.&lt;br&gt;
 		Ela exige medida.&lt;br&gt;&lt;br&gt;
-
 		Muitos procuram resposta imediata.&lt;br&gt;
 		Outros tentam romper o que deveria ser compreendido.&lt;br&gt;&lt;br&gt;
-
 		Mas há aqueles que observam antes de tocar.&lt;br&gt;&lt;br&gt;
-
 		Se você seguiu este caminho...&lt;br&gt;&lt;br&gt;
-
 		é porque há em você o desejo de revelar —&lt;br&gt;
 		não para possuir o segredo,&lt;br&gt;
 		mas para compreendê-lo.
@@ -802,37 +711,34 @@ $(document).on(':passagedisplay', function (ev) {
 		[[Continuar-&gt;Final Chave]]
 	&lt;/div&gt;
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="15" name="CAMINHO DA SOMBRA RECONHECIMENTO" tags="caminho-sombra" position="625,525" size="100,100">&lt;div style=&quot;position:fixed; inset:0; z-index:0;&quot;&gt;
-	&lt;img src=&quot;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Sombras.png&quot;
-	    
-&lt;div style=&quot;position:fixed; inset:0; background:rgba(10,0,20,0.5); z-index:1;&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+		&lt;/div&gt;
 
-&lt;div class=&quot;tela-central tela-caminho&quot;&gt;
 
-	&lt;div class=&quot;texto-caminho fade&quot;&gt;
-		Nem tudo precisa ser revelado.&lt;br&gt;&lt;br&gt;
 
-		Há caminhos que não conduzem adiante —&lt;br&gt;
-		mas para dentro.&lt;br&gt;&lt;br&gt;
+	</tw-passagedata><tw-passagedata pid="15" name="CAMINHO DA SOMBRA RECONHECIMENTO" tags="caminho-sombra" position="625,525" size="100,100">&lt;div class=&quot;pagina-fundo&quot; style=&quot;background-image:url(&#39;https://raw.githubusercontent.com/aamaralprof/fi-is-da-coruja/main/Sombras.png&#39;);&quot;&gt;
 
-		A sombra não chama.&lt;br&gt;
-		Ela permanece.&lt;br&gt;
-		Ela observa.&lt;br&gt;&lt;br&gt;
+	&lt;div class=&quot;tela-central&quot;&gt;
 
-		Muitos a evitam.&lt;br&gt;
-		Outros tentam apagá-la.&lt;br&gt;&lt;br&gt;
+		&lt;div class=&quot;texto-caminho&quot;&gt;
+			Nem tudo precisa ser revelado.&lt;br&gt;&lt;br&gt;
 
-		Mas há aqueles que permanecem.&lt;br&gt;&lt;br&gt;
+			Há caminhos que não conduzem adiante —&lt;br&gt;
+			mas para dentro.&lt;br&gt;&lt;br&gt;
 
-		Se você seguiu este caminho...&lt;br&gt;&lt;br&gt;
+			A sombra não chama.&lt;br&gt;
+			Ela permanece.&lt;br&gt;
+			Ela observa.&lt;br&gt;&lt;br&gt;
+			Muitos a evitam.&lt;br&gt;
+			Outros tentam apagá-la.&lt;br&gt;&lt;br&gt;
+			E você... não recuou.&lt;br&gt;&lt;br&gt;
+			Você permaneceu.
+		&lt;/div&gt;
 
-		é porque há em você a capacidade de permanecer —&lt;br&gt;
-		mesmo quando nada se ilumina,&lt;br&gt;
-		mesmo quando nada responde.
-	&lt;/div&gt;
+		&lt;div class=&quot;area-botao&quot;&gt;
+			[[Continuar-&gt;Final Sombra]]
+		&lt;/div&gt;
 
-	&lt;div class=&quot;area-botao fade&quot;&gt;
-		[[Continuar-&gt;Final Sombra]]
 	&lt;/div&gt;
 
 &lt;/div&gt;</tw-passagedata></tw-storydata>
