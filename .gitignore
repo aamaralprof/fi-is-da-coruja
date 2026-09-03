@@ -14,3 +14,7 @@ blog-sofia-site/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Passaportes gerados: a lista impressa traz os PINs legíveis
+# e o SQL traz os códigos válidos. Nada disso vai para o GitHub.
+sistema-passaporte/saida/
