@@ -1,0 +1,16 @@
+# Dependências e builds — nunca vão para o repositório
+node_modules/
+.next/
+.vinext/
+.wrangler/
+dist/
+*.tgz
+
+# Ferramenta de sites da OpenAI (experimento pausado)
+.site-cli/
+blog-sofia-site/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
