@@ -848,3 +848,41 @@ body.after-four.post-page{background:#17151d} body.after-four footer{background:
 .passport-page{min-height:100vh;color:#2b261e;background:#e8dfcb url("assets/passaporte-interno-1.png") center/380px fixed;}.passport-page::before{content:"";position:fixed;inset:0;background:rgba(238,230,211,.91);pointer-events:none}.passport-nav,.passport-shell{position:relative}.passport-nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:16px clamp(20px,5vw,70px);border-bottom:1px solid rgba(73,57,36,.26);font-size:.72rem;letter-spacing:.08em}.passport-shell{width:min(1050px,calc(100% - 40px));margin:auto;padding:clamp(55px,8vw,100px) 0}.passport-shell>header{max-width:760px}.passport-shell>header>p:first-child{color:#6c5933;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase}.passport-shell h1{font:600 clamp(3.2rem,8vw,6.7rem)/.92 "Playfair Display",serif}.passport-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin:60px 0}.passport-gallery figure{margin:0;padding:12px 12px 22px;background:#f7f0df;box-shadow:0 18px 45px rgba(69,50,22,.17)}.passport-gallery img{width:100%;aspect-ratio:1.42;object-fit:contain}.passport-gallery figcaption{margin-top:10px;text-align:center;font-family:"Gochi Hand",cursive}.passport-shell>aside{padding:24px;border:1px solid rgba(73,57,36,.38);background:rgba(255,250,236,.56)}.passport-shell>aside span{font-size:.66rem;font-weight:700;letter-spacing:.14em}.passport-return{min-height:48px;display:inline-flex;align-items:center;margin-top:30px;font-weight:700}
 @media(max-width:650px){.mission-launcher span:nth-child(2){display:none}.mission-item{grid-template-columns:24px 64px 1fr;gap:10px}.mission-item img,.mission-lock{width:64px;height:64px}.booking-ticket,.passport-gallery{grid-template-columns:1fr}.poseidon-header p,.passport-nav span{display:none}}
 @media(prefers-reduced-motion:reduce){.poseidon-ripple,.passport-threshold::after{transition:none;box-shadow:none}}
+
+/* Tela de acesso ao Passaporte */
+.entry-page{min-height:100vh;color:var(--ink);background:var(--paper-deep)}
+.entry-shell{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+.entry-story{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:clamp(38px,6vw,80px);color:#f2ecdf;background:linear-gradient(160deg,#2e2340,#1b1526 62%,#141020)}
+.entry-story::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 22% 18%,rgba(209,170,91,.16),transparent 46%)}
+.entry-story>*{position:relative}
+.entry-back{align-self:start;color:#cfc2e4;font-size:.85rem;text-decoration:none;border-bottom:1px dotted rgba(207,194,228,.5)}
+.entry-back:hover,.entry-back:focus-visible{color:var(--gold);border-bottom-color:var(--gold)}
+.entry-overline{margin:0;color:var(--gold);font-size:.68rem;font-weight:700;letter-spacing:.16em}
+.entry-story h1{margin:0;font:600 clamp(2.4rem,4.6vw,4rem)/1.02 "Playfair Display",serif}
+.entry-story h1 em{color:var(--lavender)}
+.entry-lead{max-width:34ch;margin:0;color:#d8cfe6}
+.entry-foot{margin:26px 0 0;color:#9d92b4;font-size:.85rem;font-style:italic}
+.entry-panel{position:relative;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:clamp(38px,6vw,80px);background:var(--paper)}
+.entry-seal{width:92px;margin-bottom:6px;border-radius:6px;box-shadow:var(--shadow)}
+.entry-panel h2{margin:0;font:600 clamp(1.6rem,2.6vw,2.1rem)/1.15 "Playfair Display",serif}
+.entry-help{margin:0;color:var(--muted);font-size:.92rem}
+.entry-form{display:flex;flex-direction:column;gap:16px;margin-top:10px}
+.entry-form label{display:flex;flex-direction:column;gap:7px;font-size:.72rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.entry-form input{min-height:50px;padding:12px 15px;color:var(--ink);font:500 1rem/1 "DM Sans",sans-serif;letter-spacing:.06em;background:var(--paper-deep);border:1px solid var(--line);border-radius:10px}
+.entry-form input:focus-visible{outline:2px solid var(--lilac);outline-offset:1px}
+.entry-pin{position:relative;display:block}
+.entry-pin input{width:100%;padding-right:88px}
+.entry-pin button{position:absolute;top:50%;right:9px;transform:translateY(-50%);min-height:36px;padding:6px 11px;color:var(--lilac-dark);font:600 .68rem/1 "DM Sans",sans-serif;letter-spacing:.09em;text-transform:uppercase;background:transparent;border:1px solid var(--line);border-radius:7px;cursor:pointer}
+.entry-pin button:hover,.entry-pin button:focus-visible{border-color:var(--lilac);background:var(--lilac-pale)}
+.entry-alert{margin:0;padding:11px 14px;color:#6d2f2f;font-size:.88rem;background:rgba(168,74,74,.09);border-left:3px solid #a84a4a;border-radius:0 8px 8px 0}
+.entry-submit{display:inline-flex;align-items:center;justify-content:center;min-height:52px;margin-top:4px;padding:12px 20px;color:var(--paper);font:600 .95rem/1 "DM Sans",sans-serif;text-decoration:none;background:var(--lilac-dark);border:0;border-radius:11px;cursor:pointer}
+.entry-submit:hover,.entry-submit:focus-visible{background:#452f5b}
+.entry-submit:disabled{opacity:.6;cursor:progress}
+/* display:flex venceria o atributo hidden; estas duas linhas devolvem a palavra final a ele */
+.entry-form[hidden],.entry-open[hidden]{display:none}
+.entry-open{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.entry-code{margin:0;font:600 1.7rem/1 "Playfair Display",serif;letter-spacing:.1em}
+.entry-close{min-height:44px;padding:9px 14px;color:var(--muted);font:500 .82rem/1 "DM Sans",sans-serif;background:transparent;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.entry-close:hover,.entry-close:focus-visible{color:var(--ink);border-color:var(--lilac)}
+.entry-privacy{margin:18px 0 0;color:var(--muted);font-size:.78rem;line-height:1.55}
+@media(max-width:860px){.entry-shell{grid-template-columns:1fr}.entry-story{min-height:auto;padding-top:clamp(30px,7vw,50px)}.entry-story h1{font-size:clamp(2rem,7vw,2.8rem)}}

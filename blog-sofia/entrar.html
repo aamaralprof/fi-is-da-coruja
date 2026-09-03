@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Abrir o passaporte | Coisas que não fazem sentido</title><link rel="stylesheet" href="styles.css?v=26"><link rel="icon" href="favicon.ico" sizes="any"><link rel="apple-touch-icon" href="assets/favicon-180.png"></head>
+<body class="entry-page">
+  <a class="skip-link" href="#acesso">Pular para o acesso</a>
+  <main class="entry-shell">
+
+    <section class="entry-story">
+      <a class="entry-back" href="index.html">← arquivo da Sofia</a>
+      <p class="entry-overline">SISTEMA DO DESTINO · ACESSO INDIVIDUAL</p>
+      <h1>Seu percurso<br><em>começa aqui.</em></h1>
+      <p class="entry-lead">O Passaporte guarda carimbos, pistas e tudo o que você encontrou entre uma página e outra.</p>
+      <p class="entry-foot">Nem toda passagem aparece no mapa.</p>
+    </section>
+
+    <section class="entry-panel" id="acesso" aria-labelledby="entry-title">
+      <img class="entry-seal" src="assets/passaporte-verso.png" alt="Capa do Passaporte Filosófico">
+      <p class="entry-overline">PASSAPORTE DO ALUNO</p>
+      <h2 id="entry-title">Identifique seu percurso</h2>
+      <p class="entry-help">Use o código e o PIN entregues pela professora.</p>
+
+      <form class="entry-form" id="entry-form" novalidate>
+        <label for="codigo">Código do passaporte
+          <input id="codigo" name="codigo" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="CORUJA-7K4M" required>
+        </label>
+        <label for="pin">PIN
+          <span class="entry-pin">
+            <input id="pin" name="pin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="4 números" required>
+            <button type="button" id="ver-pin" aria-label="Mostrar PIN" aria-pressed="false">mostrar</button>
+          </span>
+        </label>
+        <p class="entry-alert" id="entry-alert" role="alert" hidden></p>
+        <button class="entry-submit" type="submit">abrir meu passaporte →</button>
+      </form>
+
+      <div class="entry-open" id="entry-open" hidden>
+        <p class="entry-overline">PASSAPORTE ABERTO</p>
+        <p class="entry-code" id="entry-code"></p>
+        <p class="entry-help">Seu percurso está sendo guardado. Pode fechar esta página e continuar lendo.</p>
+        <a class="entry-submit" href="index.html">voltar ao blog →</a>
+        <button class="entry-close" type="button" id="entry-close">guardar o passaporte neste aparelho</button>
+      </div>
+
+      <p class="entry-privacy">Sem e-mail, telefone ou conta pessoal. Se esquecer o acesso, fale com a professora.</p>
+    </section>
+
+  </main>
+  <script src="percurso.js?v=1"></script>
+  <script>
+  (function () {
+    var form = document.getElementById('entry-form');
+    var aberto = document.getElementById('entry-open');
+    var aviso = document.getElementById('entry-alert');
+    var campoCodigo = document.getElementById('codigo');
+    var campoPin = document.getElementById('pin');
+    var verPin = document.getElementById('ver-pin');
+
+    function mostrarAviso(texto) { aviso.textContent = texto; aviso.hidden = false; }
+    function limparAviso() { aviso.hidden = true; }
+
+    function mostrarAberto(codigo) {
+      form.hidden = true;
+      aberto.hidden = false;
+      document.getElementById('entry-code').textContent = codigo;
+    }
+
+    if (window.Percurso && Percurso.aberto()) mostrarAberto(Percurso.codigo());
+
+    verPin.addEventListener('click', function () {
+      var vendo = campoPin.type === 'text';
+      campoPin.type = vendo ? 'password' : 'text';
+      verPin.textContent = vendo ? 'mostrar' : 'ocultar';
+      verPin.setAttribute('aria-pressed', String(!vendo));
+      verPin.setAttribute('aria-label', vendo ? 'Mostrar PIN' : 'Ocultar PIN');
+    });
+
+    campoCodigo.addEventListener('input', function () {
+      campoCodigo.value = campoCodigo.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+    });
+    campoPin.addEventListener('input', function () {
+      campoPin.value = campoPin.value.replace(/\D/g, '');
+    });
+
+    form.addEventListener('submit', function (evento) {
+      evento.preventDefault();
+      limparAviso();
+      var codigo = campoCodigo.value.trim();
+      var pin = campoPin.value.trim();
+      if (!codigo || pin.length !== 4) { mostrarAviso('Confira o código e os quatro números do PIN.'); return; }
+
+      var botao = form.querySelector('.entry-submit');
+      botao.disabled = true;
+      botao.textContent = 'abrindo...';
+
+      Percurso.abrir(codigo, pin)
+        .then(function () { mostrarAberto(codigo); })
+        .catch(function (erro) {
+          if (erro.status === 429) mostrarAviso('Tentativas demais. Espere alguns minutos antes de tentar de novo.');
+          else if (erro.status === 401) mostrarAviso('Código ou PIN não confere. Confira o que está escrito no passaporte.');
+          else mostrarAviso('Não consegui falar com o Sistema agora. Tente de novo daqui a pouco.');
+          botao.disabled = false;
+          botao.textContent = 'abrir meu passaporte →';
+        });
+    });
+
+    document.getElementById('entry-close').addEventListener('click', function () {
+      Percurso.fechar();
+      location.reload();
+    });
+  })();
+  </script>
+</body></html>
