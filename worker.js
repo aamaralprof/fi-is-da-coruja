@@ -1,18 +1,17 @@
-/* API do Passaporte — Fiéis da Coruja
+/* Sistema do Destino — o servidor do blog da Sofia
  *
- * Roda na Cloudflare, no mesmo endereço do blog, e atende três pedidos:
+ * Faz duas coisas. Para qualquer endereço que comece com /api/, responde ele
+ * mesmo. Para todo o resto, entrega os arquivos de blog-sofia/ sem se meter.
  *
  *   POST /api/entrar    { codigo, pin }        -> abre o passaporte
  *   GET  /api/percurso                         -> devolve o percurso guardado
  *   POST /api/percurso  { chaves: { k: v } }   -> grava o que o aluno descobriu
  *
- * Está tudo num arquivo só de propósito: na Cloudflare, todo arquivo dentro
- * de functions/ vira um endereço público. Auxiliares em arquivo separado
- * virariam rota sem querer.
- *
- * Precisa de duas coisas configuradas no painel:
+ * Depende de três coisas, declaradas em wrangler.jsonc e no painel:
+ *   ASSETS          — os arquivos do blog
  *   DB              — o banco D1
- *   SEGREDO_SESSAO  — texto longo e aleatório, que assina os passes de sessão
+ *   SEGREDO_SESSAO  — segredo que assina os passes de sessão; nunca vai ao
+ *                     repositório, é cadastrado como secret na Cloudflare
  */
 
 const ITERACOES = 100000;         // custo do PBKDF2
@@ -182,20 +181,28 @@ async function gravarPercurso(pedido, env) {
   return responder({ gravadas: nomes.length });
 }
 
-export async function onRequest(context) {
-  const request = context.request;
-  const env = context.env;
-
+async function atenderApi(pedido, env) {
   if (!env.DB || !env.SEGREDO_SESSAO) {
     return responder({ erro: 'Sistema do Destino ainda não configurado' }, 503);
   }
 
-  const rota = new URL(request.url).pathname.replace(/\/+$/, '');
-  const metodo = request.method.toUpperCase();
+  const rota = new URL(pedido.url).pathname.replace(/\/+$/, '');
+  const metodo = pedido.method.toUpperCase();
 
-  if (rota === '/api/entrar' && metodo === 'POST') return entrar(request, env);
-  if (rota === '/api/percurso' && metodo === 'GET') return lerPercurso(request, env);
-  if (rota === '/api/percurso' && metodo === 'POST') return gravarPercurso(request, env);
+  if (rota === '/api/entrar' && metodo === 'POST') return entrar(pedido, env);
+  if (rota === '/api/percurso' && metodo === 'GET') return lerPercurso(pedido, env);
+  if (rota === '/api/percurso' && metodo === 'POST') return gravarPercurso(pedido, env);
 
   return responder({ erro: 'consulta não reconhecida' }, 404);
 }
+
+export default {
+  async fetch(pedido, env) {
+    const caminho = new URL(pedido.url).pathname;
+    if (caminho === '/api' || caminho.indexOf('/api/') === 0) {
+      return atenderApi(pedido, env);
+    }
+    /* Todo o resto é o blog: páginas, imagens, sons, o minijogo. */
+    return env.ASSETS.fetch(pedido);
+  }
+};

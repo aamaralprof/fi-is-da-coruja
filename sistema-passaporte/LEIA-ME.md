@@ -20,48 +20,48 @@ qualquer pessoa — o que é uma perda para você e uma proteção para eles.
 
 | Arquivo | Papel |
 | --- | --- |
+| `../wrangler.jsonc` | Configuração do Worker: quais arquivos publicar e qual banco usar |
+| `../worker.js` | O servidor: responde ao `/api/` e entrega o blog |
 | `esquema.sql` | As duas tabelas do banco |
 | `gerar_passaportes.py` | Cria os códigos e a folha para imprimir |
-| `../blog-sofia/functions/api/[[rota]].js` | A API: entrada e sincronismo |
+| `testar_worker.mjs` | Exercita a API inteira sem publicar nada |
 | `../blog-sofia/percurso.js` | O lado do navegador |
 | `../blog-sofia/entrar.html` | A tela de acesso |
 
 ## Instalação, uma vez só
 
-### 1. Conta na Cloudflare
+### 1. Criar o banco
 
-Crie uma conta gratuita em <https://dash.cloudflare.com/sign-up>. O plano
-gratuito cobre com folga uma escola inteira.
+No painel da Cloudflare: **Storage & Databases → D1 → Create**. Nome:
+`passaporte-fieis`.
 
-### 2. Criar o banco
+Abra o **Console** do banco recém-criado, cole o conteúdo de `esquema.sql` e
+execute. Devem aparecer duas tabelas.
 
-No painel: **Storage & Databases → D1 → Create**. Dê o nome
-`passaporte-fieis`. Abra o **Console** do banco recém-criado, cole o conteúdo
-de `esquema.sql` e execute. Devem aparecer duas tabelas.
+### 2. Ligar o banco à configuração
 
-### 3. Publicar o blog
+Na página do banco, copie o **Database ID** e cole em `wrangler.jsonc`, no
+lugar de `COLE_AQUI_O_ID_DO_BANCO`. Ele não é segredo: sem acesso à conta, não
+serve para nada.
 
-No painel: **Compute → Workers & Pages → Create → Pages → Connect to Git** e
-escolha o repositório `fi-is-da-coruja`. Nas configurações de build:
+Envie a alteração ao GitHub. Sem isso, o Worker sobe sem banco e a tela de
+acesso responde *"Sistema do Destino ainda não configurado"*.
 
-- **Root directory:** `blog-sofia`
-- **Framework preset:** nenhum
-- **Build command:** deixe vazio
-- **Build output directory:** `/`
+### 3. Criar o Worker
 
-A partir daí, todo envio ao GitHub republica o blog sozinho.
+**Compute → Workers & Pages → Create application → Continue with GitHub**, e
+escolha o repositório `fi-is-da-coruja`.
 
-### 4. Ligar o banco à API
+A Cloudflare lê o `wrangler.jsonc` sozinha e já sabe o que fazer: publicar a
+pasta `blog-sofia`, rodar o `worker.js` e ligar o banco. Não preencha comando
+de build — não há build, são arquivos prontos.
 
-Nas configurações do projeto Pages, em **Settings → Bindings → Add → D1
-database**:
+O endereço final será `blog-da-sofia.aamaral.workers.dev`. Para mudar o começo,
+troque o campo `name` no `wrangler.jsonc`.
 
-- **Variable name:** `DB` — precisa ser exatamente isso
-- **D1 database:** `passaporte-fieis`
+### 4. O segredo das sessões
 
-### 5. O segredo das sessões
-
-Ainda em **Settings**, agora em **Variables and Secrets → Add → Secret**:
+Em **Settings → Variables and Secrets → Add → Secret**:
 
 - **Name:** `SEGREDO_SESSAO`
 - **Value:** um texto longo e aleatório, com 40 caracteres ou mais
@@ -72,10 +72,11 @@ Para gerar um:
 python -c "import secrets; print(secrets.token_urlsafe(48))"
 ```
 
-Guarde-o junto das suas senhas. Trocá-lo depois não quebra nada: apenas fecha
-todos os passaportes abertos, e os alunos entram de novo.
+Guarde-o junto das suas senhas. Ele não entra no repositório de propósito.
+Trocá-lo depois não quebra nada: apenas fecha todos os passaportes abertos, e
+os alunos entram de novo.
 
-Publique novamente o projeto para as duas configurações valerem.
+Publique novamente para o segredo valer.
 
 ## A cada turma
 
@@ -93,6 +94,16 @@ Aparecem dois arquivos em `sistema-passaporte/saida/`:
 Essa pasta está no `.gitignore` e nunca vai para o GitHub: a folha traz os PINs
 legíveis e o SQL traz a lista de códigos válidos.
 
+## Depois de mexer no código
+
+```bash
+node sistema-passaporte/testar_worker.mjs
+```
+
+Monta um banco falso na memória e faz o worker responder a pedidos de verdade —
+entrada, PIN errado, trava por tentativas, gravação e leitura do percurso,
+passes adulterados. Leva menos de um segundo e não toca em nada publicado.
+
 ## Se um aluno perder o PIN
 
 Não há como recuperá-lo: o banco guarda o PIN cifrado, não o PIN. Gere um
@@ -109,6 +120,8 @@ antigo, mas fora de alcance.
   descubra quais códigos existem.
 - A comparação das assinaturas é de tempo constante.
 - Uma sessão dura doze horas e depois pede o PIN de novo.
+- Só `blog-sofia/` é publicado. O `worker.js` e o `wrangler.jsonc` ficam fora
+  da pasta de arquivos justamente para não virarem endereço público.
 
 ## O que ainda não existe
 

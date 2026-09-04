@@ -1,0 +1,29 @@
+{
+  // Blog da Sofia — configuração do Worker que serve o site e a API.
+  //
+  // O nome vira o endereço: <name>.<subdominio>.workers.dev
+  "name": "blog-da-sofia",
+  "main": "worker.js",
+  "compatibility_date": "2026-09-01",
+
+  // Só blog-sofia/ é publicado. O worker e este arquivo ficam de fora
+  // de propósito: tudo que estivesse na pasta de assets seria servido
+  // publicamente, inclusive esta configuração.
+  "assets": {
+    "directory": "./blog-sofia",
+    "binding": "ASSETS"
+  },
+
+  // O banco. Depois de criar o D1 no painel, cole o identificador dele
+  // em database_id — ele não é segredo, pode ficar no repositório.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "passaporte-fieis",
+      "database_id": "COLE_AQUI_O_ID_DO_BANCO"
+    }
+  ]
+
+  // SEGREDO_SESSAO não entra aqui. É cadastrado como secret no painel,
+  // em Settings -> Variables and Secrets, e nunca vai ao repositório.
+}
