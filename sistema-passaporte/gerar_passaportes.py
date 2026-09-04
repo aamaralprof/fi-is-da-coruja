@@ -92,8 +92,71 @@ def _de_csv(caminho):
     return linhas
 
 
+def _cabecalho_de(linha):
+    return [" ".join(str(c or "").split()).lower() for c in linha]
+
+
+def _coluna_por(cabecalho, *palavras):
+    for i, celula in enumerate(cabecalho):
+        if any(p in celula for p in palavras):
+            return i
+    return None
+
+
+def _nomes_de_tabela(tabela):
+    """Extrai a coluna de nomes de uma tabela com cabeçalho.
+
+    Listas de escola vêm em tabela: número de chamada, nome, RA, e-mails,
+    situação. Ler linha a linha grudaria tudo isso num nome só, por isso
+    localizamos a coluna certa pelo cabeçalho.
+    """
+    if not tabela or len(tabela) < 2:
+        return None
+    cabecalho = _cabecalho_de(tabela[0])
+    coluna_nome = _coluna_por(cabecalho, "nome", "aluno", "estudante")
+    if coluna_nome is None:
+        return None
+    coluna_situacao = _coluna_por(cabecalho, "situa")
+
+    nomes, dispensados = [], []
+    for linha in tabela[1:]:
+        if coluna_nome >= len(linha):
+            continue
+        nome = " ".join(str(linha[coluna_nome] or "").split())
+        if not nome:
+            continue
+        situacao = ""
+        if coluna_situacao is not None and coluna_situacao < len(linha):
+            situacao = " ".join(str(linha[coluna_situacao] or "").split())
+        # Quem saiu da escola não recebe passaporte.
+        if situacao and situacao.strip().lower() not in ("ativo", "ativa"):
+            dispensados.append((nome, situacao))
+            continue
+        nomes.append(nome)
+    return nomes, dispensados
+
+
+DISPENSADOS = []
+
+
 def _de_excel(caminho):
     from openpyxl import load_workbook
+    livro = load_workbook(caminho, data_only=True, read_only=True)
+    tabelas = []
+    for aba in livro.worksheets:
+        linhas = [list(l) for l in aba.iter_rows(values_only=True)]
+        # o cabeçalho pode não estar na primeira linha do arquivo
+        for inicio, linha in enumerate(linhas[:15]):
+            if _coluna_por(_cabecalho_de(linha), "nome", "aluno", "estudante") is not None:
+                tabelas.append(linhas[inicio:]); break
+    livro.close()
+
+    for tabela in tabelas:
+        achado = _nomes_de_tabela(tabela)
+        if achado and achado[0]:
+            DISPENSADOS.extend(achado[1])
+            return ("estruturado", achado[0])
+
     livro = load_workbook(caminho, data_only=True, read_only=True)
     celulas = []
     for aba in livro.worksheets:
@@ -105,6 +168,17 @@ def _de_excel(caminho):
 
 def _de_pdf(caminho):
     import pdfplumber
+    nomes = []
+    with pdfplumber.open(caminho) as pdf:
+        for pagina in pdf.pages:
+            for tabela in pagina.extract_tables():
+                achado = _nomes_de_tabela(tabela)
+                if achado:
+                    nomes.extend(achado[0])
+                    DISPENSADOS.extend(achado[1])
+    if nomes:
+        return ("estruturado", nomes)
+
     linhas = []
     with pdfplumber.open(caminho) as pdf:
         for pagina in pdf.pages:
@@ -116,6 +190,12 @@ def _de_pdf(caminho):
 def _de_word(caminho):
     import docx
     documento = docx.Document(caminho)
+    for tabela in documento.tables:
+        linhas = [[c.text for c in linha.cells] for linha in tabela.rows]
+        achado = _nomes_de_tabela(linhas)
+        if achado and achado[0]:
+            DISPENSADOS.extend(achado[1])
+            return ("estruturado", achado[0])
     pedacos = [p.text for p in documento.paragraphs]
     for tabela in documento.tables:
         for linha in tabela.rows:
@@ -152,10 +232,15 @@ def ler_nomes(caminho: str, filtrar=None):
         )
 
     bruto = leitor(caminho)
-    if filtrar is None:
-        filtrar = extensao != ".txt"
-    candidatos = [" ".join(c.split()) for c in bruto]
-    nomes = [c for c in candidatos if parece_nome(c)] if filtrar else candidatos
+
+    # Tabela reconhecida: a coluna de nomes já veio limpa, sem chute.
+    if isinstance(bruto, tuple) and bruto and bruto[0] == "estruturado":
+        nomes = bruto[1]
+    else:
+        if filtrar is None:
+            filtrar = extensao != ".txt"
+        candidatos = [" ".join(c.split()) for c in bruto]
+        nomes = [c for c in candidatos if parece_nome(c)] if filtrar else candidatos
 
     vistos, unicos = set(), []
     for n in nomes:
@@ -315,6 +400,11 @@ def main():
             for i, nome in enumerate(nomes, 1):
                 print("  {:>3}. {}".format(i, nome))
             print("")
+            if DISPENSADOS:
+                print("Fora da lista, por situacao na escola:")
+                for nome, situacao in DISPENSADOS:
+                    print("       {}  ({})".format(nome, situacao))
+                print("")
             print("Se a lista estiver certa, rode de novo sem --conferir.")
             print("Se faltou ou sobrou alguem, me mostre esta saida.")
             return
