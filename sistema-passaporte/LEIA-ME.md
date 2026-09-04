@@ -118,6 +118,11 @@ trazem nomes e PINs legíveis, e o SQL traz a lista de códigos válidos.
 
 ## Conferir se as etiquetas batem com o banco
 
+Dois cliques em `sistema-passaporte/CONFERIR-BANCO.bat`.
+
+Quem preferir o terminal — **no seu computador**, não no Console do D1, que só
+entende SQL:
+
 ```bash
 python sistema-passaporte/gerar_passaportes.py --conferir-banco
 ```
