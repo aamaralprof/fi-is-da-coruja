@@ -1,5 +1,7 @@
 # Sistema do Passaporte
 
+**No ar em:** <https://blog-da-sofia.aamaral.workers.dev>
+
 O que faz o progresso do aluno acompanhá-lo de um aparelho a outro: quem
 descobriu o carimbo no computador da escola encontra o mesmo percurso ao abrir
 o blog em casa.
