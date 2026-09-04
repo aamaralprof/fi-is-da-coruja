@@ -384,6 +384,114 @@ perder, ninguém mais consegue dizer de quem é cada passaporte.</p>
         f.write(pagina)
 
 
+def _borda_tracejada(celula):
+    """python-docx não expõe bordas de célula; é preciso descer ao XML."""
+    from docx.oxml.ns import qn
+    from docx.oxml import OxmlElement
+    propriedades = celula._tc.get_or_add_tcPr()
+    bordas = OxmlElement("w:tcBorders")
+    for lado in ("top", "left", "bottom", "right"):
+        elemento = OxmlElement("w:" + lado)
+        elemento.set(qn("w:val"), "dashed")
+        elemento.set(qn("w:sz"), "6")
+        elemento.set(qn("w:color"), "A8977A")
+        bordas.append(elemento)
+    propriedades.append(bordas)
+
+
+def escrever_docx(passaportes, caminho, turma):
+    """A mesma folha de etiquetas, em Word, para ajustar antes de imprimir."""
+    from docx import Document
+    from docx.shared import Pt, Cm, RGBColor
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.enum.table import WD_TABLE_ALIGNMENT
+
+    documento = Document()
+    secao = documento.sections[0]
+    for lado in ("top_margin", "bottom_margin", "left_margin", "right_margin"):
+        setattr(secao, lado, Cm(1.4))
+
+    titulo = documento.add_paragraph()
+    corrida = titulo.add_run("Passaportes" + (" — " + turma if turma else ""))
+    corrida.font.size = Pt(16)
+    corrida.font.bold = True
+
+    aviso = documento.add_paragraph()
+    a1 = aviso.add_run("Esta folha é a única ligação entre um código e um aluno. ")
+    a1.font.bold = True
+    a1.font.size = Pt(8.5)
+    a2 = aviso.add_run(
+        "O banco de dados guarda apenas o código e o PIN cifrado — o nome não sai "
+        "daqui. Confira os nomes, recorte e entregue. Guarde uma via: se ela se "
+        "perder, ninguém mais consegue dizer de quem é cada passaporte."
+    )
+    a2.font.size = Pt(8.5)
+
+    selo = None
+    try:
+        from PIL import Image
+        with Image.open(SELO) as im:
+            im = im.convert("RGBA")
+            im.thumbnail((220, 220), Image.LANCZOS)
+            selo = io.BytesIO()
+            im.save(selo, format="PNG")
+    except Exception:
+        selo = None
+
+    colunas = 2
+    linhas = (len(passaportes) + colunas - 1) // colunas
+    tabela = documento.add_table(rows=linhas, cols=colunas)
+    tabela.alignment = WD_TABLE_ALIGNMENT.CENTER
+    largura = Cm(8.7)
+
+    for indice, passaporte in enumerate(passaportes):
+        celula = tabela.cell(indice // colunas, indice % colunas)
+        celula.width = largura
+        _borda_tracejada(celula)
+
+        def paragrafo(espaco_antes=0, espaco_depois=2):
+            par = celula.add_paragraph()
+            par.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            par.paragraph_format.space_before = Pt(espaco_antes)
+            par.paragraph_format.space_after = Pt(espaco_depois)
+            return par
+
+        celula.paragraphs[0].text = ""
+        if selo:
+            selo.seek(0)
+            marca = celula.paragraphs[0]
+            marca.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            marca.paragraph_format.space_before = Pt(6)
+            marca.paragraph_format.space_after = Pt(2)
+            marca.add_run().add_picture(selo, height=Cm(1.35))
+
+        emissor = paragrafo(0, 4).add_run("EMITIDO PELO ESCRITÓRIO DO DESTINO")
+        emissor.font.size = Pt(5.5)
+        emissor.font.bold = True
+        emissor.font.color.rgb = RGBColor(0x8A, 0x74, 0x42)
+
+        nome = paragrafo(0, 5).add_run(passaporte["nome"])
+        nome.font.size = Pt(11.5)
+
+        credencial = paragrafo(0, 6)
+        rotulo = credencial.add_run("CÓDIGO  ")
+        rotulo.font.size = Pt(5.5)
+        rotulo.font.bold = True
+        rotulo.font.color.rgb = RGBColor(0x96, 0x87, 0x6A)
+        valor = credencial.add_run(passaporte["codigo"])
+        valor.font.size = Pt(11)
+        valor.font.bold = True
+        separador = credencial.add_run("      PIN  ")
+        separador.font.size = Pt(5.5)
+        separador.font.bold = True
+        separador.font.color.rgb = RGBColor(0x96, 0x87, 0x6A)
+        pin = credencial.add_run(passaporte["pin"])
+        pin.font.size = Pt(11)
+        pin.font.bold = True
+
+    documento.save(caminho)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Gera passaportes para uma turma.")
     parser.add_argument("quantidade", nargs="?", type=int, default=None,
@@ -428,15 +536,34 @@ def main():
 
     caminho_sql = os.path.join(SAIDA, "passaportes.sql")
     caminho_etiquetas = os.path.join(SAIDA, "etiquetas.html")
+    caminho_word = os.path.join(SAIDA, "etiquetas.docx")
     escrever_sql(passaportes, caminho_sql)
     escrever_etiquetas(passaportes, caminho_etiquetas, argumentos.turma)
 
+    aviso_word = None
+    try:
+        escrever_docx(passaportes, caminho_word, argumentos.turma)
+    except Exception as erro:
+        aviso_word = str(erro)
+
     print("{} passaportes gerados.".format(len(passaportes)))
-    print("  etiquetas: {}".format(caminho_etiquetas))
-    print("  banco:     {}".format(caminho_sql))
+    if aviso_word is None:
+        print("  etiquetas (Word): {}".format(caminho_word))
+    print("  etiquetas (web):  {}".format(caminho_etiquetas))
+    print("  banco:            {}".format(caminho_sql))
+    if aviso_word:
+        print("")
+        print("  Nao consegui gerar o Word: {}".format(aviso_word))
+        print("  A versao em HTML acima imprime igual.")
     print("")
     print("As etiquetas trazem nome, codigo e PIN legiveis.")
     print("Elas nao entram no repositorio nem no banco de dados.")
+    print("")
+    print("ATENCAO: cada geracao cria codigos NOVOS.")
+    print("Se voce ja tinha cadastrado uma leva no banco, aqueles codigos")
+    print("continuam la e nao correspondem a estas etiquetas. Antes de colar")
+    print("o SQL novo, limpe os antigos com:  DELETE FROM passaportes;")
+    print("(so faca isso enquanto nenhum aluno tiver comecado a usar)")
 
 
 if __name__ == "__main__":
