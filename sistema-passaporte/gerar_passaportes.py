@@ -293,19 +293,25 @@ def gerar(nomes):
 
 
 def escrever_sql(passaportes, caminho):
-    linhas = [
-        "-- Passaportes gerados. Nenhum PIN legível e nenhum nome aqui dentro.",
-        "-- Cole no Console do banco D1, no painel da Cloudflare.",
-        "",
-    ]
-    for p in passaportes:
-        linhas.append(
-            "INSERT INTO passaportes (codigo, pin_hash, pin_sal, criado_em) "
-            "VALUES ('{codigo}', '{hash}', '{sal}', datetime('now')) "
-            "ON CONFLICT(codigo) DO NOTHING;".format(**p)
-        )
-    with io.open(caminho, "w", encoding="utf-8") as f:
-        f.write("\n".join(linhas) + "\n")
+    """Grava um único comando, numa única linha.
+
+    O console do D1 engasga com dezenas de comandos colados de uma vez. Um
+    INSERT com muitas linhas de VALUES faz o mesmo serviço e é um comando só,
+    que se seleciona, cola e executa sem susto. O arquivo não leva comentário
+    nenhum, para que "selecionar tudo e colar" seja sempre seguro.
+    """
+    valores = ", ".join(
+        "('{codigo}', '{hash}', '{sal}', datetime('now'))".format(**p)
+        for p in passaportes
+    )
+    comando = (
+        "INSERT INTO passaportes (codigo, pin_hash, pin_sal, criado_em) VALUES "
+        + valores
+        + " ON CONFLICT(codigo) DO NOTHING;"
+    )
+    quebra = chr(10)
+    with io.open(caminho, "w", encoding="utf-8", newline=quebra) as f:
+        f.write(comando + quebra)
 
 
 ETIQUETA = """<article class="etiqueta">
