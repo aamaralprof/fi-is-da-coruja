@@ -492,6 +492,78 @@ def escrever_docx(passaportes, caminho, turma):
     documento.save(caminho)
 
 
+ENDERECO = "https://blog-da-sofia.aamaral.workers.dev"
+
+
+def conferir_banco():
+    """Testa se as etiquetas geradas batem com o que está no banco.
+
+    Não há como saber isso de fora sem tentar entrar: código inexistente e PIN
+    errado respondem igual, de propósito, para que ninguém descubra a lista de
+    códigos válidos. Então usamos os PINs da própria folha e amostramos alguns
+    passaportes. Se abrem, a leva no banco é esta.
+    """
+    import json
+    import urllib.request
+    import urllib.error
+
+    caminho = os.path.join(SAIDA, "etiquetas.html")
+    if not os.path.exists(caminho):
+        print("Nao encontrei etiquetas geradas em sistema-passaporte/saida/.")
+        return 1
+
+    import re
+    pagina = io.open(caminho, encoding="utf-8").read()
+    pares = re.findall(
+        r'<strong>(CORUJA-[A-Z0-9]{4})</strong>.*?<strong class="pin">(\d{4})</strong>',
+        pagina, re.S)
+    if not pares:
+        print("Nao consegui ler codigos das etiquetas.")
+        return 1
+
+    total = len(pares)
+    indices = sorted(set([0, total // 4, total // 2, (3 * total) // 4, total - 1]))
+    print("Conferindo %d de %d passaportes contra o banco:" % (len(indices), total))
+    print("")
+
+    abriram = 0
+    for i in indices:
+        codigo, pin = pares[i]
+        corpo = json.dumps({"codigo": codigo, "pin": pin}).encode()
+        pedido = urllib.request.Request(
+            ENDERECO + "/api/entrar", data=corpo,
+            headers={"Content-Type": "application/json",
+                     "User-Agent": "Mozilla/5.0 (conferencia de passaportes)"})
+        try:
+            with urllib.request.urlopen(pedido, timeout=20) as r:
+                status = r.status
+        except urllib.error.HTTPError as e:
+            status = e.code
+        except Exception as e:
+            print("  %s -> nao consegui falar com o site (%s)" % (codigo, e))
+            return 1
+        if status == 200:
+            print("  %s -> abre" % codigo); abriram += 1
+        elif status == 429:
+            print("  %s -> travado por tentativas, tente daqui a 15 min" % codigo)
+        else:
+            print("  %s -> NAO esta no banco" % codigo)
+
+    print("")
+    if abriram == len(indices):
+        print("Tudo certo: as etiquetas impressas correspondem ao banco.")
+        return 0
+    if abriram == 0:
+        print("As etiquetas NAO correspondem ao banco.")
+        print("Provavelmente o banco tem uma leva antiga. No Console do D1:")
+        print("    DELETE FROM passaportes;")
+        print("e depois cole o conteudo de saida/passaportes.sql.")
+        return 1
+    print("Alguns abrem e outros nao: o banco tem levas misturadas.")
+    print("O mais seguro e limpar tudo e recarregar saida/passaportes.sql.")
+    return 1
+
+
 def main():
     parser = argparse.ArgumentParser(description="Gera passaportes para uma turma.")
     parser.add_argument("quantidade", nargs="?", type=int, default=None,
@@ -503,7 +575,14 @@ def main():
                         help="mostra os nomes encontrados e para, sem gerar nada")
     parser.add_argument("--sem-filtro", action="store_true",
                         help="usa todas as linhas do arquivo, sem tentar separar nome de cabeçalho")
+    parser.add_argument("--refazer", action="store_true",
+                        help="substitui uma leva já gerada, criando códigos novos")
+    parser.add_argument("--conferir-banco", action="store_true",
+                        help="testa se as etiquetas geradas batem com o banco no ar")
     argumentos = parser.parse_args()
+
+    if argumentos.conferir_banco:
+        raise SystemExit(conferir_banco())
 
     if argumentos.nomes:
         filtrar = False if argumentos.sem_filtro else None
@@ -529,7 +608,20 @@ def main():
             parser.error("escolha entre 1 e 500 passaportes")
         nomes = [""] * argumentos.quantidade
     else:
-        parser.error("informe uma quantidade ou um arquivo com --nomes")
+        parser.error("informe uma quantidade, um arquivo com --nomes, ou use --conferir-banco")
+
+    caminho_sql_antigo = os.path.join(SAIDA, "passaportes.sql")
+    if os.path.exists(caminho_sql_antigo) and not argumentos.refazer:
+        print("Ja existe uma leva de passaportes em sistema-passaporte/saida/.")
+        print("")
+        print("Gerar de novo cria codigos DIFERENTES. Se voce ja imprimiu as")
+        print("etiquetas ou ja carregou o SQL no banco, os novos codigos nao vao")
+        print("bater com nada disso.")
+        print("")
+        print("Se e isso mesmo que voce quer, rode de novo com --refazer.")
+        print("Antes de usar a leva nova, limpe a antiga no Console do D1 com:")
+        print("    DELETE FROM passaportes;")
+        raise SystemExit(1)
 
     os.makedirs(SAIDA, exist_ok=True)
     passaportes = gerar(nomes)

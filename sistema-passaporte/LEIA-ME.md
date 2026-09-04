@@ -116,6 +116,30 @@ dado pessoal nenhum.
 A pasta `saida/` está no `.gitignore` e nunca vai para o GitHub: as etiquetas
 trazem nomes e PINs legíveis, e o SQL traz a lista de códigos válidos.
 
+## Conferir se as etiquetas batem com o banco
+
+```bash
+python sistema-passaporte/gerar_passaportes.py --conferir-banco
+```
+
+Pega alguns passaportes da folha gerada e tenta entrar com eles no site no ar.
+Se abrem, a leva que está no banco é a mesma que você imprimiu.
+
+Isso importa porque **cada geração cria códigos novos**. Se você gerar de novo
+depois de já ter carregado o SQL, os códigos deixam de bater e nenhum aluno
+consegue entrar — sem nenhuma mensagem de erro que explique o motivo. Por isso
+o gerador agora se recusa a substituir uma leva já existente, a menos que você
+passe `--refazer`.
+
+Quando trocar de leva de propósito, limpe a antiga antes de carregar a nova:
+
+```sql
+DELETE FROM passaportes;
+```
+
+Só faça isso enquanto nenhum aluno tiver começado a usar: apagar os
+passaportes apaga junto o percurso ligado a eles.
+
 ## Depois de mexer no código
 
 ```bash
