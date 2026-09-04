@@ -1,5 +1,6 @@
 @echo off
 chcp 65001 >nul
+setlocal
 cd /d "%~dp0.."
 
 echo.
@@ -8,21 +9,55 @@ echo     PASSAPORTES DOS FIEIS DA CORUJA
 echo   ============================================
 echo.
 
-if not exist "sistema-passaporte\turma.txt" (
-  echo   Nao encontrei a lista de alunos.
-  echo   Crie o arquivo turma.txt nesta pasta, com um nome por linha.
+rem Arquivo arrastado e solto em cima deste atalho vem em %1.
+if not "%~1"=="" (
+  set "LISTA=%~1"
+  echo   Lista recebida: %~nx1
+) else (
+  if not exist "sistema-passaporte\turma.txt" (
+    echo   Nao encontrei nenhuma lista de alunos.
+    echo.
+    echo   Duas formas de resolver:
+    echo     - arraste a lista da turma para cima deste atalho
+    echo       ^(aceita Excel, PDF, Word, CSV ou texto^)
+    echo     - ou escreva os nomes em turma.txt, um por linha
+    echo.
+    pause
+    exit /b 1
+  )
+  set "LISTA=turma.txt"
+  echo   Usando a lista de turma.txt
+)
+
+echo.
+echo   Primeiro vou so mostrar os nomes que encontrei.
+echo.
+python "sistema-passaporte\gerar_passaportes.py" --nomes "%LISTA%" --conferir
+
+if errorlevel 1 (
+  echo.
+  echo   Algo deu errado. Copie a mensagem acima e mostre ao Claude.
   echo.
   pause
   exit /b 1
 )
 
-echo   Vou usar os nomes que estao em turma.txt.
-echo   Se quiser conferir antes, abra esse arquivo e feche esta janela.
+echo.
+set /p SEGUE=  A lista esta certa? Digite S para gerar, ou Enter para parar:
+if /i not "%SEGUE%"=="S" (
+  echo.
+  echo   Parado. Nada foi gerado.
+  echo   Se faltou ou sobrou alguem, mostre a lista acima ao Claude.
+  echo.
+  pause
+  exit /b 0
+)
+
 echo.
 set /p TURMA=  Nome da turma (ex: 7o B, pode deixar em branco):
 
 echo.
-python "sistema-passaporte\gerar_passaportes.py" --nomes turma.txt --turma "%TURMA%"
+python "sistema-passaporte\gerar_passaportes.py" --nomes "%LISTA%" --turma "%TURMA%"
 
 if errorlevel 1 (
   echo.

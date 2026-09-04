@@ -47,12 +47,122 @@ def cifrar(pin: str, sal: bytes) -> str:
     return base64url(hashlib.pbkdf2_hmac("sha256", pin.encode(), sal, ITERACOES, dklen=32))
 
 
-def ler_nomes(caminho: str):
+# Cabeçalhos, rodapés e colunas que uma lista de escola costuma trazer junto
+# e que não são nome de aluno.
+RUIDO = (
+    "nome", "aluno", "aluna", "estudante", "chamada", "ra ", "nº", "no.",
+    "turma", "série", "serie", "escola", "professor", "diretoria",
+    "matrícula", "matricula", "total", "relação", "relacao",
+    "lista", "classe", "ensino", "fundamental", "médio", "medio",
+    "secretaria", "educação", "educacao", "governo", "estado",
+)
+
+
+def parece_nome(texto: str) -> bool:
+    """Filtro grosseiro para separar nome de aluno do resto da planilha."""
+    t = " ".join(texto.split())
+    if len(t) < 5 or len(t) > 70:
+        return False
+    if any(c.isdigit() for c in t):
+        return False
+    if len(t.split()) < 2:          # nome de aluno costuma ter sobrenome
+        return False
+    baixo = t.lower()
+    if any(baixo.startswith(r) or baixo == r.strip() for r in RUIDO):
+        return False
+    return True
+
+
+def _de_texto(caminho):
+    with io.open(caminho, encoding="utf-8", errors="replace") as f:
+        return [l.strip() for l in f if l.strip() and not l.lstrip().startswith("#")]
+
+
+def _de_csv(caminho):
+    import csv
+    linhas = []
+    with io.open(caminho, encoding="utf-8-sig", errors="replace", newline="") as f:
+        amostra = f.read(4096); f.seek(0)
+        try:
+            dialeto = csv.Sniffer().sniff(amostra, delimiters=",;	")
+        except Exception:
+            dialeto = csv.excel
+        for linha in csv.reader(f, dialeto):
+            linhas.extend(c for c in linha if c and c.strip())
+    return linhas
+
+
+def _de_excel(caminho):
+    from openpyxl import load_workbook
+    livro = load_workbook(caminho, data_only=True, read_only=True)
+    celulas = []
+    for aba in livro.worksheets:
+        for linha in aba.iter_rows(values_only=True):
+            celulas.extend(str(v) for v in linha if v is not None)
+    livro.close()
+    return celulas
+
+
+def _de_pdf(caminho):
+    import pdfplumber
+    linhas = []
+    with pdfplumber.open(caminho) as pdf:
+        for pagina in pdf.pages:
+            texto = pagina.extract_text() or ""
+            linhas.extend(l.strip() for l in texto.splitlines() if l.strip())
+    return linhas
+
+
+def _de_word(caminho):
+    import docx
+    documento = docx.Document(caminho)
+    pedacos = [p.text for p in documento.paragraphs]
+    for tabela in documento.tables:
+        for linha in tabela.rows:
+            pedacos.extend(c.text for c in linha.cells)
+    return [p.strip() for p in pedacos if p and p.strip()]
+
+
+LEITORES = {
+    ".txt": _de_texto, ".csv": _de_csv, ".tsv": _de_csv,
+    ".xlsx": _de_excel, ".xlsm": _de_excel,
+    ".pdf": _de_pdf, ".docx": _de_word,
+}
+
+
+def ler_nomes(caminho: str, filtrar=None):
+    """Lê nomes de txt, csv, excel, pdf ou word.
+
+    Em txt escrito à mão, confia no que está lá. Nos outros formatos, que vêm
+    de sistemas da escola e trazem cabeçalho, número de chamada e RA no meio,
+    aplica um filtro e mostra o resultado para conferência.
+    """
     if not os.path.isabs(caminho):
-        caminho = os.path.join(AQUI, caminho)
-    with io.open(caminho, encoding="utf-8") as f:
-        return [linha.strip() for linha in f
-                if linha.strip() and not linha.lstrip().startswith("#")]
+        tentativa = os.path.join(AQUI, caminho)
+        caminho = tentativa if os.path.exists(tentativa) else caminho
+    if not os.path.exists(caminho):
+        raise SystemExit("nao encontrei o arquivo: " + caminho)
+
+    extensao = os.path.splitext(caminho)[1].lower()
+    leitor = LEITORES.get(extensao)
+    if not leitor:
+        raise SystemExit(
+            "nao sei ler arquivos {}. Formatos aceitos: {}".format(
+                extensao or "sem extensao", ", ".join(sorted(LEITORES)))
+        )
+
+    bruto = leitor(caminho)
+    if filtrar is None:
+        filtrar = extensao != ".txt"
+    candidatos = [" ".join(c.split()) for c in bruto]
+    nomes = [c for c in candidatos if parece_nome(c)] if filtrar else candidatos
+
+    vistos, unicos = set(), []
+    for n in nomes:
+        chave = n.lower()
+        if chave not in vistos:
+            vistos.add(chave); unicos.append(n)
+    return unicos
 
 
 def selo_embutido() -> str:
@@ -190,12 +300,26 @@ def main():
     parser.add_argument("--nomes", default=None,
                         help="arquivo com um nome por linha; os nomes só vão para a etiqueta")
     parser.add_argument("--turma", default="", help="rótulo impresso na folha; nunca vai ao banco")
+    parser.add_argument("--conferir", action="store_true",
+                        help="mostra os nomes encontrados e para, sem gerar nada")
+    parser.add_argument("--sem-filtro", action="store_true",
+                        help="usa todas as linhas do arquivo, sem tentar separar nome de cabeçalho")
     argumentos = parser.parse_args()
 
     if argumentos.nomes:
-        nomes = ler_nomes(argumentos.nomes)
+        filtrar = False if argumentos.sem_filtro else None
+        nomes = ler_nomes(argumentos.nomes, filtrar=filtrar)
+        if argumentos.conferir:
+            print("Encontrei {} nomes em {}:".format(len(nomes), argumentos.nomes))
+            print("")
+            for i, nome in enumerate(nomes, 1):
+                print("  {:>3}. {}".format(i, nome))
+            print("")
+            print("Se a lista estiver certa, rode de novo sem --conferir.")
+            print("Se faltou ou sobrou alguem, me mostre esta saida.")
+            return
         if not nomes:
-            parser.error("a lista de nomes está vazia")
+            parser.error("nao encontrei nenhum nome no arquivo. Tente com --sem-filtro")
     elif argumentos.quantidade:
         if argumentos.quantidade < 1 or argumentos.quantidade > 500:
             parser.error("escolha entre 1 e 500 passaportes")

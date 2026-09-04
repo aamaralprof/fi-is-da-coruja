@@ -82,11 +82,18 @@ Publique novamente para o segredo valer.
 
 ## A cada turma
 
-**1.** Abra `sistema-passaporte/turma.txt` e escreva os nomes dos alunos, um por
-linha. Esse arquivo não vai para o GitHub: são nomes de menores.
+**Arraste a lista da turma para cima de `GERAR-PASSAPORTES.bat`.**
 
-**2.** Dê dois cliques em `sistema-passaporte/GERAR-PASSAPORTES.bat`. Ele
-pergunta o nome da turma e faz o resto.
+Ele lê Excel, PDF, Word, CSV ou texto — inclusive as listas exportadas dos
+sistemas da escola, com cabeçalho, número de chamada e RA no meio. Antes de
+gerar qualquer coisa, mostra os nomes que encontrou e espera você confirmar.
+
+Se preferir digitar, escreva os nomes em `sistema-passaporte/turma.txt`, um por
+linha, e dê dois cliques no atalho sem arrastar nada. Esse arquivo não vai para
+o GitHub: são nomes de menores.
+
+Se o filtro errar — deixar alguém de fora ou incluir uma linha que não é nome —
+rode com `--sem-filtro` para aproveitar todas as linhas, ou ajuste a lista à mão.
 
 Quem preferir o terminal:
 
