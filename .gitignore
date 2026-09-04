@@ -19,5 +19,11 @@ desktop.ini
 # e o SQL traz os códigos válidos. Nada disso vai para o GitHub.
 sistema-passaporte/saida/
 
-# Lista de alunos: nomes de menores. Nunca vai para o GitHub.
+# Listas de alunos em qualquer formato: nomes de menores.
+# Nada disto vai para o GitHub.
 sistema-passaporte/turma.txt
+sistema-passaporte/*.pdf
+sistema-passaporte/*.xlsx
+sistema-passaporte/*.xlsm
+sistema-passaporte/*.csv
+sistema-passaporte/*.docx
