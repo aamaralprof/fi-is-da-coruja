@@ -82,19 +82,32 @@ Publique novamente para o segredo valer.
 
 ## A cada turma
 
+**1.** Abra `sistema-passaporte/turma.txt` e escreva os nomes dos alunos, um por
+linha. Esse arquivo não vai para o GitHub: são nomes de menores.
+
+**2.** Dê dois cliques em `sistema-passaporte/GERAR-PASSAPORTES.bat`. Ele
+pergunta o nome da turma e faz o resto.
+
+Quem preferir o terminal:
+
 ```bash
-python sistema-passaporte/gerar_passaportes.py 32 --turma "7º B"
+python sistema-passaporte/gerar_passaportes.py --nomes turma.txt --turma "7º B"
 ```
 
 Aparecem dois arquivos em `sistema-passaporte/saida/`:
 
-- **`lista-para-imprimir.html`** — abra no navegador e imprima. Escreva o nome
-  de cada aluno ao lado do código **antes** de recortar, e guarde a folha.
+- **`etiquetas.html`** — uma etiqueta por aluno, com o selo do Escritório do
+  Destino, o nome, o código e o PIN. Abra no navegador, imprima e recorte.
+  **Guarde uma via.**
 - **`passaportes.sql`** — cole no Console do D1 e execute, do mesmo jeito que
   fez com o esquema.
 
-Essa pasta está no `.gitignore` e nunca vai para o GitHub: a folha traz os PINs
-legíveis e o SQL traz a lista de códigos válidos.
+O nome do aluno aparece **apenas na etiqueta**. Não entra no SQL, não vai para a
+Cloudflare, não sai do seu computador. É essa separação que mantém o banco sem
+dado pessoal nenhum.
+
+A pasta `saida/` está no `.gitignore` e nunca vai para o GitHub: as etiquetas
+trazem nomes e PINs legíveis, e o SQL traz a lista de códigos válidos.
 
 ## Depois de mexer no código
 

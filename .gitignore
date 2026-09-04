@@ -18,3 +18,6 @@ desktop.ini
 # Passaportes gerados: a lista impressa traz os PINs legíveis
 # e o SQL traz os códigos válidos. Nada disso vai para o GitHub.
 sistema-passaporte/saida/
+
+# Lista de alunos: nomes de menores. Nunca vai para o GitHub.
+sistema-passaporte/turma.txt
