@@ -899,3 +899,41 @@ body.after-four.post-page{background:#17151d} body.after-four footer{background:
   .nav-link { white-space: nowrap; font-size: .8rem; }
   .nav .brand { margin-right: auto; font-size: .92rem; white-space: nowrap; }
 }
+
+/* Legibilidade depois das 16h.
+   O tema escuro troca os tokens: --ink vira creme, --paper vira quase preto.
+   Só que os objetos de papel do blog — post-it, polaroide, folheto, o livro,
+   os cards dos Caminhos — fixam fundo claro no código e não acompanham a
+   troca. O papel continuava claro, a tinta clareava junto, e o texto sumia.
+   Numa sala que apaga as luzes, papel claro é o certo; o que precisa voltar
+   é a tinta. Redefinir os tokens dentro de cada objeto devolve o texto
+   escuro a tudo que herda, sem tocar elemento por elemento.
+   As exceções que os capítulos 6 e 7 já tratavam à mão têm seletor mais
+   específico e continuam vencendo esta regra. */
+body.after-four .profile-polaroid,
+body.after-four .inline-photo,
+body.after-four .postscript,
+body.after-four .sticky-note,
+body.after-four .choice-buttons button,
+body.after-four .journal-symbol,
+body.after-four .notebook-hotspot,
+body.after-four .tracking-card,
+body.after-four .mystery-book,
+body.after-four .post-hero,
+body.after-four .vision-stage,
+body.after-four .mirna-dialogue,
+body.after-four .uniform-exam,
+body.after-four .bookmark-unlock,
+body.after-four .paths-explainer,
+body.after-four .path-cards article {
+  --ink: #24202b;
+  --muted: #625b6c;
+  --lilac-dark: #59436f;
+  --lavender: #d6c2e7;
+  color: var(--ink);
+}
+
+/* O atalho de acessibilidade usa --ink como fundo e branco como texto.
+   Com os tokens trocados isso vira branco sobre creme. Ele precisa de
+   cores próprias, e não dos tokens. */
+body.after-four .skip-link { background: #1b1822; color: #fffdf8; }
