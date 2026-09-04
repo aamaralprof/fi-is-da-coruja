@@ -961,3 +961,11 @@ body.after-four .easter-link { border-bottom-color: rgba(226, 214, 240, .42); }
   background: rgba(11, 34, 48, .88);
   border-color: rgba(140, 185, 212, .38);
 }
+
+/* Os quatro botões flutuantes disputavam dois cantos.
+   À esquerda, o Inventário de Missão caía exatamente sobre a Coleção de
+   Emblemas e, com z-index bem maior, a escondia por completo. À direita, a
+   onda da Poseidon fazia o mesmo com o Caderno de Pistas.
+   Agora cada canto tem uma coluna: embaixo o que está sempre presente,
+   acima o que só aparece depois de descoberto. */
+.mission-launcher { bottom: 86px; left: 22px; }
