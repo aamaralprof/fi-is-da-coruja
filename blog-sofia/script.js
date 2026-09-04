@@ -21,8 +21,14 @@ if (document.body.classList.contains('post-page') && !document.querySelector('.j
 
 // Depois das 16h, a outra escola começa a atravessar a aparência do blog.
 const sofiaLocalHour = new Date().getHours();
-document.body.classList.toggle('after-four', sofiaLocalHour >= 16);
-document.documentElement.style.colorScheme = sofiaLocalHour >= 16 ? 'dark' : 'light';
+/* ?noite=1 antecipa o entardecer, para conferir a outra escola em pleno dia.
+   ?noite=0 devolve a luz. Sem o parâmetro, quem manda é o relógio. */
+const sofiaForcado = new URLSearchParams(location.search).get('noite');
+const sofiaDepoisDasQuatro = sofiaForcado === null
+  ? sofiaLocalHour >= 16
+  : sofiaForcado !== '0';
+document.body.classList.toggle('after-four', sofiaDepoisDasQuatro);
+document.documentElement.style.colorScheme = sofiaDepoisDasQuatro ? 'dark' : 'light';
 
 const missionRecords = [
   { key: 'sofia-mission-system', title: 'Consulta interrompida', note: 'Origem: Sistema do Destino', image: 'assets/escritorio-do-destino-inventario.png' },
