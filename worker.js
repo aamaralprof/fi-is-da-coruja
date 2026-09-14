@@ -6,6 +6,15 @@
  *   POST /api/entrar    { codigo, pin }        -> abre o passaporte
  *   GET  /api/percurso                         -> devolve o percurso guardado
  *   POST /api/percurso  { chaves: { k: v } }   -> grava o que o aluno descobriu
+ *   GET  /api/sala                             -> a Sala de quem esta entrando
+ *   POST /api/sala      { estado, revisao }    -> salva a Sala
+ *
+ * E duas rotas so para quem tem papel de professor no banco. Elas leem, nunca
+ * escrevem: a primeira versao da Area do Professor e somente leitura.
+ *
+ *   GET  /api/professor/eu                     -> confirma o papel de professor
+ *   GET  /api/professor/salas                  -> lista os alunos e um resumo
+ *   GET  /api/professor/sala?codigo=CORUJA-XX  -> a Sala e o percurso de um aluno
  *
  * Depende de três coisas, declaradas em wrangler.jsonc e no painel:
  *   ASSETS          — os arquivos do blog
@@ -109,7 +118,7 @@ async function entrar(pedido, env) {
   }
 
   const linha = await env.DB
-    .prepare('SELECT codigo, pin_hash, pin_sal, falhas, bloqueado_ate FROM passaportes WHERE codigo = ?')
+    .prepare('SELECT codigo, pin_hash, pin_sal, falhas, bloqueado_ate, papel FROM passaportes WHERE codigo = ?')
     .bind(codigo).first();
 
   /* Passaporte inexistente responde igual a PIN errado: dizer qual dos dois
@@ -135,8 +144,11 @@ async function entrar(pedido, env) {
   await env.DB.prepare('UPDATE passaportes SET falhas = 0, bloqueado_ate = NULL, ultimo_acesso = ? WHERE codigo = ?')
     .bind(new Date().toISOString(), codigo).run();
 
+  /* O papel vai junto so para a interface saber se mostra o link da Area do
+     Professor. Quem autoriza de verdade e o servidor, a cada pedido. */
   return responder({
     codigo: codigo,
+    papel: linha.papel || 'aluno',
     token: await criarPasse(codigo, env.SEGREDO_SESSAO),
     expira: new Date(Date.now() + HORAS_DE_SESSAO * 3600 * 1000).toISOString()
   });
@@ -182,6 +194,60 @@ async function gravarPercurso(pedido, env) {
   return responder({ gravadas: nomes.length });
 }
 
+const objeto = v => v !== null && typeof v === 'object' && !Array.isArray(v);
+
+/* A Sala de antes da reforma guardava parede, mesa, mural e decoracao no topo
+ * do estado. A Sala de hoje guarda appearance e roomItems, e nao escreve mais
+ * nenhum daqueles quatro.
+ *
+ * Enquanto esta validacao os EXIGIU, toda Sala criada do zero era recusada com
+ * 400: defaults() nao os produz. Salas salvas antes da reforma continuavam
+ * passando porque normalize() preserva as chaves antigas — o que escondeu o
+ * problema, ja que quem testava tinha uma Sala velha. Agora sao aceitos se
+ * vierem e nunca exigidos.
+ */
+function legadoValido(state) {
+  const opcional = (valor, permitidos) => valor === undefined || permitidos.includes(valor);
+  return opcional(state.parede, ['lilas', 'areia', 'verde'])
+      && opcional(state.mesa, ['clara', 'escura'])
+      && opcional(state.mural, ['cortica', 'tecido'])
+      && opcional(state.decoracao, ['planta', 'livros', 'nenhum']);
+}
+
+/* Tapete, luzes e pacote de decoracao.
+ *
+ * Aqui se conferem tipo e tamanho, nao os valores em si. Quem decide quais
+ * pacotes existem e sala.js; se esta lista tentasse acompanhar, o proximo
+ * pacote novo voltaria a recusar a Sala de todo mundo — que foi exatamente o
+ * que aconteceu com os quatro campos acima.
+ */
+function aparenciaValida(appearance) {
+  if (appearance === undefined) return true;
+  if (!objeto(appearance)) return false;
+  const curta = v => v === undefined || (typeof v === 'string' && v.length <= 40);
+  return curta(appearance.pack) && curta(appearance.lights)
+      && (appearance.rug === undefined || typeof appearance.rug === 'boolean');
+}
+
+/* Os objetos espalhados pela sala: onde estao, se estao postos, em que estado.
+   O limite de 60 e folgado de proposito — o catalogo tem oito. */
+function objetosValidos(roomItems) {
+  if (roomItems === undefined) return true;
+  if (!objeto(roomItems)) return false;
+  const ids = Object.keys(roomItems);
+  if (ids.length > 60) return false;
+  return ids.every(function (id) {
+    if (!/^[a-z0-9_-]{1,80}$/.test(id)) return false;
+    const o = roomItems[id];
+    return objeto(o)
+      && Number.isFinite(o.x) && o.x >= 0 && o.x <= 100
+      && Number.isFinite(o.y) && o.y >= 0 && o.y <= 100
+      && (o.state === undefined || (typeof o.state === 'string' && o.state.length <= 40))
+      && (o.placed === undefined || typeof o.placed === 'boolean')
+      && (o.lastWatered === undefined || Number.isFinite(o.lastWatered));
+  });
+}
+
 async function sala(pedido, env) {
   const dono = await quemEsta(pedido, env);
   if (!dono) return responder({ erro: 'passaporte fechado' }, 401);
@@ -192,10 +258,9 @@ async function sala(pedido, env) {
   const body = await corpoJson(pedido);
   const state = body && body.estado;
   const validPanels = ['heliopolis', 'tales', 'universo'];
-  if (!body || !Number.isInteger(body.revisao) || body.revisao < 0 || !state ||
-      !state.paineis || typeof state.paineis !== 'object' || Array.isArray(state.paineis) ||
-      !['lilas','areia','verde'].includes(state.parede) || !['clara','escura'].includes(state.mesa) ||
-      !['cortica','tecido'].includes(state.mural) || !['planta','livros','nenhum'].includes(state.decoracao) ||
+  if (!body || !Number.isInteger(body.revisao) || body.revisao < 0 || !objeto(state) ||
+      !objeto(state.paineis) ||
+      !legadoValido(state) || !aparenciaValida(state.appearance) || !objetosValidos(state.roomItems) ||
       JSON.stringify(state).length > 64000) return responder({ erro: 'Sala inválida ou grande demais.' }, 400);
   for (const [key,panel] of Object.entries(state.paineis)) {
     if (!validPanels.includes(key) || !panel || !Array.isArray(panel.itens) || panel.itens.length > 30 ||
@@ -217,6 +282,121 @@ async function sala(pedido, env) {
   return responder({ revisao: body.revisao+1 });
 }
 
+/* A Area do Professor.
+ *
+ * O papel e lido do banco a cada pedido, nao do passe de sessao. Um passe
+ * dura doze horas; se o papel viajasse dentro dele, tirar a permissao de
+ * alguem so faria efeito meia tarde depois. Custa uma consulta e resolve.
+ */
+async function exigirProfessor(pedido, env) {
+  const dono = await quemEsta(pedido, env);
+  if (!dono) return { negado: responder({ erro: 'passaporte fechado' }, 401) };
+
+  const linha = await env.DB
+    .prepare('SELECT codigo, papel FROM passaportes WHERE codigo = ?')
+    .bind(dono.codigo).first();
+
+  if (!linha || linha.papel !== 'professor') {
+    return { negado: responder({ erro: 'area restrita a professores' }, 403) };
+  }
+  return { codigo: linha.codigo };
+}
+
+/* Quantos objetos e pistas o aluno deixou postos. Serve so para o cartao da
+   lista: assim a professora nao precisa abrir cada Sala para saber se ha algo
+   dentro. Sala guardada torta nao derruba a lista inteira. */
+function contarItens(estadoBruto) {
+  if (!estadoBruto) return 0;
+  try {
+    const estado = JSON.parse(estadoBruto);
+    const objetos = Object.values(estado.roomItems || {})
+      .filter(function (i) { return i && i.placed !== false; }).length;
+    const pistas = Object.values(estado.paineis || {})
+      .reduce(function (total, p) { return total + ((p && p.itens) || []).length; }, 0);
+    return objetos + pistas;
+  } catch (e) { return 0; }
+}
+
+/* GET /api/professor/eu
+   Confirma o papel antes de a interface mostrar a Area do Professor. A Sala
+   Geral tambem passa por aqui: o catalogo de pistas e publico, mas mostra-lo
+   todo desbloqueado entregaria a narrativa a um aluno curioso na barra de
+   endereco. */
+async function souProfessor(pedido, env) {
+  const guarda = await exigirProfessor(pedido, env);
+  if (guarda.negado) return guarda.negado;
+  return responder({ codigo: guarda.codigo, papel: 'professor' });
+}
+
+/* GET /api/professor/salas */
+async function listarSalas(pedido, env) {
+  const guarda = await exigirProfessor(pedido, env);
+  if (guarda.negado) return guarda.negado;
+
+  const consulta = await env.DB.prepare(
+    'SELECT p.codigo, p.turma, p.ultimo_acesso, s.estado, s.revisao, s.atualizado_em ' +
+    'FROM passaportes p LEFT JOIN salas s ON s.codigo = p.codigo ' +
+    "WHERE p.papel = 'aluno' ORDER BY p.turma, p.codigo"
+  ).all();
+
+  /* O estado inteiro fica no servidor. A lista leva so o resumo: com trinta
+     alunos, mandar trinta Salas de ate 64 KB seria quase dois megabytes para
+     desenhar uma tela de cartoes. A Sala vai pelo outro endpoint, uma por vez. */
+  const alunos = (consulta.results || []).map(function (r) {
+    return {
+      codigo: r.codigo,
+      turma: r.turma || '',
+      ultimo_acesso: r.ultimo_acesso || null,
+      atualizado_em: r.atualizado_em || null,
+      tem_sala: !!r.estado,
+      itens: contarItens(r.estado)
+    };
+  });
+
+  return responder({ alunos: alunos });
+}
+
+/* GET /api/professor/sala?codigo=CORUJA-7K4M */
+async function salaDoAluno(pedido, env) {
+  const guarda = await exigirProfessor(pedido, env);
+  if (guarda.negado) return guarda.negado;
+
+  const codigo = String(new URL(pedido.url).searchParams.get('codigo') || '').trim().toUpperCase();
+  if (!/^[A-Z0-9-]{4,24}$/.test(codigo)) return responder({ erro: 'codigo invalido' }, 400);
+
+  const aluno = await env.DB
+    .prepare('SELECT codigo, turma, papel, ultimo_acesso FROM passaportes WHERE codigo = ?')
+    .bind(codigo).first();
+
+  /* Um professor nao abre a Sala de outro professor por esta porta. */
+  if (!aluno || aluno.papel !== 'aluno') return responder({ erro: 'aluno nao encontrado' }, 404);
+
+  const sala = await env.DB
+    .prepare('SELECT estado, revisao, atualizado_em FROM salas WHERE codigo = ?')
+    .bind(codigo).first();
+
+  /* O percurso vem junto de proposito. A Sala decide o que mostrar a partir
+     dos desbloqueios do dono: sem eles, a planta, o notebook e as pistas do
+     mural sumiriam, e a professora veria a Sala do aluno filtrada pelo
+     progresso dela propria. */
+  const progresso = await env.DB
+    .prepare('SELECT chave, valor FROM percurso WHERE codigo = ?')
+    .bind(codigo).all();
+
+  const chaves = {};
+  (progresso.results || []).forEach(function (r) { chaves[r.chave] = r.valor; });
+
+  return responder({
+    codigo: aluno.codigo,
+    turma: aluno.turma || '',
+    ultimo_acesso: aluno.ultimo_acesso || null,
+    estado: sala ? JSON.parse(sala.estado) : null,
+    revisao: sala ? sala.revisao : 0,
+    atualizado_em: sala ? sala.atualizado_em : null,
+    chaves: chaves
+  });
+}
+
 async function atenderApi(pedido, env) {
   if (!env.DB || !env.SEGREDO_SESSAO) {
     return responder({ erro: 'Sistema do Destino ainda não configurado' }, 503);
@@ -226,6 +406,10 @@ async function atenderApi(pedido, env) {
   const metodo = pedido.method.toUpperCase();
 
   if (rota === '/api/sala' && (metodo === 'GET' || metodo === 'POST')) return sala(pedido, env);
+
+  if (rota === '/api/professor/eu' && metodo === 'GET') return souProfessor(pedido, env);
+  if (rota === '/api/professor/salas' && metodo === 'GET') return listarSalas(pedido, env);
+  if (rota === '/api/professor/sala' && metodo === 'GET') return salaDoAluno(pedido, env);
 
   if (rota === '/api/entrar' && metodo === 'POST') return entrar(pedido, env);
   if (rota === '/api/percurso' && metodo === 'GET') return lerPercurso(pedido, env);

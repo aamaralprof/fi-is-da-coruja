@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 """Gera passaportes para uma turma.
 
-Produz duas coisas, e a diferença entre elas é o coração do sistema:
+Produz três coisas, e a diferença entre elas é o coração do sistema:
 
-  saida/passaportes.sql   vai para o banco. Só códigos e PINs cifrados.
+  saida/passaportes.sql   vai para o banco. Códigos, PINs cifrados e a turma.
   saida/etiquetas.html    fica com a professora. Nomes, códigos e PINs legíveis.
+  saida/nomes.json        fica com a professora. Código e nome, para a Área
+                          do Professor no navegador dela.
 
-O nome do aluno aparece na etiqueta e em nenhum outro lugar. Ele não entra no
-SQL, não vai para a Cloudflare, não sai deste computador. O banco continua
-sabendo apenas que CORUJA-7K4M leu o capítulo 4 — nunca quem é.
+O nome do aluno aparece na etiqueta e no nomes.json, e em nenhum outro lugar.
+Ele não entra no SQL, não vai para a Cloudflare, não sai deste computador. O
+banco continua sabendo apenas que CORUJA-7K4M, do 7º B, leu o capítulo 4 —
+nunca quem é.
+
+A turma entra no banco porque é rótulo de classe, não de pessoa: serve para a
+professora agrupar os passaportes e não diz quem é ninguém.
 
 Uso:
     python gerar_passaportes.py --nomes turma.txt --turma "7º B"
@@ -292,26 +298,101 @@ def gerar(nomes):
     return passaportes
 
 
-def escrever_sql(passaportes, caminho):
+def aspas_sql(texto: str) -> str:
+    """Literal SQL para um rótulo de turma. NULL quando não houver turma."""
+    if not texto:
+        return "NULL"
+    return "'" + texto.replace("'", "''") + "'"
+
+
+def escrever_sql(passaportes, caminho, turma=""):
     """Grava um único comando, numa única linha.
 
     O console do D1 engasga com dezenas de comandos colados de uma vez. Um
     INSERT com muitas linhas de VALUES faz o mesmo serviço e é um comando só,
     que se seleciona, cola e executa sem susto. O arquivo não leva comentário
     nenhum, para que "selecionar tudo e colar" seja sempre seguro.
+
+    Vai a turma junto, nunca o nome. Quem gerou passaportes antes desta coluna
+    existir precisa aplicar migracao-professor.sql uma vez no banco.
     """
+    rotulo = aspas_sql(turma)
     valores = ", ".join(
-        "('{codigo}', '{hash}', '{sal}', datetime('now'))".format(**p)
+        "('{codigo}', '{hash}', '{sal}', datetime('now'), 'aluno', {turma})".format(turma=rotulo, **p)
         for p in passaportes
     )
     comando = (
-        "INSERT INTO passaportes (codigo, pin_hash, pin_sal, criado_em) VALUES "
+        "INSERT INTO passaportes (codigo, pin_hash, pin_sal, criado_em, papel, turma) VALUES "
         + valores
         + " ON CONFLICT(codigo) DO NOTHING;"
     )
     quebra = chr(10)
     with io.open(caminho, "w", encoding="utf-8", newline=quebra) as f:
         f.write(comando + quebra)
+
+
+def ler_leva_gerada(caminho):
+    """Recupera nome e código da folha de etiquetas já gerada.
+
+    Serve para rotular ou renomear uma turma que JÁ está no banco, sem gerar
+    passaporte nenhum. Gerar de novo criaria códigos diferentes, e trocar a
+    leva significaria apagar a antiga — junto com o percurso e as Salas de
+    todo mundo. Esta função existe para que isso nunca seja necessário.
+    """
+    import re
+
+    if not os.path.exists(caminho):
+        raise SystemExit(
+            "Nao encontrei sistema-passaporte/saida/etiquetas.html. "
+            "E dela que saem os codigos da leva que voce ja imprimiu."
+        )
+    pagina = io.open(caminho, encoding="utf-8").read()
+    nomes = re.findall(r'<p class="nome">(.*?)</p>', pagina, re.S)
+    codigos = re.findall(r"<small>CÓDIGO</small><strong>(.*?)</strong>", pagina, re.S)
+    if len(nomes) != len(codigos):
+        raise SystemExit("A folha de etiquetas parece incompleta: {} nomes para {} codigos."
+                         .format(len(nomes), len(codigos)))
+    return [{"nome": html.unescape(n).strip(), "codigo": c.strip()}
+            for n, c in zip(nomes, codigos)]
+
+
+def escrever_turma_sql(passaportes, caminho, turma):
+    """Só rotula quem já existe. Nenhum INSERT, nenhum DELETE.
+
+    Um UPDATE por código, e não um `UPDATE ... WHERE codigo IN (...)`, para que
+    o comando continue legível e para que colar um pedaço dele não rotule quem
+    não devia.
+    """
+    rotulo = aspas_sql(turma)
+    linhas = ["UPDATE passaportes SET turma = {} WHERE codigo = '{}';".format(rotulo, p["codigo"])
+              for p in passaportes]
+    quebra = chr(10)
+    with io.open(caminho, "w", encoding="utf-8", newline=quebra) as f:
+        f.write(quebra.join(linhas) + quebra)
+
+
+def escrever_nomes(passaportes, caminho, turma):
+    """A ponte entre o código e o nome, para a Área do Professor.
+
+    Este arquivo é o mesmo segredo da folha impressa, em outro formato: quem o
+    tiver sabe quem é CORUJA-7K4M. Ele fica em saida/, que o .gitignore
+    bloqueia, e a professora o importa no navegador dela. Não é enviado a
+    lugar nenhum — a Área do Professor lê o arquivo no próprio navegador e
+    guarda os nomes ali, nunca no servidor.
+
+    Passaportes gerados sem lista de nomes saem de fora: não há o que ligar.
+    """
+    import json
+
+    alunos = {p["codigo"]: p["nome"] for p in passaportes if p.get("nome")}
+    dados = {
+        "turma": turma,
+        "aviso": "Nomes de alunos. Importar na Area do Professor; nao enviar a ninguem.",
+        "alunos": alunos,
+    }
+    with io.open(caminho, "w", encoding="utf-8", newline=chr(10)) as f:
+        f.write(json.dumps(dados, ensure_ascii=False, indent=2) + chr(10))
+    return len(alunos)
 
 
 ETIQUETA = """<article class="etiqueta">
@@ -570,7 +651,8 @@ def main():
                         help="quantos passaportes gerar, quando não houver lista de nomes")
     parser.add_argument("--nomes", default=None,
                         help="arquivo com um nome por linha; os nomes só vão para a etiqueta")
-    parser.add_argument("--turma", default="", help="rótulo impresso na folha; nunca vai ao banco")
+    parser.add_argument("--turma", default="",
+                        help="rótulo da turma; vai à folha e ao banco. O nome, nunca")
     parser.add_argument("--conferir", action="store_true",
                         help="mostra os nomes encontrados e para, sem gerar nada")
     parser.add_argument("--sem-filtro", action="store_true",
@@ -579,10 +661,34 @@ def main():
                         help="substitui uma leva já gerada, criando códigos novos")
     parser.add_argument("--conferir-banco", action="store_true",
                         help="testa se as etiquetas geradas batem com o banco no ar")
+    parser.add_argument("--marcar-turma", metavar="ROTULO", default=None,
+                        help="rotula no banco a leva JA gerada, sem criar codigos novos")
     argumentos = parser.parse_args()
 
     if argumentos.conferir_banco:
         raise SystemExit(conferir_banco())
+
+    if argumentos.marcar_turma is not None:
+        leva = ler_leva_gerada(os.path.join(SAIDA, "etiquetas.html"))
+        caminho_turma = os.path.join(SAIDA, "turma.sql")
+        caminho_nomes = os.path.join(SAIDA, "nomes.json")
+        escrever_turma_sql(leva, caminho_turma, argumentos.marcar_turma)
+        quantos = escrever_nomes(leva, caminho_nomes, argumentos.marcar_turma)
+
+        print("{} passaportes da leva que ja esta no banco.".format(len(leva)))
+        print("")
+        print("  rotulo da turma:  {}".format(caminho_turma))
+        print("  nomes (so seus):  {}".format(caminho_nomes))
+        print("")
+        print("Nenhum codigo novo foi criado e nenhum PIN mudou.")
+        print("O progresso dos alunos nao e tocado: turma.sql so escreve a coluna turma.")
+        print("")
+        print("1. Cole turma.sql no Console do D1 e execute.")
+        print("2. Na Area do Professor, importe nomes.json em 'Nomes da turma'.")
+        print("")
+        print("Se nao tiver certeza de que esta folha e a mesma leva do banco,")
+        print("rode antes:  python sistema-passaporte/gerar_passaportes.py --conferir-banco")
+        return
 
     if argumentos.nomes:
         filtrar = False if argumentos.sem_filtro else None
@@ -629,8 +735,10 @@ def main():
     caminho_sql = os.path.join(SAIDA, "passaportes.sql")
     caminho_etiquetas = os.path.join(SAIDA, "etiquetas.html")
     caminho_word = os.path.join(SAIDA, "etiquetas.docx")
-    escrever_sql(passaportes, caminho_sql)
+    caminho_nomes = os.path.join(SAIDA, "nomes.json")
+    escrever_sql(passaportes, caminho_sql, argumentos.turma)
     escrever_etiquetas(passaportes, caminho_etiquetas, argumentos.turma)
+    quantos_nomes = escrever_nomes(passaportes, caminho_nomes, argumentos.turma)
 
     aviso_word = None
     try:
@@ -643,6 +751,8 @@ def main():
         print("  etiquetas (Word): {}".format(caminho_word))
     print("  etiquetas (web):  {}".format(caminho_etiquetas))
     print("  banco:            {}".format(caminho_sql))
+    if quantos_nomes:
+        print("  nomes (so seus):  {}".format(caminho_nomes))
     if aviso_word:
         print("")
         print("  Nao consegui gerar o Word: {}".format(aviso_word))

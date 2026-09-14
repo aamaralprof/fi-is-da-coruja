@@ -27,3 +27,7 @@ sistema-passaporte/*.xlsx
 sistema-passaporte/*.xlsm
 sistema-passaporte/*.csv
 sistema-passaporte/*.docx
+
+# Segredo de sessao para rodar o Worker na sua maquina.
+# Mesmo valor do SEGREDO_SESSAO, mas local. Nunca vai ao GitHub.
+.dev.vars

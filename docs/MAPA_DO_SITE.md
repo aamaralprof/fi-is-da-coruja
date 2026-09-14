@@ -9,6 +9,7 @@ Aplicação web sem etapa de build: frontend estático em HTML, CSS e JavaScript
 - Publicação: `wrangler.jsonc`, com `blog-sofia/` como diretório de assets.
 - Banco: D1 `passaporte-fieis`, binding `DB`.
 - Autenticação: código de passaporte + PIN; sessão Bearer assinada por `SEGREDO_SESSAO`, válida por 12 horas.
+- Autorização: coluna `passaportes.papel` (`aluno` ou `professor`), lida do banco a cada pedido administrativo.
 
 ## 2. Estrutura de diretórios
 
@@ -20,8 +21,10 @@ Aplicação web sem etapa de build: frontend estático em HTML, CSS e JavaScript
 - `blog-sofia/arco2.css` e `blog-sofia/arco2.js`: componentes e desbloqueios dos posts do segundo arco.
 - `blog-sofia/investigacao-dados.js`: catálogo central de casos e itens usados pela Sala.
 - `blog-sofia/sala-investigacao.html`, `blog-sofia/sala.css` e `blog-sofia/sala.js`: interface, visual e lógica da Sala de Investigação.
+- `blog-sofia/sala-professor.js`: monta o contexto de leitura da Sala quando o endereço traz `?aluno=` ou `?geral=1`. Não desenha nada.
+- `blog-sofia/professor.html`, `blog-sofia/professor.css` e `blog-sofia/professor.js`: a lista da Área do Professor.
 - `blog-sofia/assets/`: imagens e áudios publicados.
-- `sistema-passaporte/`: schema/migração, gerador local de passaportes, conferência e testes do Worker.
+- `sistema-passaporte/`: schema/migrações (`esquema.sql`, `migracao-sala.sql`, `migracao-professor.sql`), gerador local de passaportes, conferência e testes do Worker.
 - `worker.js`: API de autenticação, percurso e Sala; entrega os assets nas demais rotas.
 - `wrangler.jsonc`: configuração do Worker, assets e D1.
 
@@ -83,10 +86,23 @@ Modais/painéis: Caderno de Pistas, Inventário da Missão, Coleção de Emblema
 
 - Finalidade: explorar um ambiente pessoal por quatro perspectivas (visão geral, estante, mesa e mural), posicionar objetos decorativos, alternar estados de objetos e organizar descobertas por caso no mural.
 - Arquivos/componentes: `blog-sofia/sala-investigacao.html`, `blog-sofia/sala.css`, `blog-sofia/sala.js` e `blog-sofia/investigacao-dados.js`; endpoint `/api/sala` em `worker.js`; tabela `salas`.
-- Dados: estado JSON retrocompatível com `appearance` (tapete e cordão de luzes), `roomItems` (posição normalizada, estado e exibição) e painéis por caso (`itens`, `ligacoes`, `nota`, `conclusao`). A configuração central de `sala.js` define zona/perspectiva, asset, tamanho, posição inicial e estados dos objetos.
+- Dados: estado JSON retrocompatível com `appearance` (pacote, tapete e cordão de luzes), `roomItems` (posição normalizada, estado, exibição e, na planta, `lastWatered`) e painéis por caso (`itens`, `ligacoes`, `nota`, `conclusao`). A configuração central de `sala.js` define zona/perspectiva, asset, tamanho, posição inicial e estados dos objetos. O Worker valida tipo e limite de `appearance` e `roomItems`, e aceita sem exigir os campos do formato antigo.
 - Persistência: D1 em `salas.estado`, com revisão otimista; rascunho local `sala-rascunho:<codigo>` e cópias locais de conflito.
 - Relação com Passaporte: exige sessão aberta e `sofia-room-unlocked`; usa `Percurso.requisitar('sala')`.
 - Como adicionar: pistas continuam registradas em `investigacao-dados.js`; decorações entram no catálogo `roomItems` de `sala.js`, apontando para um asset em `blog-sofia/assets/sala/` e uma perspectiva válida.
+
+### Área do Professor
+
+- Finalidade: permitir que a professora veja a Sala de Investigação de cada aluno e a sala-base, sem poder alterá-las.
+- Arquivos/componentes: `blog-sofia/professor.html`, `blog-sofia/professor.js`, `blog-sofia/professor.css`, `blog-sofia/sala-professor.js`; endpoints `/api/professor/eu`, `/api/professor/salas` e `/api/professor/sala` em `worker.js`; `sistema-passaporte/migracao-professor.sql`.
+- Endereços: `professor.html` (a lista), `sala-investigacao.html?aluno=<codigo>` (a Sala de um aluno) e `sala-investigacao.html?geral=1` (a Sala Geral). O Worker serve os assets sem extensão, então `/professor` e `/sala-investigacao?aluno=…` também respondem.
+- Reúso: **não existe segunda Sala.** `sala-professor.js` monta `window.SalaContexto` e o próprio `sala.js` desenha em modo leitura, com a mesma marcação e o mesmo CSS do aluno. Quem mexer na Sala mexe nas duas ao mesmo tempo.
+- Modo leitura: `sala.js` desliga `cache()`, `change()` e `save()`, não liga os gestos de arrastar, esconde personalização/seleção/conclusão e deixa nota e conclusão como texto somente leitura. Não há rota de escrita para o professor no Worker.
+- Dados do aluno: `/api/professor/sala` devolve o estado **e** o percurso daquele passaporte. Sem o percurso, a Sala apareceria filtrada pelos desbloqueios de quem está olhando — a planta, o notebook e as pistas do mural sumiriam.
+- Desempenho: a lista traz só um resumo por aluno (turma, contagem de itens, datas). O estado completo vai por aluno, uma Sala por vez, quando a professora escolhe.
+- Nomes dos alunos: ficam **apenas no navegador da professora**, em `localStorage['professor-nomes']`, importados de `sistema-passaporte/saida/nomes.json`. Nunca são enviados ao servidor. O banco guarda código e turma, nunca nome.
+- Como promover alguém a professor: `UPDATE passaportes SET papel = 'professor' WHERE codigo = '…';`
+- Como rotular a turma de passaportes que já existem, sem gerar códigos novos: `python sistema-passaporte/gerar_passaportes.py --marcar-turma "7º B"`, que lê `saida/etiquetas.html` e emite `saida/turma.sql` (só `UPDATE` na coluna `turma`) e `saida/nomes.json`. Regerar a leva não é alternativa: criaria códigos diferentes e trocar a leva apagaria percurso e Salas em cascata.
 
 ### Avatar e personalização
 
@@ -117,11 +133,13 @@ Preferir antes de criar alternativas:
 
 | Tabela | Finalidade e campos principais | Relações e sistemas |
 | --- | --- | --- |
-| `passaportes` | Identidade anônima e segurança: `codigo` (PK), `pin_hash`, `pin_sal`, `criado_em`, `ultimo_acesso`, `falhas`, `bloqueado_ate`. | Raiz da autenticação; pai de `percurso` e `salas`, ambos com exclusão em cascata. |
+| `passaportes` | Identidade anônima e segurança: `codigo` (PK), `pin_hash`, `pin_sal`, `criado_em`, `ultimo_acesso`, `falhas`, `bloqueado_ate`, `papel` (`aluno`/`professor`, padrão `aluno`), `turma` (rótulo da classe, nunca um nome). Índice `passaportes_por_turma`. | Raiz da autenticação e da autorização; pai de `percurso` e `salas`, ambos com exclusão em cascata. |
 | `percurso` | Pares de progresso: `codigo`, `chave`, `valor`, `registrado_em`; PK composta (`codigo`, `chave`). Índice `percurso_por_codigo`. | FK para `passaportes.codigo`; usado por todos os desbloqueios `sofia-*`, inventários, pistas, emblemas, coleção e teste. |
 | `salas` | Estado da Sala: `codigo` (PK), `estado` JSON como texto, `revisao`, `atualizado_em`. | FK para `passaportes.codigo`; uma Sala por passaporte; controle de concorrência por revisão. |
 
 `salas` aparece tanto no final de `sistema-passaporte/esquema.sql` quanto em `sistema-passaporte/migracao-sala.sql`; ambos usam `CREATE TABLE IF NOT EXISTS`.
+
+`papel` e `turma` estão no `CREATE TABLE` de `esquema.sql`, para bancos novos, e em `sistema-passaporte/migracao-professor.sql`, para o banco que já existe. SQLite não aceita `ADD COLUMN IF NOT EXISTS`: aplicar a migração duas vezes acusa `duplicate column name`, o que só significa que já foi aplicada.
 
 ## 7. Fluxo do aluno
 
@@ -153,6 +171,7 @@ O Worker aceita no máximo 300 chaves, exige prefixo `sofia-`, limita nome a 120
 - Persistência por passaporte e fila offline para chaves `sofia-*`.
 - Inventário da Missão, Caderno de Pistas, Coleção de Emblemas e teste dos Caminhos.
 - Sala de Investigação com mural, casos, ligações, notas, conclusões, personalização e salvamento remoto.
+- Área do Professor, primeira versão: rota protegida, Sala Geral, Salas dos alunos por turma, busca, cartões com contagem e data, e visualização somente leitura reaproveitando a Sala do aluno.
 
 ### Parcialmente implementado
 
@@ -164,7 +183,7 @@ O Worker aceita no máximo 300 chaves, exige prefixo `sofia-`, limita nome a 120
 
 - Avatar do aluno.
 - Sistema genérico de conquistas, pontos, níveis ou ranking.
-- Painel administrativo de turmas (registrado como ausente em `sistema-passaporte/LEIA-ME.md`).
+- Progresso por post/arco, emblemas, caderno de pistas e respostas de investigação **dentro** da Área do Professor. A primeira versão mostra só a Sala; `/api/professor/sala` já devolve o percurso completo do aluno, então acrescentar essas telas não exige mudar o banco nem os endpoints.
 
 ## 11. Pontos de atenção
 
@@ -175,5 +194,7 @@ O Worker aceita no máximo 300 chaves, exige prefixo `sofia-`, limita nome a 120
 - `percurso.js` substitui métodos de `Storage.prototype` para as chaves `sofia-*`; não contornar esse mecanismo.
 - A Sala depende simultaneamente do desbloqueio em `percurso`, do catálogo em `investigacao-dados.js`, da tabela `salas` e do endpoint correspondente.
 - O schema da Sala está duplicado de modo idempotente no schema geral e na migração avulsa; escolher o procedimento adequado ao banco de destino sem executar ambos desnecessariamente.
-- `sistema-passaporte/LEIA-ME.md` ainda diz que `esquema.sql` contém duas tabelas, mas o arquivo atual contém três.
+- O estado da Sala existe em **dois formatos**. O antigo, anterior à reforma das perspectivas, guarda `parede`, `mesa`, `mural` e `decoracao` no topo; o atual guarda `appearance` e `roomItems`. `normalize()` preserva as chaves antigas quando encontra, então uma Sala antiga carrega os dois. A validação do Worker aceita ambos e não exige nenhum dos quatro campos antigos — exigi-los recusava toda Sala criada do zero (corrigido em 14/09/2026). Ao mexer nessa validação, não voltar a enumerar valores que `sala.js` decide, como os pacotes de decoração: é o que quebra de novo no próximo pacote.
+- A Área do Professor não pode ganhar rota de escrita sem decisão explícita: hoje a garantia de que a professora não altera o trabalho do aluno é o Worker não ter por onde.
+- Rodar `node sistema-passaporte/testar_worker.mjs` depois de mexer no Worker; o banco falso de lá precisa conhecer cada consulta nova.
 - O repositório estava com alterações locais funcionais não commitadas durante esta auditoria; preservá-las e revisar o diff antes de qualquer operação destrutiva.

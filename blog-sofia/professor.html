@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Área do Professor | Fiéis da Coruja</title><link rel="icon" href="favicon.ico"><link rel="stylesheet" href="styles.css?v=36"><link rel="stylesheet" href="sala.css?v=7"><link rel="stylesheet" href="professor.css?v=1"><script src="percurso.js?v=2" defer></script><script src="professor.js?v=1" defer></script></head>
+<body class="sala-page professor-page">
+<a class="skip-link" href="#area">Pular para a Área do Professor</a>
+<header class="room-header"><a href="index.html">← Blog da Sofia</a><span>ÁREA DO PROFESSOR</span><a href="entrar.html">Passaporte</a></header>
+<main id="area" class="room-shell">
+
+<div class="room-heading">
+  <div><p class="eyebrow">Fiéis da Coruja</p><h1>Salas de Investigação</h1><p>Acompanhe o que a turma construiu. Nesta versão, só para ver.</p></div>
+  <p id="save-status" role="status" aria-live="polite">Conferindo seu passaporte…</p>
+</div>
+
+<section id="gate" class="room-paper"><p>Carregando…</p></section>
+
+<div id="conteudo" hidden>
+
+  <section class="room-paper prof-geral">
+    <div>
+      <p class="eyebrow">Referência</p>
+      <h2>Sala Geral</h2>
+      <p>A sala-base do projeto, com todos os objetos e todas as pistas à mostra. Serve para conferir o que existe para os alunos encontrarem.</p>
+    </div>
+    <a class="prof-abrir" href="sala-investigacao.html?geral=1">Abrir a Sala Geral →</a>
+  </section>
+
+  <section class="room-paper prof-ferramentas">
+    <h2>Salas dos Alunos</h2>
+    <div class="prof-linha">
+      <label for="procurar">Procurar<input id="procurar" type="search" placeholder="nome, código ou turma" autocomplete="off"></label>
+      <div>
+        <label for="importar">Nomes da turma<input id="importar" type="file" accept=".json,application/json"></label>
+        <button id="esquecer" type="button" hidden>Esquecer os nomes</button>
+      </div>
+    </div>
+    <p id="nomes-estado" class="prof-aviso">Sem os nomes importados, os alunos aparecem pelo código do passaporte. Importe o arquivo <code>nomes.json</code> que o gerador de passaportes deixou em <code>sistema-passaporte/saida/</code>. Os nomes ficam só neste navegador: o banco continua guardando apenas o código e a turma.</p>
+  </section>
+
+  <div id="turmas"></div>
+
+</div>
+</main>
+<noscript>Ative o JavaScript para usar a Área do Professor.</noscript>
+</body></html>

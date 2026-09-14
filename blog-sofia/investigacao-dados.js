@@ -29,7 +29,11 @@ window.Investigacao = {
     {id:'mileto-post2',titulo:'Mileto',tipo:'pista',chave:'sofia-clue-mileto-post2',caso:'tales',texto:'O fragmento parece estar ligado a um pensador da antiga cidade de Mileto. A presença recorrente da água pode ser importante.'},
     {id:'convite-fieis',titulo:'Convite dos Fiéis da Coruja',tipo:'documento',chave:'sofia-document-convite-fieis',caso:'tales',imagem:'assets/arco2/convite-fieis-original.jpeg',texto:'Convite formal para um círculo reservado daqueles que ousam atravessar as fronteiras do tempo e do pensamento.'}
   ],
-  disponivel(item){return ['found','collected','unlocked','true'].includes(localStorage.getItem(item.chave));},
+  /* Por onde o catálogo lê o progresso. A Sala em modo leitura troca esta
+     função pelo percurso do aluno que está sendo visitado, para que a
+     professora veja as descobertas dele e não as dela. */
+  ler(chave){return localStorage.getItem(chave);},
+  disponivel(item){return ['found','collected','unlocked','true'].includes(this.ler(item.chave));},
   desbloquear(id){ const item=this.itens.find(i=>i.id===id); if(item) localStorage.setItem(item.chave,item.tipo==='emblema'?'collected':'found'); },
   origem(item){return item.tipo==='emblema'?'Coleção de Emblemas':item.tipo==='objeto'?'Inventário da Missão':item.tipo==='decoracao'?'Decoração':'Caderno de Pistas';}
 };

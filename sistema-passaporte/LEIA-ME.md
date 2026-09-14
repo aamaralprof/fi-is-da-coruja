@@ -24,7 +24,8 @@ qualquer pessoa — o que é uma perda para você e uma proteção para eles.
 | --- | --- |
 | `../wrangler.jsonc` | Configuração do Worker: quais arquivos publicar e qual banco usar |
 | `../worker.js` | O servidor: responde ao `/api/` e entrega o blog |
-| `esquema.sql` | As duas tabelas do banco |
+| `esquema.sql` | As três tabelas do banco, para um banco novo |
+| `migracao-professor.sql` | Acrescenta `papel` e `turma` a um banco que já existe |
 | `gerar_passaportes.py` | Cria os códigos e a folha para imprimir |
 | `testar_worker.mjs` | Exercita a API inteira sem publicar nada |
 | `../blog-sofia/percurso.js` | O lado do navegador |
@@ -38,7 +39,13 @@ No painel da Cloudflare: **Storage & Databases → D1 → Create**. Nome:
 `passaporte-fieis`.
 
 Abra o **Console** do banco recém-criado, cole o conteúdo de `esquema.sql` e
-execute. Devem aparecer duas tabelas.
+execute. Devem aparecer três tabelas: `passaportes`, `percurso` e `salas`.
+
+**Se o seu banco já existe**, `esquema.sql` não altera nada — ele só cria o que
+falta. Para ganhar a Área do Professor, cole também `migracao-professor.sql`,
+uma vez só. Ela acrescenta duas colunas e não toca em passaporte, percurso nem
+Sala nenhuma. Faça isso **antes** de publicar o site novo: o Worker novo lê a
+coluna `papel` já na tela de acesso.
 
 ### 2. Ligar o banco à configuração
 
@@ -174,10 +181,86 @@ antigo, mas fora de alcance.
 - Só `blog-sofia/` é publicado. O `worker.js` e o `wrangler.jsonc` ficam fora
   da pasta de arquivos justamente para não virarem endereço público.
 
+## A Área do Professor
+
+Para ver as Salas da turma sem SQL na mão.
+
+### Ligar, uma vez só
+
+1. Cole `migracao-professor.sql` no Console do D1 (veja acima).
+2. Gere um passaporte para você junto com a turma, ou use um que já tenha.
+3. No Console do D1, promova esse código:
+
+```sql
+UPDATE passaportes SET papel = 'professor' WHERE codigo = 'CORUJA-XXXX';
+```
+
+Guarde esse código e esse PIN como você guarda uma senha: quem os tiver vê a
+Sala de todos os alunos.
+
+### Usar
+
+Abra seu passaporte na tela de acesso e vá para `/professor` no endereço do
+site. O link não aparece em lugar nenhum do blog, de propósito.
+
+Lá você encontra a **Sala Geral** — a sala-base, com todos os objetos e pistas
+à mostra, para conferir o que existe — e as **Salas dos Alunos**, agrupadas por
+turma. Clicar num aluno abre a Sala dele exatamente como ele a deixou.
+
+**Você não consegue alterar a Sala de ninguém.** Não é só que os botões somem:
+o servidor não tem rota para o professor escrever. É proposital.
+
+### Os nomes dos alunos
+
+A lista continua mostrando `CORUJA-7K4M`, não "Ana". Para ver os nomes, clique
+em **Nomes da turma** e escolha o arquivo `saida/nomes.json` que o gerador
+deixou junto das etiquetas.
+
+Esses nomes ficam **só naquele navegador**. Não sobem para a Cloudflare, não
+vão para o banco, não são enviados a lugar nenhum. Se você abrir a Área do
+Professor em outro computador, precisa importar de novo — e é assim que o banco
+continua sem nome de aluno. **Esqueça os nomes** apaga a lista daquele aparelho.
+
+### A turma dos passaportes que já existem
+
+O que entra no banco agora é a **turma**, e só ela: "7º B" é rótulo de classe,
+não diz quem é ninguém. Quem foi gerado antes dessa coluna existir aparece em
+"Sem turma".
+
+**Não gere uma leva nova para resolver isso.** Cada geração cria códigos
+diferentes, e trocar a leva exigiria apagar a antiga — o que levaria junto o
+percurso e as Salas de todo mundo, por causa da exclusão em cascata.
+
+Rotule a leva que já está no banco:
+
+```bash
+python sistema-passaporte/gerar_passaportes.py --marcar-turma "7º B"
+```
+
+Ele lê os códigos da folha `saida/etiquetas.html` que você já imprimiu e
+escreve dois arquivos novos, sem tocar em `passaportes.sql`:
+
+- **`saida/turma.sql`** — um `UPDATE` por aluno, só na coluna `turma`. Nenhum
+  `INSERT`, nenhum `DELETE`, nenhum PIN. Cole no Console do D1 e execute.
+- **`saida/nomes.json`** — para importar na Área do Professor.
+
+Nenhum código muda, nenhum PIN muda, e o progresso fica onde está. Os alunos
+não percebem nada.
+
+Se tiver mais de uma turma, rode uma vez por turma, guardando a folha de
+etiquetas correspondente em `saida/` a cada vez.
+
+Se não tiver certeza de que a folha em `saida/` é a mesma leva que está no
+banco, confira antes:
+
+```bash
+python sistema-passaporte/gerar_passaportes.py --conferir-banco
+```
+
 ## O que ainda não existe
 
-- Nenhum painel para você acompanhar as turmas. Hoje a consulta é pelo Console
-  do D1, com SQL na mão.
+- Progresso, emblemas, pistas e respostas dentro da Área do Professor. Por ora
+  ela mostra a Sala. O resto continua sendo consulta pelo Console do D1.
 - Se um aluno abrir o passaporte num computador compartilhado e não fechar, a
   sessão segue válida naquele navegador por doze horas. O botão **guardar o
   passaporte neste aparelho**, na tela de acesso, encerra na hora.

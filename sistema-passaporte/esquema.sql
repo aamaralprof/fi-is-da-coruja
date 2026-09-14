@@ -1,8 +1,12 @@
 -- Banco do Passaporte — Fiéis da Coruja
 --
--- Guarda o mínimo possível. Não há nome, e-mail, telefone, turma, escola,
--- idade ou qualquer outro dado que identifique um aluno. O banco sabe que
+-- Guarda o mínimo possível. Não há nome, e-mail, telefone, escola, idade
+-- ou qualquer outro dado que identifique um aluno. O banco sabe que
 -- CORUJA-7K4M leu o capítulo 4; não sabe, e não tem como saber, quem é.
+--
+-- A única exceção é a turma, e ela é exceção só na aparência: "7º B" é
+-- rótulo de classe, não de pessoa. Serve para a professora agrupar os
+-- passaportes na área dela. Continua sem dizer quem é quem.
 --
 -- A ligação entre código e aluno existe num único lugar: a lista impressa
 -- que fica com a professora. Perdida essa lista, os dados aqui deixam de
@@ -15,8 +19,12 @@ CREATE TABLE IF NOT EXISTS passaportes (
   criado_em     TEXT NOT NULL,
   ultimo_acesso TEXT,
   falhas        INTEGER NOT NULL DEFAULT 0, -- tentativas erradas seguidas
-  bloqueado_ate TEXT                        -- trava temporária contra força bruta
+  bloqueado_ate TEXT,                       -- trava temporária contra força bruta
+  papel         TEXT NOT NULL DEFAULT 'aluno', -- 'aluno' ou 'professor'
+  turma         TEXT                        -- rótulo da classe; nunca um nome
 );
+
+CREATE INDEX IF NOT EXISTS passaportes_por_turma ON passaportes(turma);
 
 CREATE TABLE IF NOT EXISTS percurso (
   codigo        TEXT NOT NULL,
