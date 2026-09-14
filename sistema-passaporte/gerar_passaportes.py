@@ -356,6 +356,23 @@ def ler_leva_gerada(caminho):
             for n, c in zip(nomes, codigos)]
 
 
+def escrever_professor_sql(passaporte, caminho):
+    """Um passaporte de professora, sozinho, em arquivo proprio.
+
+    Nao encosta em passaportes.sql nem nas etiquetas: a leva da turma ja foi
+    impressa e gerar de novo criaria codigos diferentes para todo mundo. Este
+    aqui entra no banco por fora, com papel de professor desde o INSERT.
+    """
+    comando = (
+        "INSERT INTO passaportes (codigo, pin_hash, pin_sal, criado_em, papel, turma) VALUES "
+        "('{codigo}', '{hash}', '{sal}', datetime('now'), 'professor', NULL) "
+        "ON CONFLICT(codigo) DO NOTHING;".format(**passaporte)
+    )
+    quebra = chr(10)
+    with io.open(caminho, "w", encoding="utf-8", newline=quebra) as f:
+        f.write(comando + quebra)
+
+
 def escrever_turma_sql(passaportes, caminho, turma):
     """Só rotula quem já existe. Nenhum INSERT, nenhum DELETE.
 
@@ -663,10 +680,37 @@ def main():
                         help="testa se as etiquetas geradas batem com o banco no ar")
     parser.add_argument("--marcar-turma", metavar="ROTULO", default=None,
                         help="rotula no banco a leva JA gerada, sem criar codigos novos")
+    parser.add_argument("--professor", action="store_true",
+                        help="cria UM passaporte de professora, sem tocar na leva da turma")
     argumentos = parser.parse_args()
 
     if argumentos.conferir_banco:
         raise SystemExit(conferir_banco())
+
+    if argumentos.professor:
+        os.makedirs(SAIDA, exist_ok=True)
+        passaporte = gerar([""])[0]
+        caminho = os.path.join(SAIDA, "professor.sql")
+        escrever_professor_sql(passaporte, caminho)
+
+        print("")
+        print("  Seu passaporte de professora")
+        print("")
+        print("     codigo:  {}".format(passaporte["codigo"]))
+        print("     PIN:     {}".format(passaporte["pin"]))
+        print("")
+        print("  ANOTE O PIN AGORA. O banco guarda o PIN cifrado, nao o PIN.")
+        print("  Se perder, nao ha como recuperar: so gerar outro.")
+        print("")
+        print("  Guarde como voce guarda uma senha: quem tiver esses dois ve")
+        print("  a Sala de todos os alunos.")
+        print("")
+        print("  Para por no banco, cole no Console do D1:")
+        print("     {}".format(caminho))
+        print("")
+        print("  A leva da turma nao foi tocada.")
+        print("")
+        return
 
     if argumentos.marcar_turma is not None:
         leva = ler_leva_gerada(os.path.join(SAIDA, "etiquetas.html"))

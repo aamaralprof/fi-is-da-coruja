@@ -187,16 +187,31 @@ Para ver as Salas da turma sem SQL na mão.
 
 ### Ligar, uma vez só
 
-1. Cole `migracao-professor.sql` no Console do D1 (veja acima).
-2. Gere um passaporte para você junto com a turma, ou use um que já tenha.
-3. No Console do D1, promova esse código:
+**1.** Cole `migracao-professor.sql` no Console do D1 (veja acima).
+
+**2.** Crie seu passaporte de professora:
+
+```bash
+python sistema-passaporte/gerar_passaportes.py --professor
+```
+
+Ele mostra o código e o PIN na tela e deixa `saida/professor.sql` para você
+colar no Console do D1. **Anote o PIN na hora**: o banco guarda o PIN cifrado,
+não o PIN — perdido, só gerando outro.
+
+Não toca na leva da turma. Gerar a turma de novo criaria códigos diferentes
+para todo mundo, e é justamente o que este modo existe para evitar.
+
+Guarde código e PIN como você guarda uma senha: quem os tiver vê a Sala de
+todos os alunos.
+
+Se preferir promover um passaporte que já existe, em vez de criar um:
 
 ```sql
 UPDATE passaportes SET papel = 'professor' WHERE codigo = 'CORUJA-XXXX';
 ```
 
-Guarde esse código e esse PIN como você guarda uma senha: quem os tiver vê a
-Sala de todos os alunos.
+Só não use um dos códigos impressos para a turma — ele é de um aluno.
 
 ### Usar
 
