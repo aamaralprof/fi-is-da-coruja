@@ -24,6 +24,8 @@ qualquer pessoa — o que é uma perda para você e uma proteção para eles.
 | --- | --- |
 | `../wrangler.jsonc` | Configuração do Worker: quais arquivos publicar e qual banco usar |
 | `../worker.js` | O servidor: responde ao `/api/` e entrega o blog |
+| `PASSAPORTE-DA-PROFESSORA.bat` | Dois cliques: cria o seu passaporte de professora |
+| `MARCAR-TURMA.bat` | Dois cliques: põe o nome da turma nos passaportes que já existem |
 | `esquema.sql` | As três tabelas do banco, para um banco novo |
 | `migracao-professor.sql` | Acrescenta `papel` e `turma` a um banco que já existe |
 | `gerar_passaportes.py` | Cria os códigos e a folha para imprimir |
@@ -189,11 +191,7 @@ Para ver as Salas da turma sem SQL na mão.
 
 **1.** Cole `migracao-professor.sql` no Console do D1 (veja acima).
 
-**2.** Crie seu passaporte de professora:
-
-```bash
-python sistema-passaporte/gerar_passaportes.py --professor
-```
+**2.** Dois cliques em `sistema-passaporte/PASSAPORTE-DA-PROFESSORA.bat`.
 
 Ele mostra o código e o PIN na tela e deixa `saida/professor.sql` para você
 colar no Console do D1. **Anote o PIN na hora**: o banco guarda o PIN cifrado,
@@ -246,14 +244,10 @@ não diz quem é ninguém. Quem foi gerado antes dessa coluna existir aparece em
 diferentes, e trocar a leva exigiria apagar a antiga — o que levaria junto o
 percurso e as Salas de todo mundo, por causa da exclusão em cascata.
 
-Rotule a leva que já está no banco:
-
-```bash
-python sistema-passaporte/gerar_passaportes.py --marcar-turma "7º B"
-```
-
-Ele lê os códigos da folha `saida/etiquetas.html` que você já imprimiu e
-escreve dois arquivos novos, sem tocar em `passaportes.sql`:
+Rotule a leva que já está no banco: **dois cliques em
+`sistema-passaporte/MARCAR-TURMA.bat`**. Ele pergunta o nome da turma, lê os
+códigos da folha `saida/etiquetas.html` que você já imprimiu e escreve dois
+arquivos novos, sem tocar em `passaportes.sql`:
 
 - **`saida/turma.sql`** — um `UPDATE` por aluno, só na coluna `turma`. Nenhum
   `INSERT`, nenhum `DELETE`, nenhum PIN. Cole no Console do D1 e execute.
