@@ -44,10 +44,34 @@ Abra o **Console** do banco recém-criado, cole o conteúdo de `esquema.sql` e
 execute. Devem aparecer três tabelas: `passaportes`, `percurso` e `salas`.
 
 **Se o seu banco já existe**, `esquema.sql` não altera nada — ele só cria o que
-falta. Para ganhar a Área do Professor, cole também `migracao-professor.sql`,
-uma vez só. Ela acrescenta duas colunas e não toca em passaporte, percurso nem
-Sala nenhuma. Faça isso **antes** de publicar o site novo: o Worker novo lê a
-coluna `papel` já na tela de acesso.
+falta. Para ganhar a Área do Professor, aplique `migracao-professor.sql`, uma
+vez só. Ela acrescenta duas colunas e não toca em passaporte, percurso nem Sala
+nenhuma. Faça isso **antes** de publicar o site novo: o Worker novo lê a coluna
+`papel` já na tela de acesso.
+
+São três comandos. **Cole um de cada vez**, executando entre eles — o Console do
+D1 engasga com vários comandos colados de uma vez, que é a mesma razão de o
+`passaportes.sql` ser gerado numa linha só:
+
+```sql
+ALTER TABLE passaportes ADD COLUMN papel TEXT NOT NULL DEFAULT 'aluno';
+ALTER TABLE passaportes ADD COLUMN turma TEXT;
+CREATE INDEX IF NOT EXISTS passaportes_por_turma ON passaportes(turma);
+```
+
+SQLite não aceita `ADD COLUMN IF NOT EXISTS`. Se um deles responder
+**"duplicate column name"**, é só sinal de que já tinha passado: siga para o
+próximo.
+
+Para conferir que deu certo:
+
+```sql
+SELECT name FROM pragma_table_info('passaportes');
+```
+
+Devem aparecer nove colunas, terminando em `papel` e `turma`. Enquanto elas não
+estiverem lá, qualquer coisa que mencione `papel` responde
+*"table passaportes has no column named papel"*.
 
 ### 2. Ligar o banco à configuração
 
