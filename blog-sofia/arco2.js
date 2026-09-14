@@ -74,9 +74,10 @@ function initRainPost(){
 
  const canvas=$('[data-water-mask]'),notebook=$('[data-science-notebook]');let revealed=false;
  const finishWipe=()=>{if(revealed)return;revealed=true;canvas.style.pointerEvents='none';canvas.style.opacity='0';$('[data-wipe-instruction]').hidden=true;$('[data-wipe-status]').textContent='A página está seca. Um fragmento apareceu.';reveal($('[data-fragment-discovery]'),true);unlock('sofia-post2-page-dried','completed');};
+ $('[data-finish-wipe]')?.addEventListener('click',finishWipe);
  if(canvas&&notebook){const ctx=canvas.getContext('2d',{willReadFrequently:true});let drawing=false,passes=0;
   const paintWater=()=>{const r=notebook.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);canvas.width=r.width*d;canvas.height=r.height*d;ctx.setTransform(d,0,0,d,0,0);ctx.globalCompositeOperation='source-over';const g=ctx.createLinearGradient(0,0,r.width,r.height);g.addColorStop(0,'rgba(135,188,207,.54)');g.addColorStop(.5,'rgba(187,220,229,.68)');g.addColorStop(1,'rgba(99,153,183,.48)');ctx.fillStyle=g;ctx.fillRect(r.width*.25,r.height*.18,r.width*.52,r.height*.72);for(let i=0;i<22;i++){ctx.fillStyle=`rgba(225,248,255,${.18+Math.random()*.2})`;ctx.beginPath();ctx.arc(r.width*(.28+Math.random()*.46),r.height*(.22+Math.random()*.62),4+Math.random()*13,0,Math.PI*2);ctx.fill();}};
-  const wipe=e=>{if(!drawing)return;const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;ctx.globalCompositeOperation='destination-out';ctx.beginPath();ctx.arc(x,y,Math.max(28,r.width*.055),0,Math.PI*2);ctx.fill();passes++;if(passes>(innerWidth<700?34:48))finishWipe();};
+  const wipe=e=>{if(!drawing)return;const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;ctx.globalCompositeOperation='destination-out';ctx.beginPath();ctx.arc(x,y,Math.max(34,r.width*.065),0,Math.PI*2);ctx.fill();passes++;if(passes>(innerWidth<700?14:24))finishWipe();};
   canvas.addEventListener('pointerdown',e=>{drawing=true;canvas.setPointerCapture(e.pointerId);wipe(e);});canvas.addEventListener('pointermove',wipe);canvas.addEventListener('pointerup',()=>drawing=false);canvas.addEventListener('pointercancel',()=>drawing=false);paintWater();
   if(reduced.matches||completed('sofia-post2-page-dried'))finishWipe();
  }

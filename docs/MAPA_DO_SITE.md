@@ -15,6 +15,7 @@ Aplicação web sem etapa de build: frontend estático em HTML, CSS e JavaScript
 
 - `blog-sofia/`: site publicado, páginas narrativas, estilos, scripts e assets.
 - `blog-sofia/index.html`: arquivo/listagem dos capítulos e acesso às coleções.
+- `blog-sofia/arquivo-o-chamado.html` e `blog-sofia/arquivo-xvii.html`: páginas intermediárias dos arcos; recebem o aluno a partir dos cards da home e apresentam, em grade, os posts do respectivo ciclo.
 - `blog-sofia/styles.css`: design e componentes compartilhados do blog e do primeiro arco.
 - `blog-sofia/script.js`: interações compartilhadas, inventários, pistas, escolhas e experiências dos posts.
 - `blog-sofia/percurso.js`: sessão, isolamento local por passaporte, fila offline e sincronização de progresso.
@@ -32,7 +33,7 @@ Aplicação web sem etapa de build: frontend estático em HTML, CSS e JavaScript
 
 ## 3. Blog da Sofia
 
-Os posts ficam diretamente em `blog-sofia/post-*.html`. Há 12 arquivos: dez anotações do primeiro arco e duas do segundo. Cada post é uma página HTML completa, ligada manualmente ao anterior/próximo e listada manualmente em `blog-sofia/index.html`; não existe CMS nem modelo gerador. O primeiro post do arco 2, **Sala 17**, concentra sua progressão em `arco2.js`: janela Quadra/Heliópolis, registro da carta, Caminho do Sol, Cifra Solar opcional, recompensas e conversa no aplicativo E Aí?.
+Os posts ficam diretamente em `blog-sofia/post-*.html`. Há 12 arquivos: dez anotações do primeiro arco e duas do segundo. Cada post é uma página HTML completa, ligada manualmente ao anterior/próximo e listada manualmente na página de seu arco (`arquivo-o-chamado.html` ou `arquivo-xvii.html`); a home apresenta somente os dois cards de entrada desses arquivos. Não existe CMS nem modelo gerador. O primeiro post do arco 2, **Sala 17**, concentra sua progressão em `arco2.js`: janela Quadra/Heliópolis, registro da carta, Caminho do Sol, Cifra Solar opcional, recompensas e conversa no aplicativo E Aí?.
 
 Estrutura recorrente: navegação, cabeçalho com metadados, corpo narrativo, blocos interativos, paginação e rodapé. `blog-sofia/styles.css`, `blog-sofia/script.js`, `blog-sofia/percurso.js` e `blog-sofia/contraste.js` são compartilhados. Os posts do arco 2 também carregam `blog-sofia/arco2.css` e `blog-sofia/arco2.js`.
 
@@ -147,7 +148,7 @@ Preferir antes de criar alternativas:
 
 ## 7. Fluxo do aluno
 
-`blog-sofia/entrar.html` (código + PIN) → sessão do Passaporte → `blog-sofia/index.html` → posts → interações gravam chaves `sofia-*` → `blog-sofia/percurso.js` guarda localmente e sincroniza com `/api/percurso` → Caderno/Inventário/Emblemas/“Não é uma coleção” exibem os desbloqueios → o emblema do Escritóio libera a Sala → a Sala consome os mesmos desbloqueios e salva sua organização em `/api/sala`.
+`blog-sofia/entrar.html` (código + PIN) → sessão do Passaporte → `blog-sofia/index.html` → página do arco → posts → interações gravam chaves `sofia-*` → `blog-sofia/percurso.js` guarda localmente e sincroniza com `/api/percurso` → Caderno/Inventário/Emblemas/“Não é uma coleção” exibem os desbloqueios → o emblema do Escritóio libera a Sala → a Sala consome os mesmos desbloqueios e salva sua organização em `/api/sala`.
 
 Sem passaporte aberto, descobertas `sofia-*` ficam no percurso local `visitante`; o código explicitamente não as copia automaticamente para um aluno que entrar depois. A Sala sempre exige passaporte.
 

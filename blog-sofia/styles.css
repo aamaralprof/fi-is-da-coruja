@@ -126,6 +126,20 @@ button { font: inherit; }
 .archive-card:hover .archive-link { color: var(--lilac-dark); border-color: var(--lilac); }
 .archive-card > a:focus-visible { outline-offset: -5px; }
 
+/* Páginas de cada arquivo */
+.archive-page { background: var(--paper); }
+.archive-page-header { position: relative; padding-block: clamp(64px, 9vw, 120px); border-bottom: 1px solid var(--line); }
+.archive-page-header::after { content: ""; position: absolute; right: 2%; bottom: 12%; width: clamp(100px, 17vw, 210px); aspect-ratio: 1; border: 1px solid rgba(89, 67, 111, .18); border-radius: 50%; background: radial-gradient(circle, rgba(155, 130, 190, .12), transparent 65%); pointer-events: none; }
+.archive-page-header .back-link { position: relative; z-index: 1; margin-bottom: clamp(38px, 6vw, 72px); }
+.archive-page-header h1 { position: relative; z-index: 1; max-width: 940px; margin: 0; font-family: "Playfair Display", serif; font-size: clamp(3.5rem, 10vw, 8.5rem); line-height: .88; letter-spacing: -.055em; }
+.archive-page-header > p:last-child { position: relative; z-index: 1; max-width: 650px; margin: 28px 0 0; color: var(--muted); font-family: "Gochi Hand", cursive; font-size: clamp(1.2rem, 2.2vw, 1.6rem); }
+.archive-page--xvii .archive-page-header { color: #eee8f3; background: linear-gradient(100deg, rgba(21, 14, 28, .95), rgba(31, 21, 40, .82) 58%, rgba(15, 53, 39, .66)), url("assets/arquivo-xvii-sem-bota.png") center 46% / cover; }
+.archive-page--xvii .archive-page-header .eyebrow, .archive-page--xvii .archive-page-header > p:last-child { color: #dfd3e8; }
+.archive-page--xvii .archive-page-header::after { border-color: rgba(154, 219, 174, .3); background: radial-gradient(circle, rgba(77, 190, 117, .16), transparent 68%); }
+.archive-chapters { padding-top: clamp(70px, 9vw, 110px); }
+.archive-chapters .chapter-card { height: 100%; }
+.archive-chapters .card-copy { min-height: 255px; }
+
 .chapters { padding-block: 105px; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 50px; margin-bottom: 48px; }
 .section-heading > p { max-width: 390px; margin: 0; color: var(--muted); }
@@ -548,6 +562,7 @@ body.journal-open { overflow: hidden; }
   .archive-heading { grid-template-columns: 1fr; gap: 10px; }
   .archive-grid { grid-template-columns: 1fr; }
   .archive-card--xvii { margin-top: 0; }
+  .archive-page-header::after { opacity: .6; }
   .section-heading { align-items: start; flex-direction: column; gap: 20px; }
   .card-grid { grid-template-columns: 1fr; }
   .post-layout { grid-template-columns: minmax(0, 680px); }
@@ -570,6 +585,8 @@ body.journal-open { overflow: hidden; }
   .archive-copy { min-height: 0; padding: 24px 22px 28px; }
   .archive-copy > p:not(.archive-number) { min-height: 0; }
   .archive-stamp { right: 12px; bottom: 12px; }
+  .archive-page-header h1 { font-size: clamp(3.1rem, 16vw, 5rem); }
+  .archive-chapters .card-copy { min-height: 0; }
   .card-copy { padding: 22px; }
   .footer-inner { align-items: flex-start; flex-direction: column; justify-content: center; gap: 4px; }
   .post { padding-top: 28px; }
