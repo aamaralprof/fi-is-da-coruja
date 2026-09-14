@@ -33,7 +33,10 @@ document.documentElement.style.colorScheme = sofiaDepoisDasQuatro ? 'dark' : 'li
 const missionRecords = [
   { key: 'sofia-mission-system', title: 'Consulta interrompida', note: 'Origem: Sistema do Destino', image: 'assets/escritorio-do-destino-inventario.png' },
   { key: 'sofia-mission-poseidon', title: 'Reserva sem destino', note: 'Operadora: Poseidon Lines', image: 'assets/poseidon-lines-inventario.png' },
-  { key: 'sofia-mission-passport', title: 'Passaporte de percurso', note: 'Titular reconhecida: Sofia', image: 'assets/passaporte-frente.png' }
+  { key: 'sofia-mission-passport', title: 'Passaporte de percurso', note: 'Titular reconhecida: Sofia', image: 'assets/passaporte-frente.png' },
+  { key: 'sofia-mission-postal-arche', title: 'Postal endereçado a Sofia', note: 'Uma pergunta sobre o princípio de todas as coisas.', image: 'assets/arco2/postal-arche-sofia.jpeg' },
+  { key: 'sofia-mission-fragmento-desconhecido', title: 'Fragmento desconhecido', note: 'Apareceu no caderno de Sofia durante a aula de Ciências.', image: 'assets/arco2/fragmento-desconhecido.png' },
+  { key: 'sofia-mission-convite-fieis', title: 'Convite dos Fiéis da Coruja', note: 'Um chamado para atravessar as fronteiras do tempo e do pensamento.', image: 'assets/arco2/convite-fieis-original.jpeg' }
 ];
 
 function missionFound(key) { try { return localStorage.getItem(key) === 'found'; } catch { return false; } }
@@ -45,10 +48,10 @@ function mountMissionInventory() {
   const found = missionRecords.filter((item) => missionFound(item.key));
   if (!found.length || document.querySelector('.mission-launcher')) return;
   document.body.insertAdjacentHTML('beforeend', `
-    <button class="mission-launcher" type="button" aria-expanded="false" aria-controls="mission-inventory"><span aria-hidden="true">◇</span><span>inventário de missão</span><b>${found.length}/3</b></button>
+    <button class="mission-launcher" type="button" aria-expanded="false" aria-controls="mission-inventory"><span aria-hidden="true">◇</span><span>inventário de missão</span><b>${found.length}/${missionRecords.length}</b></button>
     <button class="mission-backdrop" type="button" aria-label="Fechar inventário de missão" hidden></button>
     <aside class="mission-inventory" id="mission-inventory" aria-labelledby="mission-title" hidden>
-      <div class="mission-head"><div><p>ACESSO PARCIAL · ${found.length}/3</p><h2 id="mission-title">Inventário de missão</h2></div><button type="button" data-close-mission aria-label="Fechar inventário">×</button></div>
+      <div class="mission-head"><div><p>ACESSO PARCIAL · ${found.length}/${missionRecords.length}</p><h2 id="mission-title">Inventário de missão</h2></div><button type="button" data-close-mission aria-label="Fechar inventário">×</button></div>
       <p>Objetos e registros que o Sistema associou a este percurso.</p>
       <div class="mission-grid">${missionRecords.map((item, index) => missionFound(item.key)
         ? `<article class="mission-item is-found"><span>0${index + 1}</span><img src="${item.image}" alt=""><div><h3>${item.title}</h3><p>${item.note}</p></div></article>`
@@ -71,7 +74,9 @@ const journalList = document.querySelector('.journal-list');
 const laterClues = [
   ['07','impossible-bookmark','o marcador impossível','Ele estava dentro de um livro que Sofia ainda não tinha aberto.'],
   ['08','linked-uniforms','dois uniformes, uma costura','O uniforme de Sofia e o do menino mudam como versões da mesma coisa.'],
-  ['09','test-recognized-sofia','o teste reconheceu Sofia','Por um instante, o resultado deixou de ser um Caminho.']
+  ['09','test-recognized-sofia','o teste reconheceu Sofia','Por um instante, o resultado deixou de ser um Caminho.'],
+  ['10','fragmento-carta','o fragmento da carta','Heliópolis ligava a ordem do cosmos, a origem da vida e o destino humano.'],
+  ['11','mileto-post2','Mileto','O fragmento parece ligado a um pensador da antiga cidade. A presença recorrente da água pode ser importante.']
 ];
 laterClues.forEach(([number,key,title,description]) => {
   if (journalList && !journalList.querySelector(`[data-clue-entry="${key}"]`)) {
@@ -427,9 +432,11 @@ function saveEmblem() {
 
 function ensureEmblemInventory() {
   let eclipseIsCollected = false;
+  let officeIsCollected = false;
   try { eclipseIsCollected = localStorage.getItem('sofia-emblem-ordem-do-eclipse') === 'collected'; } catch {}
+  try { officeIsCollected = localStorage.getItem('sofia-emblem-escritorio-do-destino') === 'collected'; } catch {}
   const fieisIsCollected = emblemWasCollected();
-  const emblemTotal = Number(fieisIsCollected) + Number(eclipseIsCollected);
+  const emblemTotal = Number(fieisIsCollected) + Number(eclipseIsCollected) + Number(officeIsCollected);
   if (!emblemTotal || document.querySelector('.emblem-inventory-launcher')) return;
   document.body.insertAdjacentHTML('beforeend', `
     <button class="emblem-inventory-launcher" type="button" aria-expanded="false" aria-controls="emblem-inventory">
@@ -440,6 +447,7 @@ function ensureEmblemInventory() {
       <div class="emblem-inventory-header"><div><p class="eyebrow">${emblemTotal} ${emblemTotal === 1 ? 'símbolo encontrado' : 'símbolos encontrados'}</p><h2 id="emblem-inventory-title">coleção de emblemas</h2></div><button class="emblem-inventory-close" type="button" aria-label="Fechar a coleção">×</button></div>
       ${fieisIsCollected ? '<div class="emblem-inventory-card"><img src="assets/fieis-da-coruja-inventario.png" alt="Emblema dos Fiéis da Coruja"><h3>Fiéis da Coruja</h3><p>Origem ainda não identificada.</p></div>' : ''}
       ${eclipseIsCollected ? '<div class="emblem-inventory-card" data-eclipse-inventory-card><img src="assets/ordem-do-eclipse-inventario.png" alt="Emblema da Ordem do Eclipse"><h3>Ordem do Eclipse</h3><p>Encontrado numa perspectiva que Sofia não viu.</p></div>' : ''}
+      ${officeIsCollected ? '<div class="emblem-inventory-card"><img src="assets/escritorio-do-destino-inventario.png" alt="Emblema do Escritório do Destino"><h3>Escritório do Destino</h3><p>Encontrado junto ao fragmento de Heliópolis.</p></div>' : ''}
     </aside>`);
 
   const launcher = document.querySelector('.emblem-inventory-launcher');
@@ -819,7 +827,8 @@ renderFieisTestCollection();
 const notCollectionItems = [
   { key:'sofia-not-a-collection', value:'unlocked', number:'01', title:'A Hora que Não Existe', image:'assets/hora-ausente-livro.png' },
   { key:'sofia-collection-bookmark', value:'collected', number:'02', title:'Marcador metálico', image:'assets/hora-ausente-marcador.png' },
-  { key:'sofia-collection-path-cards', value:'collected', number:'03', title:'Cards dos Caminhos', image:'assets/hora-ausente-cards.png' }
+  { key:'sofia-collection-path-cards', value:'collected', number:'03', title:'Cards dos Caminhos', image:'assets/hora-ausente-cards.png' },
+  { key:'sofia-collection-mei-lantern', value:'collected', number:'04', title:'Miniatura da lanterna de Mei', image:'assets/hora-ausente-miniatura-lanterna.png' }
 ];
 const notCollectionGrid = document.querySelector('[data-not-collection-grid]');
 const notCollectionLauncher = document.querySelector('[data-open-not-collection]');
@@ -837,7 +846,7 @@ function renderNotCollection() {
   const known = notCollectionItems.map((item) => hasCollectionItem(item)
     ? `<article class="not-collection-slot is-found"><span>${item.number}</span><img src="${item.image}" alt=""><strong>${item.title}</strong></article>`
     : `<article class="not-collection-slot"><span>${item.number}</span><div aria-hidden="true">?</div><strong>ainda não chegou</strong></article>`);
-  for (let number = 4; number <= 11; number += 1) known.push(`<article class="not-collection-slot"><span>${String(number).padStart(2,'0')}</span><div aria-hidden="true">?</div><strong>ainda não chegou</strong></article>`);
+  for (let number = notCollectionItems.length + 1; number <= 11; number += 1) known.push(`<article class="not-collection-slot"><span>${String(number).padStart(2,'0')}</span><div aria-hidden="true">?</div><strong>ainda não chegou</strong></article>`);
   notCollectionGrid.innerHTML = known.join('');
 }
 function closeNotCollection() { if (!notCollectionPanel) return; notCollectionPanel.hidden = true; notCollectionBackdrop.hidden = true; notCollectionLauncher?.setAttribute('aria-expanded','false'); document.body.classList.remove('not-collection-open'); notCollectionLastFocus?.focus?.(); }

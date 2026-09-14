@@ -166,6 +166,7 @@ async function gravarPercurso(pedido, env) {
   const nomes = Object.keys(chaves).filter(function (c) {
     return c.indexOf('sofia-') === 0 && c.length <= 120 && String(chaves[c]).length <= 2000;
   });
+  if (Object.keys(chaves).some(c => String(chaves[c]).length > 2000)) return responder({ erro: 'registro grande demais' }, 413);
   if (!nomes.length) return responder({ gravadas: 0 });
   if (nomes.length > MAXIMO_DE_CHAVES) return responder({ erro: 'pacote grande demais' }, 413);
 
@@ -181,6 +182,41 @@ async function gravarPercurso(pedido, env) {
   return responder({ gravadas: nomes.length });
 }
 
+async function sala(pedido, env) {
+  const dono = await quemEsta(pedido, env);
+  if (!dono) return responder({ erro: 'passaporte fechado' }, 401);
+  if (pedido.method === 'GET') {
+    const row = await env.DB.prepare('SELECT estado, revisao FROM salas WHERE codigo = ?').bind(dono.codigo).first();
+    return responder(row ? { estado: JSON.parse(row.estado), revisao: row.revisao } : { estado: null, revisao: 0 });
+  }
+  const body = await corpoJson(pedido);
+  const state = body && body.estado;
+  const validPanels = ['heliopolis', 'tales', 'universo'];
+  if (!body || !Number.isInteger(body.revisao) || body.revisao < 0 || !state ||
+      !state.paineis || typeof state.paineis !== 'object' || Array.isArray(state.paineis) ||
+      !['lilas','areia','verde'].includes(state.parede) || !['clara','escura'].includes(state.mesa) ||
+      !['cortica','tecido'].includes(state.mural) || !['planta','livros','nenhum'].includes(state.decoracao) ||
+      JSON.stringify(state).length > 64000) return responder({ erro: 'Sala inválida ou grande demais.' }, 400);
+  for (const [key,panel] of Object.entries(state.paineis)) {
+    if (!validPanels.includes(key) || !panel || !Array.isArray(panel.itens) || panel.itens.length > 30 ||
+        !Array.isArray(panel.ligacoes) || panel.ligacoes.length > 60 ||
+        typeof panel.conclusao !== 'string' || panel.conclusao.length > 500 ||
+        typeof panel.nota !== 'string' || panel.nota.length > 280 ||
+        !panel.itens.every(i => i && typeof i.id === 'string' && /^[a-z0-9-]{1,80}$/.test(i.id) &&
+          Number.isFinite(i.x) && i.x>=0 && i.x<=100 && Number.isFinite(i.y) && i.y>=0 && i.y<=100) ||
+        new Set(panel.itens.map(i=>i.id)).size !== panel.itens.length ||
+        !panel.ligacoes.every(l => Array.isArray(l) && l.length===2 && l[0]!==l[1] && l.every(id=>panel.itens.some(i=>i.id===id))))
+      return responder({ erro: 'Confira os itens e as notas do painel.' }, 400);
+  }
+  const encoded=JSON.stringify(state);
+  const now=new Date().toISOString();
+  let result;
+  if(body.revisao===0) result=await env.DB.prepare('INSERT OR IGNORE INTO salas (codigo, estado, revisao, atualizado_em) VALUES (?, ?, 1, ?)').bind(dono.codigo,encoded,now).run();
+  else result=await env.DB.prepare('UPDATE salas SET estado = ?, revisao = revisao + 1, atualizado_em = ? WHERE codigo = ? AND revisao = ?').bind(encoded,now,dono.codigo,body.revisao).run();
+  if(!result.meta?.changes) return responder({ erro: 'A Sala mudou em outro aparelho. Reabra a Sala para carregar a versão salva.' },409);
+  return responder({ revisao: body.revisao+1 });
+}
+
 async function atenderApi(pedido, env) {
   if (!env.DB || !env.SEGREDO_SESSAO) {
     return responder({ erro: 'Sistema do Destino ainda não configurado' }, 503);
@@ -188,6 +224,8 @@ async function atenderApi(pedido, env) {
 
   const rota = new URL(pedido.url).pathname.replace(/\/+$/, '');
   const metodo = pedido.method.toUpperCase();
+
+  if (rota === '/api/sala' && (metodo === 'GET' || metodo === 'POST')) return sala(pedido, env);
 
   if (rota === '/api/entrar' && metodo === 'POST') return entrar(pedido, env);
   if (rota === '/api/percurso' && metodo === 'GET') return lerPercurso(pedido, env);
