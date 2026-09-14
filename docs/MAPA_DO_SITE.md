@@ -93,11 +93,15 @@ Modais/painéis: Caderno de Pistas, Inventário da Missão, Coleção de Emblema
 
 ### Área do Professor
 
-- Finalidade: permitir que a professora veja a Sala de Investigação de cada aluno e a sala-base, sem poder alterá-las.
+- Finalidade: permitir que a professora veja a Sala de Investigação de cada aluno, sem poder alterá-la, e experimente a sala-base à vontade.
 - Arquivos/componentes: `blog-sofia/professor.html`, `blog-sofia/professor.js`, `blog-sofia/professor.css`, `blog-sofia/sala-professor.js`; endpoints `/api/professor/eu`, `/api/professor/salas` e `/api/professor/sala` em `worker.js`; `sistema-passaporte/migracao-professor.sql`.
 - Endereços: `professor.html` (a lista), `sala-investigacao.html?aluno=<codigo>` (a Sala de um aluno) e `sala-investigacao.html?geral=1` (a Sala Geral). O Worker serve os assets sem extensão, então `/professor` e `/sala-investigacao?aluno=…` também respondem.
-- Reúso: **não existe segunda Sala.** `sala-professor.js` monta `window.SalaContexto` e o próprio `sala.js` desenha em modo leitura, com a mesma marcação e o mesmo CSS do aluno. Quem mexer na Sala mexe nas duas ao mesmo tempo.
-- Modo leitura: `sala.js` desliga `cache()`, `change()` e `save()`, não liga os gestos de arrastar, esconde personalização/seleção/conclusão e deixa nota e conclusão como texto somente leitura. Não há rota de escrita para o professor no Worker.
+- Reúso: **não existe segunda Sala.** `sala-professor.js` monta `window.SalaContexto` e o próprio `sala.js` desenha, com a mesma marcação e o mesmo CSS do aluno. Quem mexer na Sala mexe nas duas ao mesmo tempo.
+- Três estados em `sala.js`, e a diferença entre os dois primeiros é o que se pode tocar:
+  - `leitura` — a Sala de um aluno. Não liga os gestos de arrastar, esconde personalização/seleção/conclusão, deixa nota e conclusão como texto somente leitura e acrescenta a classe `sala-leitura`, que põe `pointer-events:none` nos objetos.
+  - `bancada` — a Sala Geral. A personalização fica inteira: arrastar, acender, regar, guardar pela bandeja. Esconde só "Guardar minha conclusão", que prometeria guardar sem guardar.
+  - `visita` — os dois. É o que fecha as três portas da persistência: `cache()`, `change()` e `save()` saem na primeira linha. Visitar nunca escreve, nem no servidor nem no rascunho local, e a bancada volta ao padrão ao recarregar.
+- Por que a Sala Geral não é somente leitura: ela não é de ninguém — é a sala-base, não guardada em lugar nenhum — então travá-la não protegia aluno nenhum, e é a tela onde a professora precisa acender a luminária e regar a planta para saber o que os objetos fazem. Não há rota de escrita para o professor no Worker; a garantia não depende da interface.
 - Dados do aluno: `/api/professor/sala` devolve o estado **e** o percurso daquele passaporte. Sem o percurso, a Sala apareceria filtrada pelos desbloqueios de quem está olhando — a planta, o notebook e as pistas do mural sumiriam.
 - Desempenho: a lista traz só um resumo por aluno (turma, contagem de itens, datas). O estado completo vai por aluno, uma Sala por vez, quando a professora escolhe.
 - Nomes dos alunos: ficam **apenas no navegador da professora**, em `localStorage['professor-nomes']`, importados de `sistema-passaporte/saida/nomes.json`. Nunca são enviados ao servidor. O banco guarda código e turma, nunca nome.
@@ -161,6 +165,7 @@ O Worker aceita no máximo 300 chaves, exige prefixo `sofia-`, limita nome a 120
 - Animações são CSS e JS local: glitches, revelações, emblemas, espelho, uniforme, gotas e transições. Não há biblioteca externa de animação.
 - Assets da Sala no arquivo usam `loading="lazy"`; imagens narrativas continuam sendo assets estáticos. Não há pipeline de build/otimização automática.
 - A Sala tem CSS responsivo sobreposto; em telas estreitas o mural e os cartões são reduzidos. Testar alterações nesse componente tanto por toque quanto por teclado.
+- O `aspect-ratio` do palco da Sala é o da arte de cada perspectiva (`1672/941` na visão geral, na mesa e no mural; `1295/1214` na estante), e não um número escolhido a gosto. Os objetos são posicionados em porcentagem do palco, mas o aluno mira na mobília desenhada: se a moldura tiver outra proporção, o `object-fit:cover` corta a arte e as duas grades descolam. A moldura da estante é limitada a `78vh` e se centraliza, porque respeitar a proporção quase quadrada dela numa tela larga daria um palco mais alto que a janela.
 
 ## 10. Estado atual do projeto
 
@@ -171,7 +176,7 @@ O Worker aceita no máximo 300 chaves, exige prefixo `sofia-`, limita nome a 120
 - Persistência por passaporte e fila offline para chaves `sofia-*`.
 - Inventário da Missão, Caderno de Pistas, Coleção de Emblemas e teste dos Caminhos.
 - Sala de Investigação com mural, casos, ligações, notas, conclusões, personalização e salvamento remoto.
-- Área do Professor, primeira versão: rota protegida, Sala Geral, Salas dos alunos por turma, busca, cartões com contagem e data, e visualização somente leitura reaproveitando a Sala do aluno.
+- Área do Professor, primeira versão: rota protegida, Salas dos alunos por turma em modo somente leitura, busca, cartões com contagem e data, e Sala Geral como bancada de testes — tudo reaproveitando a Sala do aluno, sem segunda implementação.
 
 ### Parcialmente implementado
 
@@ -196,5 +201,8 @@ O Worker aceita no máximo 300 chaves, exige prefixo `sofia-`, limita nome a 120
 - O schema da Sala está duplicado de modo idempotente no schema geral e na migração avulsa; escolher o procedimento adequado ao banco de destino sem executar ambos desnecessariamente.
 - O estado da Sala existe em **dois formatos**. O antigo, anterior à reforma das perspectivas, guarda `parede`, `mesa`, `mural` e `decoracao` no topo; o atual guarda `appearance` e `roomItems`. `normalize()` preserva as chaves antigas quando encontra, então uma Sala antiga carrega os dois. A validação do Worker aceita ambos e não exige nenhum dos quatro campos antigos — exigi-los recusava toda Sala criada do zero (corrigido em 14/09/2026). Ao mexer nessa validação, não voltar a enumerar valores que `sala.js` decide, como os pacotes de decoração: é o que quebra de novo no próximo pacote.
 - A Área do Professor não pode ganhar rota de escrita sem decisão explícita: hoje a garantia de que a professora não altera o trabalho do aluno é o Worker não ter por onde.
+- Ao mexer nos modos de `sala.js`, separar as duas perguntas: `leitura` decide o que se pode **tocar**, `visita` decide o que se pode **gravar**. Confundir as duas foi o que deixou a Sala Geral travada sem proteger ninguém.
+- Trocar uma arte de perspectiva por outra de proporção diferente exige acertar o `aspect-ratio` correspondente em `sala.css`, senão a Sala inteira sai do lugar. O comentário no topo daquele arquivo lista as dimensões.
+- O alternar de objeto da Sala não funciona com evento de ponteiro sintético: `setPointerCapture` rejeita um `pointerId` inventado e o `releasePointerCapture` do `pointerup` estoura antes de chegar ao `toggleState`. Com dedo ou mouse funciona; teste automatizado por esse caminho dá falso negativo.
 - Rodar `node sistema-passaporte/testar_worker.mjs` depois de mexer no Worker; o banco falso de lá precisa conhecer cada consulta nova.
 - O repositório estava com alterações locais funcionais não commitadas durante esta auditoria; preservá-las e revisar o diff antes de qualquer operação destrutiva.
