@@ -2,16 +2,25 @@
 (async function(){
 'use strict';
 const $=id=>document.getElementById(id), D=window.Investigacao;
-/* Modo leitura: a Área do Professor injeta window.SalaContexto antes deste
-   arquivo e a Sala passa a desenhar o estado de outro passaporte, sem gravar
-   nada. É a mesma Sala do aluno — mesma marcação, mesmo CSS, mesma lógica —
-   só que sem as mãos. O contexto pode ser uma promessa: quem o monta precisa
-   buscar a Sala no servidor antes de responder. */
-const ctx=await (window.SalaContexto||null), leitura=!!ctx&&ctx.modo==='leitura';
-/* De onde vêm os desbloqueios. Em leitura, do percurso do aluno visitado;
-   no uso normal, do localStorage de quem está com o passaporte aberto. */
-const progresso=chave=>leitura?(ctx.chaves&&ctx.chaves[chave])||null:localStorage.getItem(chave);
-if(leitura){D.ler=progresso;document.body.classList.add('sala-leitura');}
+/* A Área do Professor injeta window.SalaContexto antes deste arquivo e a Sala
+   passa a desenhar outro estado que não o de quem está com o passaporte. É a
+   mesma Sala do aluno — mesma marcação, mesmo CSS, mesma lógica. O contexto
+   pode ser uma promessa: quem o monta precisa buscar a Sala antes de responder.
+
+   São dois modos, e a diferença entre eles é o que se pode tocar:
+
+     leitura  a Sala de um aluno. Não se mexe em nada: é o trabalho dele.
+     bancada  a Sala Geral. Mexe-se à vontade, porque não é de ninguém.
+
+   O que os dois têm em comum é não gravar. Visitar nunca escreve — nem no
+   servidor, nem no rascunho local. A bancada volta ao padrão ao recarregar. */
+const ctx=await (window.SalaContexto||null);
+const visita=!!ctx, leitura=visita&&ctx.modo==='leitura', bancada=visita&&ctx.modo==='bancada';
+/* De onde vêm os desbloqueios. Visitando, do contexto injetado; no uso normal,
+   do localStorage de quem está com o passaporte aberto. */
+const progresso=chave=>visita?(ctx.chaves&&ctx.chaves[chave])||null:localStorage.getItem(chave);
+if(visita)D.ler=progresso;
+if(leitura)document.body.classList.add('sala-leitura');
 const el=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;};
 const status=message=>{$('save-status').textContent=message;};
 const views=['overview','shelf','desk','board'];
@@ -42,15 +51,15 @@ const normalize=s=>{
  for(const d of roomItems)if(!s.roomItems[d.id])s.roomItems[d.id]={x:d.x,y:d.y,state:d.states?.[0]||'default',placed:true};
  return s;
 };
-if(!leitura){
+if(!visita){
  await Percurso.pronto;
  if(!Percurso.aberto()){
   $('room-gate').replaceChildren(el('p','Abra seu passaporte para entrar na sua Sala.'));const a=el('a','Abrir passaporte →');a.href='entrar.html';$('room-gate').append(a);status('Passaporte fechado.');return;
  }
 }
-const owner=leitura?ctx.codigo:Percurso.codigo(),draftKey='sala-rascunho:'+owner;
+const owner=visita?ctx.codigo:Percurso.codigo(),draftKey='sala-rascunho:'+owner;
 /* Quem visita não precisa ter desbloqueado a própria Sala para ver a de outro. */
-if(!leitura&&!progresso('sofia-room-unlocked')){
+if(!visita&&!progresso('sofia-room-unlocked')){
  $('room-gate').replaceChildren(el('p','Sua Sala aparece quando você encontra as primeiras pistas de Heliópolis.'));const a=el('a','Ir para Heliópolis →');a.href=D.casos.heliopolis.post;$('room-gate').append(a);status('Uma descoberta está esperando.');return;
 }
 let state,revision=0,dirty=false,saving=false,conflict=false,timer,view='overview',selectedRoom=null,selected=null,examined=null;
@@ -58,13 +67,13 @@ let current=new URLSearchParams(location.search).get('caso');
 const emptyPanel=()=>({itens:[],ligacoes:[],nota:'',conclusao:''});
 const panel=()=>state.paineis[current]||(state.paineis[current]=emptyPanel());
 let remote;
-if(leitura)remote={estado:ctx.estado,revisao:ctx.revisao||0};
+if(visita)remote={estado:ctx.estado,revisao:ctx.revisao||0};
 else try{remote=await Percurso.requisitar('sala');}catch(e){$('room-gate').textContent='Não foi possível abrir sua Sala. '+e.message;const b=el('button','Tentar novamente');b.onclick=()=>location.reload();$('room-gate').append(b);status('A Sala ainda não foi carregada.');return;}
 state=normalize(remote.estado||defaults());revision=remote.revisao;
-if(!leitura)try{const draft=JSON.parse(localStorage.getItem(draftKey));if(draft){state=normalize(draft.estado);dirty=true;if(draft.revisao!==revision){conflict=true;status('Há um rascunho neste aparelho e outra versão salva. Seu rascunho foi preservado.');$('reload-room').hidden=false;}else status('Rascunho recuperado. Tentando salvar…');}}catch{}
+if(!visita)try{const draft=JSON.parse(localStorage.getItem(draftKey));if(draft){state=normalize(draft.estado);dirty=true;if(draft.revisao!==revision){conflict=true;status('Há um rascunho neste aparelho e outra versão salva. Seu rascunho foi preservado.');$('reload-room').hidden=false;}else status('Rascunho recuperado. Tentando salvar…');}}catch{}
 /* Em leitura, um painel já preenchido também conta: se o aluno organizou um
    caso, a professora precisa vê-lo mesmo que o desbloqueio tenha mudado. */
-const cases=Object.entries(D.casos).filter(([k,c])=>progresso(c.chave)||(leitura&&state.paineis[k]));
+const cases=Object.entries(D.casos).filter(([k,c])=>progresso(c.chave)||(visita&&state.paineis[k]));
 if(!cases.some(([k])=>k===current))current=progresso(D.casos.tales.chave)?'tales':'heliopolis';
 for(const [k,c] of cases){const o=el('option',c.nome);o.value=k;$('case-select').append(o);}
 $('room-gate').hidden=true;$('room-content').hidden=false;
@@ -73,12 +82,15 @@ if(leitura){
     só mostra; e as duas escritas ficam legíveis, porque são o que ela veio ler. */
  for(const id of ['customization','selection','retry-save','reload-room','place-item','conclude'])$(id).hidden=true;
  $('note').readOnly=true;$('conclusion').readOnly=true;
- status(ctx.rotulo||'Somente leitura.');
 }
+/* Na bancada a personalização fica inteira. Some só o que promete guardar:
+   ninguém deve apertar "Guardar minha conclusão" e achar que guardou. */
+if(bancada)for(const id of ['retry-save','reload-room','conclude'])$(id).hidden=true;
+if(visita)status(ctx.rotulo||'Somente leitura.');
 else if(!remote.estado&&!dirty)status('Sua Sala está pronta para ser personalizada.');else if(!dirty)status('Tudo salvo no seu passaporte.');
-function cache(){if(leitura)return;try{localStorage.setItem(draftKey,JSON.stringify({estado:state,revisao:revision}));}catch{status('Não foi possível guardar o rascunho neste aparelho.');}}
-function change(){if(leitura)return;dirty=true;cache();if(!conflict)status('Guardando suas mudanças…');clearTimeout(timer);timer=setTimeout(save,800);}
-async function save(){if(leitura||!dirty||saving||conflict)return;if(Percurso.codigo()!==owner){status('O passaporte mudou. Reabra a Sala.');return;}saving=true;const snapshot=JSON.stringify(state);try{const r=await Percurso.requisitar('sala',{method:'POST',body:JSON.stringify({estado:JSON.parse(snapshot),revisao:revision})});revision=r.revisao;dirty=JSON.stringify(state)!==snapshot;if(dirty)cache();else localStorage.removeItem(draftKey);status(dirty?'Guardando a próxima mudança…':'Tudo salvo no seu passaporte.');$('retry-save').hidden=true;}catch(e){status(e.message);$('retry-save').hidden=e.status===409;conflict=e.status===409;if(conflict)$('reload-room').hidden=false;cache();}finally{saving=false;}if(dirty&&!conflict&&$('retry-save').hidden)timer=setTimeout(save,800);}
+function cache(){if(visita)return;try{localStorage.setItem(draftKey,JSON.stringify({estado:state,revisao:revision}));}catch{status('Não foi possível guardar o rascunho neste aparelho.');}}
+function change(){if(visita)return;dirty=true;cache();if(!conflict)status('Guardando suas mudanças…');clearTimeout(timer);timer=setTimeout(save,800);}
+async function save(){if(visita||!dirty||saving||conflict)return;if(Percurso.codigo()!==owner){status('O passaporte mudou. Reabra a Sala.');return;}saving=true;const snapshot=JSON.stringify(state);try{const r=await Percurso.requisitar('sala',{method:'POST',body:JSON.stringify({estado:JSON.parse(snapshot),revisao:revision})});revision=r.revisao;dirty=JSON.stringify(state)!==snapshot;if(dirty)cache();else localStorage.removeItem(draftKey);status(dirty?'Guardando a próxima mudança…':'Tudo salvo no seu passaporte.');$('retry-save').hidden=true;}catch(e){status(e.message);$('retry-save').hidden=e.status===409;conflict=e.status===409;if(conflict)$('reload-room').hidden=false;cache();}finally{saving=false;}if(dirty&&!conflict&&$('retry-save').hidden)timer=setTimeout(save,800);}
 $('retry-save').onclick=save;$('reload-room').onclick=()=>{localStorage.setItem('sala-copia:'+owner+':'+Date.now(),JSON.stringify(state));localStorage.removeItem(draftKey);dirty=false;location.reload();};
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});window.addEventListener('online',save);
 
@@ -103,7 +115,7 @@ function moveClue(i,x,y){i.x=Math.max(0,Math.min(100,x));i.y=Math.max(0,Math.min
 function chooseClue(id){if(leitura)return;selected=id;document.querySelectorAll('.board-card').forEach(n=>n.setAttribute('aria-pressed',String(n.dataset.clue===id)));$('selection').hidden=!id||view!=='board';if(!id)return;const i=panel().itens.find(i=>i.id===id);$('selected-title').textContent=clue(id).titulo;$('move-x').value=i.x;$('move-y').value=i.y;$('connect-target').replaceChildren();for(const other of panel().itens.filter(i=>i.id!==id&&clue(i.id))){const o=el('option',clue(other.id).titulo);o.value=other.id;$('connect-target').append(o);}$('connect').disabled=!$('connect-target').options.length;$('connections').replaceChildren();panel().ligacoes.filter(l=>l.includes(id)).forEach(l=>{const b=el('button','Desfazer ligação com '+clue(l.find(k=>k!==id))?.titulo);b.onclick=()=>{panel().ligacoes=panel().ligacoes.filter(x=>x!==l);drawLines();chooseClue(id);change();};$('connections').append(b);});}
 function drawBoard(){$('board-items').replaceChildren();const list=panel().itens.filter(i=>clue(i.id)&&D.disponivel(clue(i.id)));$('board-empty').hidden=!!list.length;for(const i of list){const d=clue(i.id),n=el('button');n.type='button';n.className='board-card';n.dataset.clue=i.id;n.setAttribute('aria-pressed',String(i.id===selected));n.setAttribute('aria-label',d.titulo+'. Selecionar para examinar, mover ou conectar.');n.append(el('small',d.tipo));if(d.imagem){const im=el('img');im.src=d.imagem;im.alt='';im.draggable=false;n.append(im);}n.append(el('strong',d.titulo));$('board-items').append(n);cluePosition(n,i);n.onclick=()=>leitura?examine(i.id):chooseClue(i.id);if(leitura)continue;let drag=null;n.onpointerdown=e=>{if(e.button!==0)return;chooseClue(i.id);drag={x:e.clientX,y:e.clientY,px:i.x,py:i.y};n.setPointerCapture(e.pointerId);};n.onpointermove=e=>{if(!drag)return;moveClue(i,drag.px+(e.clientX-drag.x)/Math.max(1,$('board').clientWidth-n.offsetWidth)*100,drag.py+(e.clientY-drag.y)/Math.max(1,$('board').clientHeight-n.offsetHeight)*100);};n.onpointerup=n.onpointercancel=()=>{if(drag){const changed=i.x!==drag.px||i.y!==drag.py;drag=null;if(changed)change();}};n.onkeydown=e=>{const steps={ArrowLeft:[-3,0],ArrowRight:[3,0],ArrowUp:[0,-3],ArrowDown:[0,3]};if(steps[e.key]){e.preventDefault();chooseClue(i.id);moveClue(i,i.x+steps[e.key][0],i.y+steps[e.key][1]);change();}};}drawLines();chooseClue(selected&&list.some(i=>i.id===selected)?selected:null);}
 function renderCase(){const c=D.casos[current];$('case-select').value=current;$('case-question').textContent=c.pergunta;$('case-label').textContent=current==='universo'?'Uma pergunta para levar com você':'Caso · '+c.nome;$('case-post').hidden=!c.post;if(c.post)$('case-post').href=c.post;$('note').value=panel().nota;$('conclusion').value=panel().conclusao;selected=null;drawBoard();renderArchive();}
-$('case-select').onchange=()=>{current=$('case-select').value;if(!leitura)history.replaceState(null,'','?caso='+current);renderCase();};
+$('case-select').onchange=()=>{current=$('case-select').value;if(!visita)history.replaceState(null,'','?caso='+current);renderCase();};
 function examine(id){examined=id;const d=clue(id);$('examiner-title').textContent=d.titulo;$('examiner-origin').textContent=D.origem(d);$('examiner-text').textContent=d.texto;$('examiner-source').textContent=d.fonte||'';$('examiner-image').hidden=!d.imagem;if(d.imagem){$('examiner-image').src=d.imagem;$('examiner-image').alt=d.titulo;}$('place-item').disabled=panel().itens.some(i=>i.id===id);$('placed-status').textContent=$('place-item').disabled?'Esta pista já está no painel.':'';$('examiner').showModal();}
 function renderArchive(){if(!state)return;const filter=$('filter').value,list=available().filter(i=>filter==='todos'||filter==='caso'&&(current==='universo'||i.caso===current)||i.tipo===filter);$('archive-items').replaceChildren();if(!list.length)$('archive-items').append(el('p','Nenhum item aqui ainda. Você pode ver todas as descobertas ou voltar à história.'));list.forEach(d=>{const b=el('button');b.className='archive-item';if(d.imagem){const im=el('img');im.src=d.imagem;im.alt='';im.loading='lazy';b.append(im);}b.append(el('small',D.origem(d)),el('strong',d.titulo),el('span','Examinar →'));b.onclick=()=>examine(d.id);$('archive-items').append(b);});}
 $('filter').onchange=renderArchive;$('open-archive').onclick=()=>{$('archive').hidden=false;$('filter').focus();};$('close-archive').onclick=()=>{$('archive').hidden=true;$('open-archive').focus();};
@@ -113,6 +125,6 @@ for(const axis of ['x','y'])$('move-'+axis).oninput=()=>{const i=panel().itens.f
 $('connect').onclick=()=>{const other=$('connect-target').value;if(other&&panel().ligacoes.length<60&&!panel().ligacoes.some(l=>l.includes(selected)&&l.includes(other))){panel().ligacoes.push([selected,other]);drawLines();chooseClue(selected);change();}};
 $('note').oninput=()=>{panel().nota=$('note').value;change();};$('conclusion').oninput=()=>{panel().conclusao=$('conclusion').value;change();};$('conclude').onclick=()=>{if(!$('conclusion').value.trim()){status('Escreva uma frase antes de guardar sua conclusão.');$('conclusion').focus();return;}change();save();};
 new ResizeObserver(()=>{if(view==='board'){panel().itens.forEach(i=>{const n=document.querySelector('[data-clue="'+i.id+'"]');if(n)cluePosition(n,i);});drawLines();}}).observe($('room-stage'));
-window.addEventListener('percurso-atualizado',()=>{if(leitura)return;if(Percurso.codigo()!==owner){$('room-content').hidden=true;$('room-gate').hidden=false;$('room-gate').textContent='O passaporte mudou. Reabra esta página para continuar.';status('Sala fechada.');}else renderArchive();});
+window.addEventListener('percurso-atualizado',()=>{if(visita)return;if(Percurso.codigo()!==owner){$('room-content').hidden=true;$('room-gate').hidden=false;$('room-gate').textContent='O passaporte mudou. Reabra esta página para continuar.';status('Sala fechada.');}else renderArchive();});
 setView('overview');if(dirty&&!conflict)save();
 })();

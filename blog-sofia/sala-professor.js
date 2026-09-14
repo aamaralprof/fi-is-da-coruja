@@ -7,8 +7,8 @@
  *
  * Entra em ação por dois endereços, e fica calado em qualquer outro:
  *
- *   sala-investigacao.html?aluno=CORUJA-7K4M   a Sala daquele aluno
- *   sala-investigacao.html?geral=1             a sala-base, com tudo à mostra
+ *   sala-investigacao.html?aluno=CORUJA-7K4M   a Sala daquele aluno, intocável
+ *   sala-investigacao.html?geral=1             a sala-base, para experimentar
  */
 (function () {
   'use strict';
@@ -41,7 +41,7 @@
       const n = document.querySelector(seletor);
       if (n) n.textContent = texto;
     };
-    trocar('.room-header span', 'VISTA DA PROFESSORA · SOMENTE LEITURA');
+    trocar('.room-header span', geral ? 'SALA GERAL · BANCADA DE TESTES' : 'VISTA DA PROFESSORA · SOMENTE LEITURA');
     trocar('.room-heading h1', titulo);
     trocar('.room-heading > div > p:last-of-type', subtitulo);
     trocar('.room-writing details summary', 'A nota que o aluno deixou');
@@ -87,8 +87,14 @@
   }
 
   /* A Sala Geral é a sala-base do projeto, não um desenho novo: estado nulo,
-     que sala.js completa com os padrões dela. A diferença é que aqui tudo
-     aparece desbloqueado, para a professora conferir os recursos existentes. */
+     que sala.js completa com os padrões dela. Aqui tudo aparece desbloqueado,
+     para a professora conferir os recursos existentes.
+
+     E aqui se pode mexer. Travar esta tela não protegia ninguém — não há aluno
+     do outro lado — e era justamente onde ela precisaria acender a luminária e
+     regar a planta para saber o que os objetos fazem antes de mandar a turma
+     usar. Nada é gravado: sala.js não escreve quando há contexto injetado, e
+     recarregar devolve tudo ao padrão. */
   async function contextoGeral() {
     if (!window.Percurso || !Percurso.aberto()) {
       return parar('Abra seu passaporte de professora para ver a Sala Geral.',
@@ -105,7 +111,7 @@
     }
 
     falarComAProfessora('Sala Geral',
-      'A sala-base do projeto, com tudo à mostra. É a referência do que existe para os alunos encontrarem.');
+      'A sala-base, com tudo à mostra. Mexa à vontade: nada aqui é salvo, e recarregar devolve ao padrão.');
     /* Aqui não mora ninguém: não há nota nem conclusão para ler. */
     const escritos = document.querySelector('.room-writing');
     if (escritos) escritos.hidden = true;
@@ -119,12 +125,12 @@
     Object.values(D.casos).forEach(function (c) { chaves[c.chave] = 'unlocked'; });
     D.itens.forEach(function (i) { chaves[i.chave] = i.tipo === 'emblema' ? 'collected' : 'found'; });
     return {
-      modo: 'leitura',
+      modo: 'bancada',
       codigo: 'sala-geral',
       estado: null,
       revisao: 0,
       chaves: chaves,
-      rotulo: 'Sala Geral · a sala-base, com todos os recursos à mostra.'
+      rotulo: 'Sala Geral · bancada de testes. Nada aqui é salvo.'
     };
   }
 
