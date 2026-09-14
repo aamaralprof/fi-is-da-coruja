@@ -31,7 +31,20 @@
     catch (e) { return {}; }
   }
 
-  function quando(iso) {
+  /* Na lista, "há 3 dias" diz mais do que "11/09/2026, 16:42", e cabe na
+     mesma linha da contagem. A data exata fica no title do cartão. */
+  function haQuanto(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d)) return '';
+    const dias = Math.floor((Date.now() - d) / 86400000);
+    if (dias <= 0) return 'hoje';
+    if (dias === 1) return 'ontem';
+    if (dias < 30) return 'há ' + dias + ' dias';
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  }
+
+  function dataExata(iso) {
     if (!iso) return '';
     const d = new Date(iso);
     return isNaN(d) ? '' : d.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
@@ -73,13 +86,12 @@
     $('esquecer').hidden = !quantos;
     if (!quantos) {
       $('nomes-estado').textContent =
-        'Sem os nomes importados, os alunos aparecem pelo código do passaporte. Importe o arquivo nomes.json que o gerador de passaportes deixou em sistema-passaporte/saida/. Os nomes ficam só neste navegador: o banco continua guardando apenas o código e a turma.';
+        'Sem os nomes importados, os alunos aparecem pelo código. Importe o nomes.json do gerador de passaportes: ele fica só neste navegador.';
       return;
     }
     const reconhecidos = alunos.filter(a => nomeDe(a.codigo)).length;
     $('nomes-estado').textContent =
-      quantos + (quantos === 1 ? ' nome guardado neste navegador' : ' nomes guardados neste navegador') +
-      ', ' + reconhecidos + ' de ' + alunos.length + ' com passaporte no banco. Nada disso foi enviado ao servidor.';
+      reconhecidos + ' de ' + alunos.length + ' passaportes com nome neste navegador. Nada disso foi enviado ao servidor.';
   }
 
   function cartao(a) {
@@ -88,18 +100,28 @@
     link.className = 'prof-card';
     link.href = 'sala-investigacao.html?aluno=' + encodeURIComponent(a.codigo);
     link.dataset.vazia = a.itens ? '0' : '1';
+
     link.append(el('strong', nome || a.codigo));
-    if (nome) link.append(el('span', a.codigo));
-    const itens = el('span', a.itens
-      ? a.itens + (a.itens === 1 ? ' item na Sala' : ' itens na Sala')
-      : (a.tem_sala ? 'Sala vazia' : 'ainda não abriu a Sala'));
-    itens.className = 'prof-itens';
-    link.append(itens);
-    link.append(el('span', a.atualizado_em
-      ? 'alterada em ' + quando(a.atualizado_em)
-      : (a.ultimo_acesso ? 'último acesso em ' + quando(a.ultimo_acesso) : 'sem acesso registrado')));
+    const codigo = el('span', nome ? a.codigo : ' ');
+    codigo.className = 'prof-codigo';
+    link.append(codigo);
+
+    /* Contagem e recência na mesma linha: são a mesma pergunta — esta Sala
+       tem alguma coisa dentro, e de quando? */
+    let resumo;
+    if (!a.tem_sala) resumo = 'Sala não aberta';
+    else if (!a.itens) resumo = 'Sala vazia · ' + haQuanto(a.atualizado_em);
+    else resumo = a.itens + (a.itens === 1 ? ' item · ' : ' itens · ') + haQuanto(a.atualizado_em);
+    const estado = el('span', resumo);
+    estado.className = 'prof-estado';
+    link.append(estado);
+
+    const exata = dataExata(a.atualizado_em) || dataExata(a.ultimo_acesso);
+    link.title = (nome ? nome + ' · ' : '') + a.codigo +
+      (exata ? ' · ' + (a.tem_sala ? 'Sala alterada em ' : 'último acesso em ') + exata : '');
     link.setAttribute('aria-label',
-      'Abrir a Sala de ' + (nome || a.codigo) + (turmaDe(a) ? ', turma ' + turmaDe(a) : '') + ', somente leitura');
+      'Abrir a Sala de ' + (nome || a.codigo) + (turmaDe(a) ? ', turma ' + turmaDe(a) : '') +
+      '. ' + resumo + '. Somente leitura.');
     return link;
   }
 
