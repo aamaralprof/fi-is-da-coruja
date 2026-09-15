@@ -63,11 +63,23 @@ SQLite não aceita `ADD COLUMN IF NOT EXISTS`. Se um deles responder
 **"duplicate column name"**, é só sinal de que já tinha passado: siga para o
 próximo.
 
-Para conferir que deu certo:
+A Sala de Investigação precisa da tabela dela, que vem de
+`migracao-sala.sql` e é um comando só:
 
 ```sql
+CREATE TABLE IF NOT EXISTS salas (codigo TEXT PRIMARY KEY REFERENCES passaportes(codigo) ON DELETE CASCADE, estado TEXT NOT NULL, revisao INTEGER NOT NULL DEFAULT 1, atualizado_em TEXT NOT NULL);
+```
+
+Para conferir que tudo chegou:
+
+```sql
+SELECT name FROM sqlite_master WHERE type='table';
 SELECT name FROM pragma_table_info('passaportes');
 ```
+
+A primeira deve listar `passaportes`, `percurso` e `salas`. A segunda, nove
+colunas, terminando em `papel` e `turma`. Sem a tabela `salas`, tanto a Sala
+do aluno quanto o Observatório respondem erro.
 
 Devem aparecer nove colunas, terminando em `papel` e `turma`. Enquanto elas não
 estiverem lá, qualquer coisa que mencione `papel` responde

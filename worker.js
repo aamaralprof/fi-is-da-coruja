@@ -405,6 +405,23 @@ async function atenderApi(pedido, env) {
   const rota = new URL(pedido.url).pathname.replace(/\/+$/, '');
   const metodo = pedido.method.toUpperCase();
 
+  /* Qualquer erro daqui para baixo vira JSON.
+   *
+   * Sem isto, uma consulta que o banco recusa sobe sem tratamento e a
+   * Cloudflare responde a pagina de erro dela, em HTML. O navegador entao
+   * tenta ler aquilo como JSON e o aluno ve "Unexpected token '<'", que nao
+   * diz nada a ninguem — enquanto a causa de verdade, "no such table: salas",
+   * se perde no caminho. Aconteceu em 15/09/2026 e custou meia hora. */
+  try {
+    return await rotear(rota, metodo, pedido, env);
+  } catch (e) {
+    console.error('api', rota, e && e.stack || e);
+    return responder({ erro: 'O servidor tropecou: ' + ((e && e.message) || 'erro desconhecido') }, 500);
+  }
+}
+
+async function rotear(rota, metodo, pedido, env) {
+
   if (rota === '/api/sala' && (metodo === 'GET' || metodo === 'POST')) return sala(pedido, env);
 
   if (rota === '/api/professor/eu' && metodo === 'GET') return souProfessor(pedido, env);
