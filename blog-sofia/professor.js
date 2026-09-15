@@ -177,16 +177,16 @@
 
   if (!Percurso.aberto()) {
     status('Passaporte fechado.');
-    return portaria('Abra seu passaporte de professora para ver as Salas da turma.', 'Abrir passaporte →', 'entrar.html');
+    return portaria('O Observatório da Coruja pede um passaporte aberto.', 'Abrir passaporte →', 'entrar.html');
   }
 
   let dados;
   try {
     dados = await Percurso.requisitar('professor/salas');
   } catch (e) {
-    status('Área não carregada.');
+    status('O Observatório não abriu.');
     if (e.status === 403) {
-      return portaria('Esta área é só para professores. Seu passaporte não tem essa permissão.', 'Voltar ao blog →', 'index.html');
+      return portaria('O Observatório da Coruja não se abre para este passaporte.', 'Voltar ao blog →', 'index.html');
     }
     if (e.status === 401) {
       return portaria('Seu passaporte expirou. Entre de novo para continuar.', 'Abrir passaporte →', 'entrar.html');

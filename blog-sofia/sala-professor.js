@@ -29,7 +29,7 @@
 
   /* Volta para a lista, não para o blog. */
   const voltar = document.querySelector('.room-header a');
-  if (voltar) { voltar.href = 'professor.html'; voltar.textContent = '← Área do Professor'; }
+  if (voltar) { voltar.href = 'professor.html'; voltar.textContent = '← Observatório'; }
 
   /* A página inteira é escrita na segunda pessoa, para o aluno: "este espaço é
      seu", "minha nota", "o que consegui descobrir". Quem está lendo agora é
@@ -104,7 +104,7 @@
       await Percurso.requisitar('professor/eu');
     } catch (e) {
       if (e.status === 403) {
-        return parar('Esta área é só para professores. Seu passaporte não tem essa permissão.',
+        return parar('O Observatório da Coruja não se abre para este passaporte.',
                      'Voltar ao blog →', 'index.html');
       }
       return parar('Não consegui abrir a Sala Geral. ' + e.message, 'Tentar de novo →', location.href);
@@ -148,7 +148,7 @@
       dados = await Percurso.requisitar('professor/sala?codigo=' + encodeURIComponent(aluno));
     } catch (e) {
       if (e.status === 403) {
-        return parar('Esta área é só para professores. Seu passaporte não tem essa permissão.',
+        return parar('O Observatório da Coruja não se abre para este passaporte.',
                      'Voltar ao blog →', 'index.html');
       }
       if (e.status === 404) {

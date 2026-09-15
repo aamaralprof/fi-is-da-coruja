@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Abrir o passaporte | Coisas que não fazem sentido</title><link rel="stylesheet" href="styles.css?v=35"><link rel="icon" href="favicon.ico" sizes="any"><link rel="apple-touch-icon" href="assets/favicon-180.png"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Abrir o passaporte | Coisas que não fazem sentido</title><link rel="stylesheet" href="styles.css?v=38"><link rel="icon" href="favicon.ico" sizes="any"><link rel="apple-touch-icon" href="assets/favicon-180.png"></head>
 <body class="entry-page">
   <a class="skip-link" href="#acesso">Pular para o acesso</a>
   <main class="entry-shell">
@@ -37,6 +37,7 @@
         <p class="entry-overline">PASSAPORTE ABERTO</p>
         <p class="entry-code" id="entry-code"></p>
         <p class="entry-help">Seu percurso está sendo guardado. Pode fechar esta página e continuar lendo.</p>
+        <a class="entry-observatorio" id="entry-observatorio" href="professor.html" hidden>Observatório da Coruja →</a>
         <a class="entry-submit" href="index.html">voltar ao blog →</a>
         <button class="entry-close" type="button" id="entry-close">guardar o passaporte neste aparelho</button>
       </div>
@@ -45,7 +46,7 @@
     </section>
 
   </main>
-  <script src="percurso.js?v=2"></script><script src="contraste.js?v=8"></script>
+  <script src="percurso.js?v=3"></script><script src="contraste.js?v=8"></script>
   <script>
   (function () {
     var form = document.getElementById('entry-form');
@@ -62,6 +63,13 @@
       form.hidden = true;
       aberto.hidden = false;
       document.getElementById('entry-code').textContent = codigo;
+      /* O Observatório só existe para quem tem o papel. Não é segredo a ser
+         descoberto: para um aluno, o link não está na página. E se alguém
+         forçar o caminho, quem recusa é o servidor. */
+      var observatorio = document.getElementById('entry-observatorio');
+      if (observatorio && window.Percurso && Percurso.papel() === 'professor') {
+        observatorio.hidden = false;
+      }
     }
 
     if (window.Percurso && Percurso.aberto()) mostrarAberto(Percurso.codigo());

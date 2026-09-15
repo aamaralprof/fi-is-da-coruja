@@ -62,6 +62,9 @@
   }
   window.Percurso={
     aberto:()=>!!session(), codigo:()=>session()?.codigo,
+    /* Só para a interface saber o que mostrar. Não vale como permissão:
+       quem autoriza é o servidor, a cada pedido. */
+    papel:()=>session()?.papel||'aluno',
     async abrir(codigo,pin){
       const r=await fetch('/api/entrar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo,pin})});
       const data=await r.json(); if(!r.ok) throw Object.assign(new Error(data.erro),{status:r.status});
