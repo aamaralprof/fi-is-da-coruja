@@ -14,12 +14,15 @@ echo   A leva da turma nao e tocada: nenhum codigo de
 echo   aluno muda, nenhum PIN muda, nada do progresso
 echo   deles e mexido.
 echo.
-echo   Antes disso funcionar, a migracao precisa ter
-echo   sido aplicada no banco ^(migracao-professor.sql^).
+echo   Depois disso voce vai precisar:
+echo     1. colar "professor.sql" no Console do banco D1
+echo     2. entrar no site e ir para /professor
+echo.
+echo   A migracao ja precisa ter sido aplicada no banco.
 echo.
 pause
+cls
 
-echo.
 python "sistema-passaporte\gerar_passaportes.py" --professor
 
 if errorlevel 1 (
@@ -30,25 +33,14 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo   Abrindo a pasta com o arquivo...
 start "" "%~dp0saida"
 
+echo   ============================================
+echo     ANOTE AGORA, ANTES DE FECHAR
+echo   ============================================
+echo.
+type "%~dp0saida\professor.txt"
 echo.
 echo   ============================================
-echo     O QUE FAZER AGORA
-echo   ============================================
-echo.
-echo   1. ANOTE O CODIGO E O PIN que apareceram acima.
-echo      O banco guarda o PIN cifrado, nao o PIN.
-echo      Perdido, so gerando outro.
-echo.
-echo   2. Abra "professor.sql" no Bloco de Notas,
-echo      copie tudo e cole no Console do banco D1
-echo      no painel da Cloudflare
-echo.
-echo   3. Entre no site com esse codigo e PIN, e va
-echo      para /professor no endereco
-echo.
-echo   Guarde esses dois como voce guarda uma senha.
 echo.
 pause

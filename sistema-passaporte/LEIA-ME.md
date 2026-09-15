@@ -217,9 +217,18 @@ Para ver as Salas da turma sem SQL na mão.
 
 **2.** Dois cliques em `sistema-passaporte/PASSAPORTE-DA-PROFESSORA.bat`.
 
-Ele mostra o código e o PIN na tela e deixa `saida/professor.sql` para você
-colar no Console do D1. **Anote o PIN na hora**: o banco guarda o PIN cifrado,
-não o PIN — perdido, só gerando outro.
+Ele deixa dois arquivos em `saida/`:
+
+- **`professor.sql`** — cole no Console do D1
+- **`professor.txt`** — o código e o PIN, legíveis
+
+O código e o PIN também são a última coisa impressa na tela, logo antes da
+pausa. **Anote**: o banco guarda o PIN cifrado, não o PIN — perdido, só gerando
+outro passaporte.
+
+O `professor.txt` é o equivalente, para você, da folha de etiquetas dos alunos:
+traz PIN legível e fica em `saida/`, que o `.gitignore` bloqueia. Guarde-o como
+guarda a folha impressa.
 
 Não toca na leva da turma. Gerar a turma de novo criaria códigos diferentes
 para todo mundo, e é justamente o que este modo existe para evitar.

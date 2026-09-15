@@ -356,6 +356,32 @@ def ler_leva_gerada(caminho):
             for n, c in zip(nomes, codigos)]
 
 
+def escrever_professor_txt(passaporte, caminho):
+    """O codigo e o PIN em papel, porque a tela rola.
+
+    O PIN aparece uma vez e nao volta: o banco guarda o hash. Deixar isso
+    so no console e apostar que a janela nao vai rolar e que ninguem vai
+    fechar sem anotar — aposta que ja foi perdida uma vez. Fica aqui, ao
+    lado das etiquetas dos alunos, que tambem trazem PIN legivel, na mesma
+    pasta que o .gitignore bloqueia.
+    """
+    quebra = chr(10)
+    linhas = [
+        "PASSAPORTE DA PROFESSORA",
+        "",
+        "   codigo:  " + passaporte["codigo"],
+        "   PIN:     " + passaporte["pin"],
+        "",
+        "Guarde como voce guarda uma senha: quem tiver esses dois ve a Sala",
+        "de todos os alunos.",
+        "",
+        "Este arquivo nao vai para o GitHub. Se apaga-lo, o PIN se perde e so",
+        "resta gerar outro passaporte.",
+    ]
+    with io.open(caminho, "w", encoding="utf-8", newline=quebra) as f:
+        f.write(quebra.join(linhas) + quebra)
+
+
 def escrever_professor_sql(passaporte, caminho):
     """Um passaporte de professora, sozinho, em arquivo proprio.
 
@@ -691,7 +717,9 @@ def main():
         os.makedirs(SAIDA, exist_ok=True)
         passaporte = gerar([""])[0]
         caminho = os.path.join(SAIDA, "professor.sql")
+        caminho_txt = os.path.join(SAIDA, "professor.txt")
         escrever_professor_sql(passaporte, caminho)
+        escrever_professor_txt(passaporte, caminho_txt)
 
         print("")
         print("  Seu passaporte de professora")
@@ -704,6 +732,8 @@ def main():
         print("")
         print("  Guarde como voce guarda uma senha: quem tiver esses dois ve")
         print("  a Sala de todos os alunos.")
+        print("")
+        print("  Anotado tambem em saida/professor.txt, caso a tela role.")
         print("")
         print("  Para por no banco, cole no Console do D1:")
         print("     {}".format(caminho))
