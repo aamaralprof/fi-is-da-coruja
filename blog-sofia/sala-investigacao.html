@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sua Sala de Investigação</title><link rel="icon" href="favicon.ico"><link rel="stylesheet" href="styles.css?v=36"><link rel="stylesheet" href="sala.css?v=12"><script src="percurso.js?v=2" defer></script><script src="investigacao-dados.js?v=2" defer></script><script src="sala-professor.js?v=2" defer></script><script src="sala.js?v=8" defer></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sua Sala de Investigação</title><link rel="icon" href="favicon.ico"><link rel="stylesheet" href="styles.css?v=36"><link rel="stylesheet" href="sala.css?v=13"><script src="percurso.js?v=2" defer></script><script src="investigacao-dados.js?v=2" defer></script><script src="sala-professor.js?v=2" defer></script><script src="sala.js?v=9" defer></script></head>
 <body class="sala-page"><a class="skip-link" href="#sala">Pular para sua Sala</a>
 <header class="room-header"><a href="index.html">← Blog da Sofia</a><span>SEU ESPAÇO DE DESCOBERTAS</span><a href="entrar.html">Passaporte</a></header>
 <main id="sala" class="room-shell">
@@ -10,7 +10,7 @@
 <nav class="perspective-nav" aria-label="Perspectivas da Sala"><button type="button" data-view="overview" aria-pressed="true">Visão geral</button><button type="button" data-view="shelf" aria-pressed="false">Estante</button><button type="button" data-view="desk" aria-pressed="false">Mesa</button><button type="button" data-view="board" aria-pressed="false">Mural</button></nav>
 <section class="room-stage-shell" aria-label="Sala personalizável"><div id="room-stage" class="room-stage" data-view="overview">
 <img id="scene" class="room-scene" src="assets/sala/sala-geral.png" alt="Sala de Investigação vista de frente"><div id="room-overlay" class="room-overlay"></div>
-<div id="wall-tint" class="room-wall-tint" aria-hidden="true"></div><div id="overview-decor" class="overview-decor" aria-hidden="true"><img id="rug" class="room-rug" src="assets/sala/tapete-retangular.png" alt=""><div id="lights" class="room-lights"></div></div>
+<div id="overview-decor" class="overview-decor" aria-hidden="true"><img id="rug" class="room-rug" src="assets/sala/tapete-retangular.png" alt=""><div id="lights" class="room-lights"></div></div>
 <div id="hotspots" class="room-hotspots"><button type="button" data-go="shelf" class="hotspot hotspot-shelf"><span>Organizar estante</span></button><button type="button" data-go="desk" class="hotspot hotspot-desk"><span>Arrumar mesa</span></button><button type="button" data-go="board" class="hotspot hotspot-board"><span>Abrir mural</span></button></div>
 <div id="placed-items" class="placed-items"></div>
 <div id="board-layer" class="board-layer" hidden><div class="board-toolbar"><label>Meu painel <select id="case-select"></select></label><button id="open-archive" type="button">Abrir arquivo</button></div><div id="board" class="investigation-board" aria-label="Mural de pistas"><svg id="threads" aria-hidden="true"></svg><p id="board-empty">Uma pista pode ser o começo.<br>Escolha uma no Arquivo.</p><div id="board-items"></div></div></div>
