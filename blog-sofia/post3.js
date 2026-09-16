@@ -5,11 +5,15 @@
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const duration=ms=>reduced?Math.min(ms,120):ms;
   const save=(key,value='true')=>{try{localStorage.setItem('sofia-'+key,value)}catch{}};
-  const playVoice=n=>{const a=$(`[data-atena="${n}"]`);if(!a)return;$$('audio[data-atena]').forEach(x=>{if(x!==a){x.pause();x.currentTime=0}});a.currentTime=0;a.play().catch(()=>{});};
+  let soundEnabled=false;
+  const soundButton=$('[data-sound-toggle]');
+  function unlockSound(){if(soundEnabled)return;soundEnabled=true;const audios=$$('audio[data-atena]');const starts=audios.map(a=>{a.muted=true;const started=a.play();return Promise.resolve(started).then(()=>{a.pause();a.currentTime=0;a.muted=false;}).catch(()=>{a.muted=false;});});Promise.all(starts).then(()=>{soundButton.textContent='som ativado';soundButton.setAttribute('aria-pressed','true');});}
+  soundButton?.addEventListener('click',unlockSound);
+  const playVoice=n=>{if(!soundEnabled)return;const a=$(`[data-atena="${n}"]`);if(!a)return;$$('audio[data-atena]').forEach(x=>{if(x!==a){x.pause();x.currentTime=0}});a.currentTime=0;a.play().catch(()=>{soundButton.textContent='toque para ativar o som';soundButton.setAttribute('aria-pressed','false');soundEnabled=false;});};
   const reveal=el=>{el.hidden=false;requestAnimationFrame(()=>el.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'}));};
 
   const phone=$('[data-phone]'), flashlight=$('[data-flashlight]');
-  flashlight?.addEventListener('click',async()=>{if(phone.classList.contains('is-dead'))return;flashlight.disabled=true;$('[data-phone-status]').textContent='A lanterna não respondeu.';await wait(duration(650));phone.classList.add('is-glitching');$('[data-battery]').textContent='1%';await wait(duration(520));phone.classList.remove('is-glitching');phone.classList.add('is-dead');$('[data-phone-status]').textContent='A tela apagou.';await wait(duration(700));startCeremony();});
+  flashlight?.addEventListener('click',async()=>{if(phone.classList.contains('is-dead'))return;unlockSound();flashlight.disabled=true;$('[data-phone-status]').textContent='A lanterna não respondeu.';await wait(duration(650));phone.classList.add('is-glitching');$('[data-battery]').textContent='1%';await wait(duration(520));phone.classList.remove('is-glitching');phone.classList.add('is-dead');$('[data-phone-status]').textContent='A tela apagou.';await wait(duration(700));startCeremony();});
 
   async function startCeremony(){const scene=$('[data-ceremony]');reveal(scene);await wait(duration(800));for(const el of $$('.representative',scene)){el.classList.add('is-flashing');await wait(duration(760));el.classList.remove('is-flashing');await wait(duration(220));}$('.ceremony-darkness',scene).style.opacity='.62';$('[data-ceremony-caption]').innerHTML='<p><strong>Sofia.</strong></p><p>Você veio procurar respostas. Comece olhando.</p>';playVoice(1);await wait(duration(3500));scene.classList.add('is-transitioning');reveal($('[data-trial-one]'));playVoice(2);}
 
