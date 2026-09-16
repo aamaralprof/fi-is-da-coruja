@@ -226,6 +226,7 @@ function aparenciaValida(appearance) {
   if (!objeto(appearance)) return false;
   const curta = v => v === undefined || (typeof v === 'string' && v.length <= 40);
   return curta(appearance.pack) && curta(appearance.lights)
+      && curta(appearance.blind) && curta(appearance.time) && curta(appearance.roomLight)
       && (appearance.rug === undefined || typeof appearance.rug === 'boolean');
 }
 
