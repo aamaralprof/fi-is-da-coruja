@@ -83,6 +83,10 @@ button { font: inherit; }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; letter-spacing: -.02em; }
 .brand-mark { width: 34px; height: 34px; display: grid; place-items: center; border: 1.5px solid currentColor; border-radius: 50%; font-family: "Gochi Hand", cursive; font-size: 1.4rem; transform: rotate(-8deg); }
 .nav-link { min-height: 44px; display: inline-flex; align-items: center; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+/* Sem isto, um nav-link marcado como hidden continua na tela: display de
+   classe vence o hidden do navegador. E o caso da porta da Sala, que fica
+   escondida ate o arco II destrancar. */
+.nav-link[hidden] { display: none; }
 .hero { min-height: 610px; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: clamp(40px, 8vw, 110px); padding-block: 45px 85px; }
 .hero-copy { position: relative; z-index: 1; }
 .eyebrow { margin: 0 0 12px; color: var(--lilac-dark); font-size: .76rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
@@ -927,6 +931,12 @@ body.after-four.post-page{background:#17151d} body.after-four footer{background:
 .entry-submit:hover,.entry-submit:focus-visible{background:#452f5b}
 .entry-submit:disabled{opacity:.6;cursor:progress}
 /* display:flex venceria o atributo hidden; estas duas linhas devolvem a palavra final a ele */
+/* O atributo hidden perde para qualquer classe que defina display: a regra
+   do navegador e fraca, e a da folha e do autor. Foi assim que a pilula do
+   Observatorio, marcada como hidden, continuou aparecendo para os alunos.
+   Uma regra para a pagina inteira em vez de uma por classe, para o proximo
+   elemento escondido aqui nao repetir o defeito. */
+.entry-page [hidden]{display:none!important}
 .entry-form[hidden],.entry-open[hidden]{display:none}
 .entry-open{display:flex;flex-direction:column;gap:12px;margin-top:10px}
 .entry-code{margin:0;font:600 1.7rem/1 "Playfair Display",serif;letter-spacing:.1em}
@@ -936,6 +946,8 @@ body.after-four.post-page{background:#17151d} body.after-four footer{background:
    e é a interface decidindo o que mostrar — não a permissão em si, que o
    servidor confere a cada pedido. Discreta de propósito: pertence ao mundo
    do blog, não a um painel administrativo. */
+.entry-sala{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;min-height:44px;padding:9px 15px;color:var(--lilac);font:600 .82rem/1 "DM Sans",sans-serif;letter-spacing:.06em;text-decoration:none;border:1px solid var(--lilac);border-radius:999px;background:transparent}
+.entry-sala:hover,.entry-sala:focus-visible{color:var(--ink);background:var(--lilac)}
 .entry-observatorio{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;min-height:44px;padding:9px 15px;color:var(--gold);font:600 .82rem/1 "DM Sans",sans-serif;letter-spacing:.06em;text-decoration:none;border:1px solid var(--gold);border-radius:999px;background:transparent}
 .entry-observatorio::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
 .entry-observatorio:hover,.entry-observatorio:focus-visible{color:var(--ink);background:var(--gold)}

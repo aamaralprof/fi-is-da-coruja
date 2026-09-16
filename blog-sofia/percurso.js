@@ -86,4 +86,26 @@
   window.addEventListener('storage',notify);
   setInterval(send,5000);
   window.Percurso.pronto=receive();
+
+  /* A porta para a Sala.
+   *
+   * Ela fica escondida em quase toda pagina e so aparece depois que a Sala
+   * foi destrancada, no arco II. Antes disso seria uma porta que nao abre —
+   * e uma porta que nao abre ensina o aluno a parar de tentar.
+   *
+   * Quem marca a porta e o data-sala-porta no HTML; quem decide e o
+   * progresso. Por isso espera o receive(): num aparelho novo, a chave ainda
+   * esta no servidor quando a pagina termina de carregar.
+   *
+   * Le pelo localStorage remendado acima, nao pelo read() cru: as chaves de
+   * progresso ficam guardadas com o codigo do aluno na frente, e so o getItem
+   * remendado sabe montar esse nome. Ler cru devolve sempre vazio. */
+  const abrirPortas=()=>{
+    if(!localStorage.getItem('sofia-room-unlocked'))return;
+    document.querySelectorAll('[data-sala-porta]').forEach(n=>{n.hidden=false;});
+  };
+  window.Percurso.pronto.then(abrirPortas,abrirPortas);
+  window.addEventListener('percurso-atualizado',abrirPortas);
+  window.addEventListener('storage',abrirPortas);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',abrirPortas);
 })();
