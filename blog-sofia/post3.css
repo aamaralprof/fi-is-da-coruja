@@ -20,3 +20,17 @@
 .sofia-back{align-self:end;width:100%;height:min(84vh,820px);background:url("assets/arco2/post3/sofia-manto-verde.png") 100% 50%/200% 100% no-repeat;filter:brightness(.62) saturate(.72) drop-shadow(0 0 32px #000);opacity:.92}
 .return-grid>div:last-child{max-width:640px;padding:2rem;background:#09070bc7}
 @media(max-width:760px){.judgment-key{left:41%;width:18%;height:34%}.judgment-box{left:14%;width:35%;height:25%}.judgment-envelope{right:12%;width:35%;height:26%}.sofia-back{height:55vh;background-size:200% 100%}}
+
+/* Post 3 · inspeção proporcional e Teste II como desafio de composição. */
+.inspect-art{width:100%;background-repeat:no-repeat;filter:drop-shadow(0 14px 18px #0008)}
+.inspect-art[data-object=card]{aspect-ratio:1.55;background-image:url("assets/arco2/post3/objetos-teste1.png");background-size:300% auto;background-position:left 35%}
+.inspect-art[data-object=hourglass]{aspect-ratio:.72;background-image:url("assets/arco2/post3/objetos-teste1.png");background-size:300% auto;background-position:center 45%}
+.inspect-art[data-object=page]{aspect-ratio:1;background-image:url("assets/arco2/fragmento-desconhecido.png");background-size:contain;background-position:center}
+.cipher-challenge{max-width:650px;margin:2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid #8e754d;background:#100d13cc;text-align:center}
+.cipher-instruction{margin-top:0;color:#eadfc9}
+.cipher-keyboard{display:flex;justify-content:center;flex-wrap:wrap;gap:.75rem}
+.cipher-keyboard button{min-width:56px;min-height:52px;border:1px solid #c8a35d;border-radius:8px;background:#201826;color:#f3dfad;font-weight:800;cursor:pointer}
+.cipher-keyboard .cipher-erase{min-width:92px;color:#d8c9dd}
+.cipher-feedback{min-height:1.6em;margin-bottom:0;color:#d6bd86;font-weight:800}
+.cipher-word.is-wrong{animation:cipher-wrong .35s linear 2}
+@keyframes cipher-wrong{25%{transform:translateX(-8px);color:#ffacae}75%{transform:translateX(8px);color:#ffacae}}

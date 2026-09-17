@@ -6,7 +6,7 @@
   <meta name="description" content="Sofia atende ao convite dos Fiéis da Coruja e atravessa três testes sobre observação, interpretação e escolha.">
   <title>21:17 | Coisas que não fazem sentido</title>
   <link rel="stylesheet" href="styles.css?v=39">
-  <link rel="stylesheet" href="post3.css?v=3">
+  <link rel="stylesheet" href="post3.css?v=4">
   <link rel="icon" href="favicon.ico">
 </head>
 <body class="post-page post3-page">
@@ -62,15 +62,22 @@
       <header class="trial-heading"><p class="eyebrow">Teste II</p><h2 id="cipher-title">A cifra</h2><p>O que foi visto pode ser lido.</p></header>
       <div class="cipher-paper" data-cipher-paper>
         <img src="assets/arco2/post3/folha-cifra.png" alt="Folha antiga dos Fiéis da Coruja com cinco glifos">
-        <div class="cipher-word" data-cipher-word aria-live="polite"><span>P</span><span>E</span><span>N</span><span>_</span><span>E</span></div>
+        <div class="cipher-word" data-cipher-word aria-live="polite"><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
       </div>
       <div class="token-row" aria-label="Fichas da cifra">
         <button class="cipher-token token-p" type="button" data-token="P" aria-pressed="false"><span class="token-front" aria-hidden="true"></span><span class="token-back">P</span><span class="sr-only">Virar ficha P</span></button>
         <button class="cipher-token token-e" type="button" data-token="E" aria-pressed="false"><span class="token-front" aria-hidden="true"></span><span class="token-back">E</span><span class="sr-only">Virar ficha E</span></button>
         <button class="cipher-token token-n" type="button" data-token="N" aria-pressed="false"><span class="token-front" aria-hidden="true"></span><span class="token-back">N</span><span class="sr-only">Virar ficha N</span></button>
       </div>
-      <fieldset class="letter-choice" data-letter-choice hidden><legend>Qual letra completa a palavra?</legend><button type="button" data-letter="R">R</button><button type="button" data-letter="S">S</button><button type="button" data-letter="T">T</button></fieldset>
-      <p class="sofia-line" data-cipher-reaction hidden>— Certo. Pense. Entendi.</p>
+      <div class="cipher-challenge" data-letter-choice hidden>
+        <p class="cipher-instruction">As fichas revelaram três letras. Monte a instrução de cinco letras gravada na folha.</p>
+        <div class="cipher-keyboard" role="group" aria-label="Letras disponíveis">
+          <button type="button" data-letter="P">P</button><button type="button" data-letter="E">E</button><button type="button" data-letter="N">N</button><button type="button" data-letter="S">S</button>
+          <button type="button" class="cipher-erase" data-cipher-erase>apagar</button>
+        </div>
+        <p class="cipher-feedback" data-cipher-feedback role="status" aria-live="polite">0 de 5 letras.</p>
+      </div>
+      <p class="sofia-line" data-cipher-reaction hidden>— PENSE. Não era uma resposta. Era uma ordem.</p>
       <button class="gold-button continue-button" type="button" data-cipher-continue hidden>Continuar</button>
     </section>
 
@@ -103,6 +110,6 @@
   </main>
 
   <audio preload="auto" data-atena="1" src="assets/arco2/post3/atena-01.mp3"></audio><audio preload="auto" data-atena="2" src="assets/arco2/post3/atena-02.mp3"></audio><audio preload="auto" data-atena="3" src="assets/arco2/post3/atena-03.mp3"></audio><audio preload="auto" data-atena="4" src="assets/arco2/post3/atena-04.mp3"></audio><audio preload="auto" data-atena="5" src="assets/arco2/post3/atena-05.mp3"></audio>
-  <script src="percurso.js?v=4"></script><script src="post3.js?v=2"></script><script src="contraste.js?v=8"></script>
+  <script src="percurso.js?v=4"></script><script src="post3.js?v=3"></script><script src="contraste.js?v=8"></script>
 </body>
 </html>
