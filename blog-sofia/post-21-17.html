@@ -6,7 +6,7 @@
   <meta name="description" content="Sofia atende ao convite dos Fiéis da Coruja e atravessa três testes sobre observação, interpretação e escolha.">
   <title>21:17 | Coisas que não fazem sentido</title>
   <link rel="stylesheet" href="styles.css?v=39">
-  <link rel="stylesheet" href="post3.css?v=4">
+  <link rel="stylesheet" href="post3.css?v=5">
   <link rel="icon" href="favicon.ico">
 </head>
 <body class="post-page post3-page">
@@ -46,15 +46,18 @@
         <button class="study-hotspot study-card" type="button" data-object="card" aria-label="Examinar objeto entre os livros"><span>examinar</span></button>
         <button class="study-hotspot study-hourglass" type="button" data-object="hourglass" aria-label="Examinar ampulheta na estante"><span>examinar</span></button>
         <button class="study-hotspot study-page" type="button" data-object="page" aria-label="Examinar folha sob o livro"><span>examinar</span></button>
-        <button class="study-hotspot distractor distractor-globe" type="button" data-distractor aria-label="Examinar globo"><span>examinar</span></button>
-        <button class="study-hotspot distractor distractor-board" type="button" data-distractor aria-label="Examinar quadro"><span>examinar</span></button>
+        <button class="study-hotspot distractor distractor-globe" type="button" data-distractor="globe" aria-label="Examinar globo"><span>examinar</span></button>
+        <button class="study-hotspot distractor distractor-astrolabe" type="button" data-distractor="astrolabe" aria-label="Examinar astrolábio"><span>examinar</span></button>
+        <button class="study-hotspot distractor distractor-magnifier" type="button" data-distractor="magnifier" aria-label="Examinar lupa"><span>examinar</span></button>
+        <button class="study-hotspot distractor distractor-window" type="button" data-distractor="window" aria-label="Examinar janela"><span>examinar</span></button>
       </div>
+      <p class="study-observation" data-study-observation aria-live="polite">Observe a sala. Nem tudo que chama atenção é um intruso.</p>
       <p class="trial-status" data-trial-one-status role="status" aria-live="polite">0 de 3 intrusos marcados.</p>
     </section>
 
     <dialog class="inspect-dialog" data-inspect-dialog aria-labelledby="inspect-title">
       <button class="dialog-close" type="button" data-close-inspect aria-label="Fechar inspeção">×</button>
-      <div class="inspect-art" data-inspect-art role="img"></div>
+      <div class="inspect-viewer"><div class="inspect-art" data-inspect-art role="img"></div><button type="button" class="inspect-zoom" data-inspect-zoom aria-pressed="false">ampliar objeto</button></div>
       <div><p class="eyebrow">inspeção</p><h2 id="inspect-title" data-inspect-title>Objeto</h2><p data-inspect-copy></p><p class="sofia-line" data-inspect-sofia></p><button type="button" class="gold-button" data-mark-intruder>Marcar como intruso</button></div>
     </dialog>
 
@@ -110,6 +113,6 @@
   </main>
 
   <audio preload="auto" data-atena="1" src="assets/arco2/post3/atena-01.mp3"></audio><audio preload="auto" data-atena="2" src="assets/arco2/post3/atena-02.mp3"></audio><audio preload="auto" data-atena="3" src="assets/arco2/post3/atena-03.mp3"></audio><audio preload="auto" data-atena="4" src="assets/arco2/post3/atena-04.mp3"></audio><audio preload="auto" data-atena="5" src="assets/arco2/post3/atena-05.mp3"></audio>
-  <script src="percurso.js?v=4"></script><script src="post3.js?v=3"></script><script src="contraste.js?v=8"></script>
+  <script src="percurso.js?v=4"></script><script src="post3.js?v=4"></script><script src="contraste.js?v=8"></script>
 </body>
 </html>
