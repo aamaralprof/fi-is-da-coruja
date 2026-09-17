@@ -115,18 +115,26 @@ function renderRoom(){const host=$('placed-items'),rug=$('rug');host.replaceChil
 function trayButton(text,thumb,pressed,onclick){const b=el('button',text);b.type='button';b.className='tray-item';b.style.setProperty('--thumb',/^(url|linear|radial|repeating)/.test(thumb)?thumb:`url('${thumb}')`);b.setAttribute('aria-pressed',String(pressed));b.onclick=onclick;return b;}
 function renderTray(){const tray=$('item-tray');tray.replaceChildren();$('selected-controls').hidden=true;if(leitura)return;if(view==='overview'){const rugAsset=state.appearance.pack==='sofia2'?'assets/sala/tapete-sofia-2.png':'assets/sala/tapete-retangular.png';const rug=trayButton(state.appearance.pack==='sofia2'?'Tapete azul':'Tapete lilás',rugAsset,state.appearance.rug,()=>{state.appearance.rug=!state.appearance.rug;renderRoom();renderTray();change();});const lights=trayButton('Cordão de luzes','assets/sala/cordao-luzes.png',state.appearance.lights==='on',()=>{state.appearance.lights=state.appearance.lights==='on'?'off':'on';renderRoom();renderTray();change();});const trocar=(campo,ligado,desligado)=>{state.appearance[campo]=state.appearance[campo]===ligado?desligado:ligado;renderRoom();renderTray();change();};const persiana=trayButton(state.appearance.blind==='closed'?'Persiana fechada':'Persiana aberta',"repeating-linear-gradient(180deg,#7a6047 0 16%,#584431 16% 21%)",state.appearance.blind==='closed',()=>trocar('blind','closed','open'));const luz=trayButton('Luz da sala',"radial-gradient(circle at 50% 36%,#ffe9bd,#7a5f33)",state.appearance.roomLight==='on',()=>trocar('roomLight','on','off'));const horas=['day','night','rain'];
  const nomeDaHora={day:'Fim de tarde',night:'Noite',rain:'Noite de chuva'};
- const minDaHora={day:"linear-gradient(180deg,#171340,#4a3f73)",night:"repeating-linear-gradient(105deg,#1b2246 0 3px,#3b4a7d 3px 5px)",rain:"linear-gradient(180deg,#f0c98a,#8c5f8e)"};
+ /* Cada miniatura desenha a SUA hora; quem escolhe qual mostrar e o
+    proximaHora logo abaixo, junto com o rotulo. */
+ const minDaHora={day:"linear-gradient(180deg,#f0c98a,#8c5f8e)",night:"linear-gradient(180deg,#171340,#4a3f73)",rain:"repeating-linear-gradient(105deg,#1b2246 0 3px,#3b4a7d 3px 5px)"};
  /* O rotulo e a miniatura mostram PARA ONDE o botao leva, nao onde se esta:
     num botao que gira, dizer o estado atual faz o aluno clicar para voltar. */
  const proximaHora=horas[(horas.indexOf(state.appearance.time)+1)%3];
- const noite=trayButton(nomeDaHora[proximaHora],minDaHora[state.appearance.time],state.appearance.time!=='day',()=>{state.appearance.time=proximaHora;renderRoom();renderTray();change();});tray.append(rug,lights,persiana,luz,noite);return;}if(view==='board'){tray.append(el('p','As pistas disponíveis ficam no Arquivo.'));return;}for(const d of roomItems.filter(i=>i.view===view)){const s=state.roomItems[d.id];tray.append(trayButton(d.name,assetFor(d),s.placed,()=>{s.placed=!s.placed;selectedRoom=s.placed?d.id:null;renderRoom();renderTray();change();}));}if(selectedRoom)selectRoom(selectedRoom);}
+ const noite=trayButton(nomeDaHora[proximaHora],minDaHora[proximaHora],state.appearance.time!=='day',()=>{state.appearance.time=proximaHora;renderRoom();renderTray();change();});tray.append(rug,lights,persiana,luz,noite);return;}if(view==='board'){tray.append(el('p','As pistas disponíveis ficam no Arquivo.'));return;}for(const d of roomItems.filter(i=>i.view===view)){const s=state.roomItems[d.id];tray.append(trayButton(d.name,assetFor(d),s.placed,()=>{s.placed=!s.placed;selectedRoom=s.placed?d.id:null;renderRoom();renderTray();change();}));}if(selectedRoom)selectRoom(selectedRoom);}
 document.querySelectorAll('[data-nudge]').forEach(b=>b.onclick=()=>{if(!selectedRoom)return;const d=itemById(selectedRoom),s=state.roomItems[selectedRoom],[dx,dy]=b.dataset.nudge.split(',').map(Number);s.x=Math.max(0,Math.min(100-d.w,s.x+dx));s.y=Math.max(0,Math.min(88,s.y+dy));renderRoom();selectRoom(d.id);change();});
 $('toggle-item-state').onclick=()=>selectedRoom&&toggleState(selectedRoom);$('zoom-room-item').onclick=()=>{const d=itemById(selectedRoom);if(!d?.zoomable)return;$('room-item-zoom-title').textContent=d.name;$('room-item-zoom-image').src=assetFor(d);$('room-item-zoom-image').alt=d.name+' ampliado';$('room-item-zoom').showModal();};$('remove-room-item').onclick=()=>{if(!selectedRoom)return;state.roomItems[selectedRoom].placed=false;selectedRoom=null;renderRoom();renderTray();change();};
 /* O interruptor da parede e um atalho, nao um segundo sistema: mexe no
    mesmo campo que a bandeja e volta pelo mesmo renderTray. */
 /* Uma tela so por enquanto. Se aparecerem outras, o data-abre do objeto ja
    diz qual: nao precisa de um segundo caminho para cada uma. */
-function abrirTela(id){const d=$(id);if(d&&!d.open)d.showModal();}
+/* A tela so e baixada quando alguem acende o notebook. Esconder a imagem
+   num dialogo fechado nao adia nada — o navegador busca do mesmo jeito, e
+   loading=lazy nao vale para quem nao tem lugar na pagina. Segurar o
+   endereco fora do src e o que realmente adia. */
+function abrirTela(id){const d=$(id);if(!d)return;
+ d.querySelectorAll('img[data-src]').forEach(i=>{i.src=i.dataset.src;delete i.dataset.src;});
+ if(!d.open)d.showModal();}
 
 /* O gatinho nao e do aluno. Chega e vai embora sozinho enquanto a Sala
    esta aberta, e nada disso e guardado — se fosse, deixaria de ser sorte.
