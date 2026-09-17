@@ -15,6 +15,10 @@
   const reveal=el=>{el.hidden=false;requestAnimationFrame(()=>el.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'}));};
 
   const phone=$('[data-phone]'), flashlight=$('[data-flashlight]');
+  const finalHum=$('[data-final-hum]'),humButton=$('[data-hum-toggle]');
+  const updateHumButton=playing=>{if(!humButton)return;humButton.setAttribute('aria-pressed',String(playing));humButton.textContent=playing?'silenciar o sussurro':'ouvir o sussurro';};
+  const startFinalHum=()=>{if(!finalHum)return;finalHum.volume=.055;finalHum.play().then(()=>updateHumButton(true)).catch(()=>updateHumButton(false));};
+  humButton?.addEventListener('click',()=>{if(finalHum.paused)startFinalHum();else{finalHum.pause();updateHumButton(false);}});
   flashlight?.addEventListener('click',async()=>{if(phone.classList.contains('is-dead'))return;unlockSound();flashlight.disabled=true;$('[data-phone-status]').textContent='A lanterna não respondeu.';await wait(duration(650));phone.classList.add('is-glitching');$('[data-battery]').textContent='1%';await wait(duration(520));phone.classList.remove('is-glitching');phone.classList.add('is-dead');$('[data-phone-status]').textContent='A tela apagou.';await wait(duration(700));startCeremony();});
 
   async function startCeremony(){const scene=$('[data-ceremony]');reveal(scene);await wait(duration(800));for(const el of $$('.representative',scene)){scene.classList.add('has-interference');el.classList.add('is-flashing');await wait(duration(780));el.classList.remove('is-flashing');scene.classList.remove('has-interference');await wait(duration(260));}$('.ceremony-darkness',scene).style.opacity='.62';$('[data-ceremony-caption]').innerHTML='<p><strong>Sofia.</strong></p><p>Você veio procurar respostas. Comece olhando.</p>';await playVoice(1);scene.classList.add('is-transitioning');reveal($('[data-trial-one]'));await playVoice(2);}
@@ -64,5 +68,5 @@
   $('[data-destiny-look]')?.addEventListener('click',async()=>{const c=$('[data-return-ceremony]');c.classList.add('is-destiny-glitch');await wait(duration(380));c.classList.remove('is-destiny-glitch');$('[data-destiny-reaction]').hidden=false;await wait(duration(1800));reveal($('[data-epilogue]'));});
   let attempts=0;
   $('[data-test-four]')?.addEventListener('click',()=>{attempts++;const ep=$('[data-epilogue]');$('[data-access-status]').textContent='ACESSO NEGADO';if(attempts>1){ep.classList.add('is-failing');setTimeout(()=>{ep.classList.remove('is-failing');$('[data-irregularity-form]').hidden=false;$('[data-irregularity-form] input').focus();},900);}});
-  $('[data-irregularity-form]')?.addEventListener('submit',async e=>{e.preventDefault();const input=e.currentTarget.querySelector('input');input.value='';await wait(duration(500));input.value='NENHUMA.';await wait(duration(800));save('post3_concluido');reveal($('[data-last-signal]'));await wait(duration(1300));$('[data-last-signal]').style.opacity='0';$('[data-final-nav]').hidden=false;$('[data-final-nav]').scrollIntoView({behavior:reduced?'auto':'smooth'});});
+  $('[data-irregularity-form]')?.addEventListener('submit',async e=>{e.preventDefault();const input=e.currentTarget.querySelector('input');input.value='';await wait(duration(500));input.value='NENHUMA.';await wait(duration(800));save('post3_concluido');const signal=$('[data-last-signal]');reveal(signal);await wait(duration(1300));signal.style.opacity='0';await wait(duration(450));signal.hidden=true;const ending=$('[data-final-echo]');reveal(ending);startFinalHum();$('[data-final-nav]').hidden=false;});
 })();
