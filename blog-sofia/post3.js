@@ -17,8 +17,12 @@
   const phone=$('[data-phone]'), flashlight=$('[data-flashlight]');
   const finalHum=$('[data-final-hum]'),humButton=$('[data-hum-toggle]');
   const updateHumButton=playing=>{if(!humButton)return;humButton.setAttribute('aria-pressed',String(playing));humButton.textContent=playing?'silenciar o sussurro':'ouvir o sussurro';};
-  const startFinalHum=()=>{if(!finalHum)return;finalHum.volume=.3;finalHum.play().then(()=>updateHumButton(true)).catch(()=>updateHumButton(false));};
-  humButton?.addEventListener('click',()=>{if(finalHum.paused)startFinalHum();else{finalHum.pause();updateHumButton(false);}});
+  let humFade=null;
+  const pararHum=()=>{clearInterval(humFade);humFade=null;if(!finalHum)return;finalHum.pause();finalHum.currentTime=0;finalHum.volume=.3;updateHumButton(false);};
+  const startFinalHum=()=>{if(!finalHum)return;clearInterval(humFade);finalHum.volume=.3;finalHum.currentTime=0;finalHum.play().then(()=>{updateHumButton(true);humFade=setInterval(()=>{const resta=finalHum.duration-finalHum.currentTime;if(!Number.isFinite(resta))return;if(resta<=8)finalHum.volume=Math.max(0,.3*(resta/8));},120);}).catch(()=>updateHumButton(false));};
+  finalHum?.addEventListener('ended',pararHum);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&finalHum&&!finalHum.paused)pararHum();});
+  humButton?.addEventListener('click',()=>{if(finalHum.paused)startFinalHum();else pararHum();});
   flashlight?.addEventListener('click',async()=>{if(phone.classList.contains('is-dead'))return;unlockSound();flashlight.disabled=true;$('[data-phone-status]').textContent='A lanterna não respondeu.';await wait(duration(650));phone.classList.add('is-glitching');$('[data-battery]').textContent='1%';await wait(duration(520));phone.classList.remove('is-glitching');phone.classList.add('is-dead');$('[data-phone-status]').textContent='A tela apagou.';await wait(duration(700));startCeremony();});
 
   async function startCeremony(){const scene=$('[data-ceremony]');reveal(scene);await wait(duration(800));for(const el of $$('.representative',scene)){scene.classList.add('has-interference');el.classList.add('is-flashing');await wait(duration(780));el.classList.remove('is-flashing');scene.classList.remove('has-interference');await wait(duration(260));}$('.ceremony-darkness',scene).style.opacity='.62';$('[data-ceremony-caption]').innerHTML='<p><strong>Sofia.</strong></p><p>Você veio procurar respostas. Comece olhando.</p>';await playVoice(1);scene.classList.add('is-transitioning');reveal($('[data-trial-one]'));await playVoice(2);}
