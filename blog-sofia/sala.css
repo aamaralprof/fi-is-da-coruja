@@ -62,12 +62,28 @@
 .room-night{background:#161238}
 .room-stage[data-blind=closed] .room-shade{opacity:.4}
 .room-stage[data-blind=closed][data-room-light=on] .room-shade{opacity:.22}
-.room-stage[data-time=night] .room-night{opacity:.66}
-.room-stage[data-time=night][data-room-light=on] .room-night{opacity:.42}
+/* O veu da noite so entra onde NAO ha pintura noturna — e o data-veu que o
+   sala.js poe quando teve de reaproveitar a cena do fim de tarde. Onde a
+   arte ja anoiteceu, escurecer de novo afundaria o desenho.
+   As demais regras falam por :not([data-time=day]), para valerem de uma vez
+   para a noite, para a chuva e para a proxima hora que aparecer. */
+.room-stage[data-veu]:not([data-time=day]) .room-night{opacity:.66}
+.room-stage[data-veu]:not([data-time=day])[data-room-light=on] .room-night{opacity:.42}
 .room-glow{position:absolute;z-index:4;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse 66% 46% at 50% -6%,#ffd89b,#ffd89b00 72%);mix-blend-mode:screen;transition:opacity .5s}
 .room-stage[data-room-light=on] .room-glow{opacity:.16}
-.room-stage[data-time=night][data-room-light=on] .room-glow{opacity:.34}
-.room-stage[data-time=night] .room-item{filter:brightness(.6) saturate(.86) drop-shadow(2px 6px 5px #1c101b88)}
+.room-stage:not([data-time=day])[data-room-light=on] .room-glow{opacity:.34}
+.room-stage:not([data-time=day]) .room-item{filter:brightness(.6) saturate(.86) drop-shadow(2px 6px 5px #1c101b88)}
+/* Onde a arte ja anoiteceu nao ha veu, e sem ele o tapete e o gatinho
+   ficariam com a cor do meio da tarde em cima de uma sala escura. Cada um
+   escurece por conta propria, como os objetos logo acima — e por isso o
+   cordao de luzes fica de fora: ele e luz, nao deve obedecer a noite. */
+.room-stage:not([data-time=day]) .room-rug{filter:brightness(.6) saturate(.82) drop-shadow(0 9px 8px #1c0e1d70)}
+.room-stage:not([data-time=day]) .room-cat{filter:brightness(.62) saturate(.8)}
+/* O gatinho chega e vai embora sozinho. Nao e objeto do aluno: nao se
+   arrasta, nao se guarda, nao se salva. Por isso vive na camada de cenario
+   e some por opacidade, para a chegada nao ser um susto. */
+.room-cat{position:absolute;z-index:3;left:4.5%;top:70%;width:17%;aspect-ratio:1492/866;object-fit:contain;opacity:0;transform:translateY(6px);transition:opacity 1.6s ease,transform 1.6s ease;pointer-events:none}
+.room-cat.esta-aqui{opacity:1;transform:none}
 /* O interruptor nao e um desenho nosso: ele ja estava na parede, ao lado da
    porta. A area clicavel e maior que a placa, senao nao se acerta no dedo. */
 .hotspot-switch{left:76.4%;top:35.4%;width:5.2%;height:8%}
@@ -79,6 +95,22 @@
 @media(max-width:700px){.room-header span{display:none}.room-shell{padding:18px 10px 55px}.room-heading{display:block}.hotspot span{opacity:1;font-size:.65rem}.perspective-nav{margin-top:14px}.board-layer{left:3%;top:3%;width:94%;height:94%;padding:7px;border-width:6px}.board-toolbar button,.board-toolbar select{font-size:.74rem}.board-card{width:86px;min-height:76px!important}.customization-heading{display:block}.customization-heading>button{margin-top:8px}.selected-controls strong{width:100%}.room-writing{grid-template-columns:1fr}.room-paper{padding:17px}.tray-item{grid-template-columns:42px max-content;padding:8px 10px!important}.tray-item:before{width:40px;height:36px}.room-item{min-width:44px;min-height:44px}}
 @media(prefers-reduced-motion:reduce){.sala-page *{animation:none!important;transition:none!important}}
 .room-stage[data-view=shelf]{aspect-ratio:1}.room-stage[data-view=desk]{aspect-ratio:1672/647}
+/* A tela do Explorador. A interface e uma imagem por enquanto — quando ela
+   virar busca de verdade, o aviso sai e o conteudo entra no mesmo lugar. */
+.explorador{width:min(1000px,94vw);max-height:92vh;padding:0;border:1px solid #4b3d72;border-radius:16px;background:#0d0a18;color:#e7ddf6;overflow:hidden}
+.explorador::backdrop{background:#080611e0}
+.explorador-tela{display:grid;justify-items:center;padding:clamp(12px,3vw,24px)}
+.explorador-tela img{display:block;width:100%;height:auto}
+/* O aviso ficava por cima da interface e sempre cortava alguma coisa pela
+   metade — ora a barra de busca, ora o titulo. Embaixo dela ele para de
+   brigar: a tela aparece inteira, e a mensagem le como o que e, um recado
+   do terminal sobre o que esta ali em cima. */
+.explorador-aviso{width:min(560px,92%);margin:14px auto 0;padding:16px 20px;border:1px solid #7b68b4;border-radius:12px;background:#140f2a;text-align:center;text-wrap:balance}
+.explorador-aviso p{margin:0}
+.explorador-aviso p:first-child{margin-bottom:9px;color:#d8c7ff;font:700 .84rem/1.3 "DM Sans",sans-serif;letter-spacing:.16em}
+.explorador-aviso p+p+p{margin-top:7px;color:#9d8fc4;font-size:.86rem}
+.explorador form{margin:0;padding:0 16px 16px;text-align:right}
+@media(max-width:560px){.explorador-aviso{width:90%;padding:14px}.explorador-aviso p:first-child{font-size:.74rem}}
 .package-controls{display:flex;align-items:end;gap:10px;flex-wrap:wrap}.package-controls label{font-weight:600}.package-controls select{margin-top:5px;min-width:190px}
 .room-stage[data-pack=sofia2] .room-item[data-recolored=false]{filter:hue-rotate(48deg) saturate(.82) drop-shadow(2px 6px 5px #10172888)}
 .room-stage[data-pack=sofia2] .room-item[data-sprite=lamp][data-state=on]{filter:hue-rotate(48deg) saturate(.82) drop-shadow(0 7px 5px #10172888) drop-shadow(0 0 12px #ffd979)}
