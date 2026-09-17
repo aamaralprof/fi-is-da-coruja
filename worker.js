@@ -245,7 +245,8 @@ function objetosValidos(roomItems) {
       && Number.isFinite(o.y) && o.y >= 0 && o.y <= 100
       && (o.state === undefined || (typeof o.state === 'string' && o.state.length <= 40))
       && (o.placed === undefined || typeof o.placed === 'boolean')
-      && (o.lastWatered === undefined || Number.isFinite(o.lastWatered));
+      && (o.lastWatered === undefined || Number.isFinite(o.lastWatered))
+      && (o.stage === undefined || (typeof o.stage === 'string' && o.stage.length <= 40));
   });
 }
 
