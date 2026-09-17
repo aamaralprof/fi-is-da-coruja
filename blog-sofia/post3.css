@@ -17,7 +17,7 @@
 .judgment-key{left:44%;bottom:18%;width:12%;height:34%;background-size:455% 137%;background-position:50% 37%}
 .judgment-box{left:25%;bottom:19%;width:22%;height:24%;background-size:286% 300%;background-position:0 0}
 .judgment-envelope{right:24%;bottom:19%;width:22%;height:25%;background-size:270% 250%;background-position:100% 0}
-.sofia-back{align-self:end;width:100%;height:min(84vh,820px);background:url("assets/arco2/post3/sofia-manto-verde.png") 100% 50%/200% 100% no-repeat;filter:brightness(.62) saturate(.72) drop-shadow(0 0 32px #000);opacity:.92}
+.sofia-back{align-self:end;width:100%;height:min(84vh,820px);background:url("assets/arco2/post3/sofia-manto-verde.png") 100% 50%/200% 100% no-repeat;filter:brightness(.86) saturate(.84) drop-shadow(0 0 32px #000);opacity:1}
 .return-grid>div:last-child{max-width:640px;padding:2rem;background:#09070bc7}
 @media(max-width:760px){.judgment-key{left:41%;width:18%;height:34%}.judgment-box{left:14%;width:35%;height:25%}.judgment-envelope{right:12%;width:35%;height:26%}.sofia-back{height:55vh;background-size:200% 100%}}
 
@@ -55,3 +55,12 @@
 @keyframes ceremony-static{50%{transform:translateY(5px);opacity:.55}}
 @media(max-width:760px){.study-card{left:52%;width:14%}.study-page{left:65%;width:22%}.distractor-window{left:39%;width:25%}.inspect-viewer{min-height:250px}.inspect-art.is-zoomed{transform:scale(1.35)}}
 @media(prefers-reduced-motion:reduce){.ceremony.has-interference::before{animation:none;opacity:.25}.representative.is-flashing{animation:none;opacity:.8}.inspect-art{transition:none}}
+
+/* Teste DUVIDE · memória de sequência com recuperação de erro. */
+.doubt-instruction{max-width:620px;margin:0 auto;color:#28202b;font-weight:700}
+.doubt-glyph:disabled{cursor:default;opacity:.72}
+.doubt-glyph.is-pulsing{opacity:1;background:#211a23;color:#f5dda0;box-shadow:0 0 0 5px #e2bd6877,0 0 34px #4b265f;transform:translateY(-8px) scale(1.06)}
+.doubt-glyph.is-wrong{opacity:1;background:#5e2028;color:#fff;animation:doubt-error .18s linear 3}
+.doubt-replay{display:block;margin:1rem auto 0}
+@keyframes doubt-error{50%{transform:translateX(7px)}}
+@media(prefers-reduced-motion:reduce){.doubt-glyph.is-pulsing{transform:none;box-shadow:0 0 0 5px #6b4c1e}.doubt-glyph.is-wrong{animation:none;border-color:#8b1727}}
