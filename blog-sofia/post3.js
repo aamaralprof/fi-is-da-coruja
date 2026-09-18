@@ -18,8 +18,8 @@
   const finalHum=$('[data-final-hum]'),humButton=$('[data-hum-toggle]');
   const updateHumButton=playing=>{if(!humButton)return;humButton.setAttribute('aria-pressed',String(playing));humButton.textContent=playing?'silenciar o sussurro':'ouvir o sussurro';};
   let humFade=null;
-  const pararHum=()=>{clearInterval(humFade);humFade=null;if(!finalHum)return;finalHum.pause();finalHum.currentTime=0;finalHum.volume=.3;updateHumButton(false);};
-  const startFinalHum=()=>{if(!finalHum)return;clearInterval(humFade);finalHum.volume=.3;finalHum.currentTime=0;finalHum.play().then(()=>{updateHumButton(true);humFade=setInterval(()=>{const resta=finalHum.duration-finalHum.currentTime;if(!Number.isFinite(resta))return;if(resta<=8)finalHum.volume=Math.max(0,.3*(resta/8));},120);}).catch(()=>updateHumButton(false));};
+  const pararHum=()=>{clearInterval(humFade);humFade=null;if(!finalHum)return;finalHum.pause();finalHum.currentTime=0;finalHum.volume=.4;updateHumButton(false);};
+  const startFinalHum=()=>{if(!finalHum)return;clearInterval(humFade);finalHum.volume=.4;finalHum.currentTime=0;finalHum.play().then(()=>{updateHumButton(true);humFade=setInterval(()=>{const resta=finalHum.duration-finalHum.currentTime;if(!Number.isFinite(resta))return;if(resta<=8)finalHum.volume=Math.max(0,.4*(resta/8));},120);}).catch(()=>updateHumButton(false));};
   finalHum?.addEventListener('ended',pararHum);
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&finalHum&&!finalHum.paused)pararHum();});
   humButton?.addEventListener('click',()=>{if(finalHum.paused)startFinalHum();else pararHum();});
