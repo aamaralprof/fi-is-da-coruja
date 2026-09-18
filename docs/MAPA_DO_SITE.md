@@ -20,6 +20,8 @@ Aplicação web sem etapa de build: frontend estático em HTML, CSS e JavaScript
 - `blog-sofia/script.js`: interações compartilhadas, inventários, pistas, escolhas e experiências dos posts.
 - `blog-sofia/percurso.js`: sessão, isolamento local por passaporte, fila offline e sincronização de progresso.
 - `blog-sofia/arco2.css` e `blog-sofia/arco2.js`: componentes e desbloqueios dos posts do segundo arco.
+- `blog-sofia/post3.css` e `blog-sofia/post3.js`: a experiência inteira de **21:17**, terceiro post do arco 2. Não são compartilhados com nenhuma outra página.
+- `blog-sofia/assets/arco2/post3/`: cenários, pranchas de figuras e as seis faixas de áudio de 21:17.
 - `blog-sofia/investigacao-dados.js`: catálogo central de casos e itens usados pela Sala.
 - `blog-sofia/sala-investigacao.html`, `blog-sofia/sala.css` e `blog-sofia/sala.js`: interface, visual e lógica da Sala de Investigação.
 - `blog-sofia/sala-professor.js`: monta o contexto de leitura da Sala quando o endereço traz `?aluno=` ou `?geral=1`. Não desenha nada.
@@ -29,13 +31,13 @@ Aplicação web sem etapa de build: frontend estático em HTML, CSS e JavaScript
 - `worker.js`: API de autenticação, percurso e Sala; entrega os assets nas demais rotas.
 - `wrangler.jsonc`: configuração do Worker, assets e D1.
 
-`blog-sofia-site/` existe, mas está vazio e não participa da configuração de deploy.
+`blog-sofia-site/` guarda o protótipo Next.js aposentado, com `node_modules` e um `LEIA-ME-EXPERIMENTO-PAUSADO.md`. Fica fora de `wrangler.jsonc` e não é publicado: só `blog-sofia/` vai ao ar.
 
 ## 3. Blog da Sofia
 
-Os posts ficam diretamente em `blog-sofia/post-*.html`. Há 12 arquivos: dez anotações do primeiro arco e duas do segundo. Cada post é uma página HTML completa, ligada manualmente ao anterior/próximo e listada manualmente na página de seu arco (`arquivo-o-chamado.html` ou `arquivo-xvii.html`); a home apresenta somente os dois cards de entrada desses arquivos. Não existe CMS nem modelo gerador. O primeiro post do arco 2, **Sala 17**, concentra sua progressão em `arco2.js`: janela Quadra/Heliópolis, registro da carta, Caminho do Sol, Cifra Solar opcional, recompensas e conversa no aplicativo E Aí?.
+Os posts ficam diretamente em `blog-sofia/post-*.html`. Há 13 arquivos: dez anotações do primeiro arco e três do segundo. Cada post é uma página HTML completa, ligada manualmente ao anterior/próximo e listada manualmente na página de seu arco (`arquivo-o-chamado.html` ou `arquivo-xvii.html`); a home apresenta somente os dois cards de entrada desses arquivos. Não existe CMS nem modelo gerador. O primeiro post do arco 2, **Sala 17**, concentra sua progressão em `arco2.js`: janela Quadra/Heliópolis, registro da carta, Caminho do Sol, Cifra Solar opcional, recompensas e conversa no aplicativo E Aí?.
 
-Estrutura recorrente: navegação, cabeçalho com metadados, corpo narrativo, blocos interativos, paginação e rodapé. `blog-sofia/styles.css`, `blog-sofia/script.js`, `blog-sofia/percurso.js` e `blog-sofia/contraste.js` são compartilhados. Os posts do arco 2 também carregam `blog-sofia/arco2.css` e `blog-sofia/arco2.js`.
+Estrutura recorrente: navegação, cabeçalho com metadados, corpo narrativo, blocos interativos, paginação e rodapé. `blog-sofia/styles.css`, `blog-sofia/script.js`, `blog-sofia/percurso.js` e `blog-sofia/contraste.js` são compartilhados. Os posts do arco 2 também carregam `blog-sofia/arco2.css` e `blog-sofia/arco2.js`, com uma exceção: **`post-21-17.html` não carrega nenhum dos dois, nem `script.js`**. Ele traz a própria dupla `post3.css`/`post3.js`. Quem procurar o comportamento de 21:17 em `arco2.js` não encontra nada.
 
 Interações encontradas incluem escolhas de leitor, hotspots, revelações de pistas, áudio, animação pixelada, mudança de perspectiva/uniforme, espelho, teste dos Caminhos, minijogo de símbolos, limpeza de gotas e coleta de emblemas. As escolhas simples alteram a interface, mas não são persistidas. Descobertas com chaves `sofia-*` são persistidas.
 
@@ -82,6 +84,17 @@ Modais/painéis: Caderno de Pistas, Inventário da Missão, Coleção de Emblema
 - Dados: `sofia-not-a-collection = unlocked`, `sofia-collection-bookmark = collected`, `sofia-collection-path-cards = collected`; o teste também grava `sofia-reader-path`.
 - Persistência/Passaporte: chaves `sofia-*` via `percurso.js` e tabela `percurso`.
 - Estado: PARCIALMENTE IMPLEMENTADO. O painel inicial mostra capacidade `0/11`, mas o catálogo de `script.js` define apenas três itens.
+
+### 21:17, a iniciação (arco 2, post 3)
+
+- Finalidade: a cerimônia dos Fiéis da Coruja em três testes, sobre observar, interpretar e escolher. É a página mais complexa do site.
+- Arquivos: `blog-sofia/post-21-17.html`, `blog-sofia/post3.css`, `blog-sofia/post3.js` e `blog-sofia/assets/arco2/post3/`. **Nada disso é compartilhado.** A página não usa `script.js`, `arco2.css` nem `arco2.js`; de comum, só `styles.css`, `percurso.js` e `contraste.js`.
+- Sequência, toda revelada por JavaScript a partir de seções `hidden`: celular e lanterna → sala cerimonial com as três representantes → **Teste I**, achar três intrusos entre quatro distratores, com `<dialog>` de inspeção → **Teste II**, a cifra PENSE → **interferência**, a sequência de memória que soletra DUVIDE → **Teste III**, o julgamento com chave, caixa e envelope, a decisão e a justificativa → abertura da caixa → retorno com a Sofia de costas e a representante do Destino → terminal da Ordem do Eclipse → sussurro final.
+- Dados: `sofia-teste1_concluido`, `sofia-teste2_concluido`, `sofia-teste3_concluido`, `sofia-decisao_teste3` (a escolha), `sofia-justificativa_teste3` (o porquê) e `sofia-post3_concluido`.
+- Persistência/Passaporte: chaves `sofia-*` pelo caminho normal de `percurso.js`. A página não chama `Percurso` diretamente.
+- Acesso: sem tranca. O card em `arquivo-xvii.html` é um link comum, e `arco2.js` não conhece este post.
+- Áudio: cinco falas de Atena (`atena-01..05.mp3`), destravadas junto com a lanterna, e `sussurro-final.mp3` no encerramento, que toca **uma vez**, com fade nos últimos oito segundos, e se cala se a aba sair de vista.
+- `sofia-post3_concluido` só é gravado no envio do campo IRREGULARIDADES, no fim do terminal. Quem parar antes faz os três testes e não consta como tendo concluído.
 
 ### Sala de Investigação
 
@@ -133,6 +146,7 @@ Preferir antes de criar alternativas:
 - Padrões de desbloqueio de `arco2.js` e atributos `data-*` existentes.
 - Painel/backdrop acessível, estados `aria-expanded`/`aria-pressed`, regiões `aria-live` e `<dialog>` da Sala.
 - Tokens, tipografia, breakpoints e regras de movimento reduzido de `styles.css`, `arco2.css` e `sala.css`.
+- `post3.css` e `post3.js` são a exceção deliberada: valem só para `post-21-17.html`. Não importar de lá para outra página, nem acrescentar comportamento de outra página neles.
 
 ## 6. Banco de dados
 
@@ -167,12 +181,15 @@ O Worker aceita no máximo 300 chaves, exige prefixo `sofia-`, limita nome a 120
 - Assets da Sala no arquivo usam `loading="lazy"`; imagens narrativas continuam sendo assets estáticos. Não há pipeline de build/otimização automática.
 - A Sala tem CSS responsivo sobreposto; em telas estreitas o mural e os cartões são reduzidos. Testar alterações nesse componente tanto por toque quanto por teclado.
 - O `aspect-ratio` do palco da Sala é o da arte de cada perspectiva (`1672/941` na visão geral, na mesa e no mural; `1295/1214` na estante), e não um número escolhido a gosto. Os objetos são posicionados em porcentagem do palco, mas o aluno mira na mobília desenhada: se a moldura tiver outra proporção, o `object-fit:cover` corta a arte e as duas grades descolam. A moldura da estante é limitada a `78vh` e se centraliza, porque respeitar a proporção quase quadrada dela numa tela larga daria um palco mais alto que a janela.
+- A mesma aritmética vale para as pranchas de figuras de 21:17. `sofia-manto-verde.png` traz a Sofia de frente e de costas lado a lado, e `representantes-destino.png` traz três representantes. Mostrar só uma delas é feito com `background-size` em porcentagem (`200% 100%`, `300% 100%`) mais `background-position`, e isso **só não deforma se a caixa tiver a proporção daquela fração**: daí o `aspect-ratio:1/3` da Sofia e o `592/885` da representante. Sem isso a figura estica, que foi o defeito corrigido em 17/09/2026.
+- `post-21-17.html` carrega cerca de 17,7 MB, quase tudo em PNG de 1,3 a 2,8 MB, e nenhuma imagem usa `loading="lazy"`: as seções nascem `hidden`, mas o navegador baixa tudo assim que a página abre. É o post mais pesado do site, e o custo cai sobre dados móveis.
 
 ## 10. Estado atual do projeto
 
 ### Implementado
 
-- Site/blog estático com 12 posts, navegação e interações narrativas.
+- Site/blog estático com 13 posts, navegação e interações narrativas.
+- **21:17**, a iniciação em três testes: a experiência interativa mais longa do site, com página, folha de estilo, script e pasta de assets próprios.
 - Cloudflare Worker, assets, D1, login anônimo, proteção contra tentativas e sessão assinada.
 - Persistência por passaporte e fila offline para chaves `sofia-*`.
 - Inventário da Missão, Caderno de Pistas, Coleção de Emblemas e teste dos Caminhos.
@@ -204,6 +221,10 @@ O Worker aceita no máximo 300 chaves, exige prefixo `sofia-`, limita nome a 120
 - A Área do Professor não pode ganhar rota de escrita sem decisão explícita: hoje a garantia de que a professora não altera o trabalho do aluno é o Worker não ter por onde.
 - Ao mexer nos modos de `sala.js`, separar as duas perguntas: `leitura` decide o que se pode **tocar**, `visita` decide o que se pode **gravar**. Confundir as duas foi o que deixou a Sala Geral travada sem proteger ninguém.
 - Trocar uma arte de perspectiva por outra de proporção diferente exige acertar o `aspect-ratio` correspondente em `sala.css`, senão a Sala inteira sai do lugar. O comentário no topo daquele arquivo lista as dimensões.
+- Em 21:17, a chave, a caixa e o envelope são posicionados em **porcentagem da altura do palco** do julgamento. Por isso a linha de observação é irmã do palco, e não filha: colocá-la dentro aumenta a altura do palco e desloca os três objetos, o que no celular joga a chave por cima do texto. Se precisar que ela apareça sobre a cena, puxe por margem negativa, sem entrar no fluxo.
+- Os objetos do julgamento são recortes de uma prancha única, `objetos-julgamento.png`, por `background-size`/`background-position`. Mexer num deles é mexer no recorte, não na posição de um arquivo próprio.
+- `post-21-17.html` referencia `post3.css` e `post3.js` com `?v=`. Editar qualquer um dos dois sem subir esse número entrega arquivo velho a quem já abriu o post.
+- O TESTE IV do terminal nega o acesso **duas vezes de propósito**: o campo IRREGULARIDADES só abre no segundo clique. A primeira recusa avisa com ACESSO NEGADO // INSISTA e o botão pulsando. Sem esse aviso, a leitora para ali e o post inteiro depois do terminal fica inacessível, incluindo o registro de conclusão.
 - O alternar de objeto da Sala não funciona com evento de ponteiro sintético: `setPointerCapture` rejeita um `pointerId` inventado e o `releasePointerCapture` do `pointerup` estoura antes de chegar ao `toggleState`. Com dedo ou mouse funciona; teste automatizado por esse caminho dá falso negativo.
 - Rodar `node sistema-passaporte/testar_worker.mjs` depois de mexer no Worker; o banco falso de lá precisa conhecer cada consulta nova.
 - O repositório estava com alterações locais funcionais não commitadas durante esta auditoria; preservá-las e revisar o diff antes de qualquer operação destrutiva.
