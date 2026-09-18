@@ -139,7 +139,12 @@ function toggleState(id){if(leitura)return;const d=itemById(id),s=state.roomItem
  if(s.state==='sede'){s.state=s.stage||'florida';delete s.stage;recado='A planta se recuperou.';}
  else if(s.state==='florida')recado='Ela já está florida. A rega mantém.';
  else{s.state=d.states[Math.min(3,Math.max(0,d.states.indexOf(s.state))+1)];
-  recado=s.state==='florida'?'A planta floresceu.':'A planta recebeu água.';}}else s.state=d.states[(d.states.indexOf(s.state)+1)%d.states.length];renderRoom();selectRoom(id);change();if(recado)recadoDaPlanta(recado);}
+  recado=s.state==='florida'?'A planta floresceu.':'A planta recebeu água.';}}else s.state=d.states[(d.states.indexOf(s.state)+1)%d.states.length];renderRoom();selectRoom(id);change();if(recado){recadoDaPlanta(recado);molhar(id);}}
+/* O no do objeto e refeito a cada renderRoom, entao a agua so pode ser
+   pedida depois dele — a classe posta antes morreria com o no antigo. */
+function molhar(id){const n=document.querySelector('.room-item[data-id="'+id+'"]');if(!n)return;
+ n.classList.remove('regando');void n.offsetWidth;n.classList.add('regando');
+ setTimeout(()=>n.classList.remove('regando'),950);}
 /* O recado da planta divide a linha com o estado do salvamento, e perdia:
    change() escreve 'Guardando...' no mesmo instante, antes de qualquer
    pintura, e o aluno nunca chegava a ler que a planta floresceu. Dizer
