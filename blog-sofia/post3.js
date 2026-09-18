@@ -65,7 +65,7 @@
   async function finishDoubt(){await wait(duration(650));$('[data-doubt-paper]').style.opacity='0';document.body.classList.add('post3-silence');await wait(duration(1000));await playVoice(5);reveal($('[data-trial-three]'));}
 
   const observations={box:'O símbolo da tampa tem uma pequena assimetria. Parece deliberada.',key:'A chave parece corresponder à fechadura. Isso não prova que deva ser usada.',envelope:'Para quem decidir antes de obedecer. Dentro: “Uma ordem não se torna verdadeira porque foi pronunciada por uma voz que você respeita.”'};
-  $$('[data-judgment-object]').forEach(btn=>btn.addEventListener('click',()=>{$('[data-judgment-observation]').innerHTML=`<p>${observations[btn.dataset.judgmentObject]}</p>`;}));
+  $$('[data-judgment-object]').forEach(btn=>btn.addEventListener('click',()=>{btn.classList.add('is-examined');$('[data-judgment-observation]').innerHTML=`<p>${observations[btn.dataset.judgmentObject]}</p>`;}));
   let decision='';
   $$('[data-decision]').forEach(btn=>btn.addEventListener('click',()=>{decision=btn.dataset.decision;$('[data-decision-dialog]').showModal();}));
   $('[data-decision-form]')?.addEventListener('submit',async e=>{e.preventDefault();const reason=new FormData(e.currentTarget).get('reason');if(!reason){$('[data-decision-error]').textContent='Escolha a razão que mais se aproxima da sua decisão.';return;}save('decisao_teste3',decision);save('justificativa_teste3',reason);$('[data-decision-dialog]').close();save('teste3_concluido');reveal($('[data-box-reveal]'));await wait(duration(3600));reveal($('[data-return-ceremony]'));});

@@ -87,3 +87,13 @@
 .return-ceremony.is-destiny-seen .destiny-watcher{opacity:1;filter:brightness(1.12) saturate(1) drop-shadow(0 0 34px #d4b267aa)}
 @media(max-width:1099px){.destiny-watcher{width:min(22%,200px);bottom:24%}}
 @media(max-width:760px){.destiny-watcher{width:auto;height:36vh;top:8%;bottom:auto;opacity:.5}}
+
+/* Teste III: o clique precisa dar sinal onde o olho está.
+   A observação vivia abaixo do palco, fora da tela em janela de notebook. */
+.judgment-hint{position:absolute;left:50%;bottom:100%;padding:.3rem .55rem;border-radius:5px;background:#08070acc;color:#f3dfae;font-size:.85rem;white-space:nowrap;opacity:0;transform:translate(-50%,8px);transition:.2s;pointer-events:none}
+.judgment-object:hover .judgment-hint,.judgment-object:focus-visible .judgment-hint{opacity:1;transform:translate(-50%,0)}
+@media(hover:none){.judgment-hint{opacity:.7;transform:translate(-50%,0)}}
+.judgment-object.is-examined{filter:brightness(1.1) drop-shadow(0 0 16px #d4aa5b66)}
+.judgment-observation{position:relative;z-index:2;width:min(760px,94%);min-height:0;margin:-6rem auto 0;padding:.85rem 1.2rem;border:1px solid #6f563066;border-radius:6px;background:#07060ae0;color:#e4d8ea}
+.judgment-observation p{margin:0}
+@media(max-width:760px){.judgment-observation{width:auto;margin:1rem auto 0;background:#07060a}}
