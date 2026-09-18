@@ -80,3 +80,9 @@
 .terminal-tests button.is-insisting span{color:#f3dfae}
 @keyframes insistir{50%{background:#2a1c3a;text-shadow:0 0 14px #d4b267aa}}
 @media(prefers-reduced-motion:reduce){.terminal-tests button.is-insisting{background:#2a1c3a}}
+
+/* A tesoura que o botão manda olhar: a representante do Destino fica no salão do retorno.
+   Mesmo recorte proporcional da Sofia: a prancha tem três figuras, e a caixa tem a proporção de uma. */
+.destiny-watcher{position:absolute;z-index:1;left:0;bottom:0;width:min(15%,175px);aspect-ratio:592/885;background-image:url("assets/arco2/post3/representantes-destino.png");background-position:100% 50%;background-size:300% 100%;background-repeat:no-repeat;opacity:.6;filter:brightness(.78) saturate(.85) drop-shadow(0 0 26px #000);transition:opacity .45s ease,filter .45s ease;pointer-events:none}
+.return-ceremony.is-destiny-seen .destiny-watcher{opacity:1;filter:brightness(1.12) saturate(1) drop-shadow(0 0 34px #d4b267aa)}
+@media(max-width:760px){.destiny-watcher{width:min(26%,110px);opacity:.46}}
