@@ -48,7 +48,7 @@
   $('[data-close-puzzle]').addEventListener('click',()=>puzzleDialog.close());
   $('[data-open-puzzle-callout]').addEventListener('click',openPuzzle);
 
-  const memories=[['heliopolis','Heliópolis'],['mileto','Mileto'],['aparicoes','Aparições e acontecimentos estranhos'],['convite','Convite'],['iniciacao','Iniciação']];
+  const memories=[['aparicoes','Acontecimentos estranhos · Arco I'],['heliopolis','Heliópolis'],['mileto','Mileto'],['convite','Convite'],['iniciacao','Iniciação']];
   let timeline=[],timelineHistory=[],selectedMemory=null;
   function drawTimeline(){
     const pool=$('[data-timeline-pool]'),slots=$('[data-timeline-slots]');pool.innerHTML='';slots.innerHTML='';
