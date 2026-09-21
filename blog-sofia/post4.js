@@ -33,19 +33,36 @@
   $('[data-close-research]').addEventListener('click',()=>researchDialog.close());
 
   const puzzleDialog=$('[data-puzzle-dialog]'), puzzleGrid=$('[data-puzzle-grid]');
-  let puzzleOrder=[8,2,5,1,7,0,4,6,3], selectedPiece=null;
+  let puzzleOrder=[8,2,5,1,7,0,4,6,3], selectedPiece=null, puzzleRevealPlayed=false, puzzleTimers=[];
+  function playOrderReveal(){
+    if(puzzleRevealPlayed)return;
+    puzzleRevealPlayed=true;
+    const status=$('[data-puzzle-status]');
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const later=(fn,delay)=>puzzleTimers.push(setTimeout(fn,delay));
+    status.textContent='Imagem reconstruída. Há alguma coisa errada no registro...';
+    if(reduced){
+      later(()=>{puzzleGrid.classList.add('is-order-reveal');status.textContent='Interferência: por um instante, aparece o Sísifo da Ordem.'},500);
+      later(()=>{puzzleGrid.classList.remove('is-order-reveal');status.textContent='A imagem mitológica retornou.'},2200);
+      return;
+    }
+    later(()=>puzzleGrid.classList.add('is-glitching'),550);
+    later(()=>{puzzleGrid.classList.remove('is-glitching');puzzleGrid.classList.add('is-order-reveal');status.textContent='Espera. Essa não era a imagem que eu montei.'},800);
+    later(()=>puzzleGrid.classList.add('is-glitching'),1900);
+    later(()=>{puzzleGrid.classList.remove('is-glitching','is-order-reveal');status.textContent='A imagem mitológica retornou.'},2150);
+  }
   function drawPuzzle(){
     puzzleGrid.innerHTML='';
     puzzleOrder.forEach((source,index)=>{const b=document.createElement('button');b.type='button';b.className='puzzle-piece';b.dataset.index=index;b.dataset.source=source;b.draggable=true;b.setAttribute('aria-label',`Peça ${index+1}, posição atual ${source+1}`);b.style.backgroundPosition=`${(source%3)*-50}% ${Math.floor(source/3)*-50}%`;puzzleGrid.append(b)});
-    if(puzzleOrder.every((v,i)=>v===i)){ $$('[data-puzzle-grid] button').forEach(b=>b.classList.add('is-solved')); $('[data-puzzle-status]').textContent='Imagem reconstruída. Por um instante, a figura pareceu diferente — mas o registro canônico ainda está incompleto.'; set('sofia-post4-puzzle-sisifo'); toast('Imagem de Sísifo reconstruída'); }
+    if(puzzleOrder.every((v,i)=>v===i)){ $$('[data-puzzle-grid] button').forEach(b=>b.classList.add('is-solved')); set('sofia-post4-puzzle-sisifo'); toast('Imagem de Sísifo reconstruída'); playOrderReveal(); }
   }
   function swap(a,b){[puzzleOrder[a],puzzleOrder[b]]=[puzzleOrder[b],puzzleOrder[a]];selectedPiece=null;drawPuzzle()}
-  function openPuzzle(){researchDialog.close();puzzleOrder=get('sofia-post4-puzzle-sisifo')?[0,1,2,3,4,5,6,7,8]:puzzleOrder;drawPuzzle();puzzleDialog.showModal()}
+  function openPuzzle(){researchDialog.close();puzzleRevealPlayed=false;puzzleTimers.forEach(clearTimeout);puzzleTimers=[];puzzleGrid.classList.remove('is-glitching','is-order-reveal');puzzleOrder=get('sofia-post4-puzzle-sisifo')?[0,1,2,3,4,5,6,7,8]:puzzleOrder;drawPuzzle();puzzleDialog.showModal()}
   puzzleGrid.addEventListener('click',e=>{const b=e.target.closest('.puzzle-piece');if(!b||get('sofia-post4-puzzle-sisifo'))return;const i=+b.dataset.index;if(selectedPiece===null){selectedPiece=i;b.classList.add('is-selected');$('[data-puzzle-status]').textContent='Agora selecione a peça que deve trocar de lugar.'}else swap(selectedPiece,i)});
   puzzleGrid.addEventListener('dragstart',e=>{const b=e.target.closest('.puzzle-piece');if(b)e.dataTransfer.setData('text/plain',b.dataset.index)});
   puzzleGrid.addEventListener('dragover',e=>e.preventDefault());
   puzzleGrid.addEventListener('drop',e=>{e.preventDefault();const b=e.target.closest('.puzzle-piece'),from=+e.dataTransfer.getData('text/plain');if(b&&!Number.isNaN(from))swap(from,+b.dataset.index)});
-  $('[data-close-puzzle]').addEventListener('click',()=>puzzleDialog.close());
+  $('[data-close-puzzle]').addEventListener('click',()=>{puzzleTimers.forEach(clearTimeout);puzzleTimers=[];puzzleGrid.classList.remove('is-glitching','is-order-reveal');puzzleDialog.close()});
   $('[data-open-puzzle-callout]').addEventListener('click',openPuzzle);
 
   const memories=[['aparicoes','Acontecimentos estranhos · Arco I'],['heliopolis','Heliópolis'],['mileto','Mileto'],['convite','Convite'],['iniciacao','Iniciação']];
