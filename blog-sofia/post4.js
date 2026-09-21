@@ -20,6 +20,7 @@
     const done=completedResearch();
     $$('[data-research]').forEach(b=>{const ok=done.includes(b.dataset.research);b.classList.toggle('is-done',ok);b.setAttribute('aria-pressed',String(ok));});
     $('[data-research-progress]').textContent=`${done.length} de 6 pesquisas registradas.${done.length<4?' Conclua mais '+(4-done.length)+' para abrir o caderno.':''}`;
+    if(done.includes('sisifo')) reveal($('[data-puzzle-callout]'));
     if(done.length>=4){reveal($('[data-notebook-step]'));set('sofia-post4-research-essential');}
   }
   $$('[data-research]').forEach(button=>button.addEventListener('click',()=>{
@@ -45,6 +46,7 @@
   puzzleGrid.addEventListener('dragover',e=>e.preventDefault());
   puzzleGrid.addEventListener('drop',e=>{e.preventDefault();const b=e.target.closest('.puzzle-piece'),from=+e.dataTransfer.getData('text/plain');if(b&&!Number.isNaN(from))swap(from,+b.dataset.index)});
   $('[data-close-puzzle]').addEventListener('click',()=>puzzleDialog.close());
+  $('[data-open-puzzle-callout]').addEventListener('click',openPuzzle);
 
   const memories=[['heliopolis','Heliópolis'],['mileto','Mileto'],['aparicoes','Aparições e acontecimentos estranhos'],['convite','Convite'],['iniciacao','Iniciação']];
   let timeline=[],timelineHistory=[],selectedMemory=null;
