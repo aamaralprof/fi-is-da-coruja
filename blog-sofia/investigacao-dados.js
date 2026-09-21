@@ -3,6 +3,7 @@ window.Investigacao = {
   casos: {
     heliopolis: {nome:'Heliópolis', pergunta:'Que vestígios ficaram do que aconteceu na Sala 17?', post:'post-a-janela-nao-dava-para-o-patio.html', chave:'sofia-room-unlocked'},
     tales: {nome:'O fragmento · Mileto', pergunta:'Que conexão existe entre o fragmento, Mileto e a água?', post:'post-choveu-no-meu-caderno.html', chave:'sofia-mission-fragmento-desconhecido'},
+    percurso: {nome:'Como vim parar aqui?', pergunta:'O que a cronologia esclarece — e o que continua sendo hipótese?', post:'post-como-foi-que-eu-vim-parar-aqui.html', chave:'sofia-clue-anotacoes-organizadas'},
     universo: {nome:'A pergunta maior', pergunta:'O que este universo representa?', chave:'sofia-room-unlocked'}
   },
   itens: [
@@ -27,7 +28,8 @@ window.Investigacao = {
     {id:'primeiro-reflexo',titulo:'O Primeiro Reflexo',tipo:'emblema',chave:'sofia-emblem-first-reflection',caso:'heliopolis',imagem:'assets/escritorio-do-destino-inventario.png',texto:'Conquistado ao observar o que existia entre duas paisagens.'},
     {id:'fragmento-desconhecido-post2',titulo:'Fragmento desconhecido',tipo:'objeto',chave:'sofia-mission-fragmento-desconhecido',caso:'tales',imagem:'assets/arco2/fragmento-desconhecido.png',texto:'Um fragmento apareceu no caderno de Sofia durante a aula de Ciências.'},
     {id:'mileto-post2',titulo:'Mileto',tipo:'pista',chave:'sofia-clue-mileto-post2',caso:'tales',texto:'O fragmento parece estar ligado a um pensador da antiga cidade de Mileto. A presença recorrente da água pode ser importante.'},
-    {id:'convite-fieis',titulo:'Convite dos Fiéis da Coruja',tipo:'documento',chave:'sofia-document-convite-fieis',caso:'tales',imagem:'assets/arco2/convite-fieis-original.jpeg',texto:'Convite formal para um círculo reservado daqueles que ousam atravessar as fronteiras do tempo e do pensamento.'}
+    {id:'convite-fieis',titulo:'Convite dos Fiéis da Coruja',tipo:'documento',chave:'sofia-document-convite-fieis',caso:'tales',imagem:'assets/arco2/convite-fieis-original.jpeg',texto:'Convite formal para um círculo reservado daqueles que ousam atravessar as fronteiras do tempo e do pensamento.'},
+    {id:'anotacoes-organizadas',titulo:'Minhas anotações (finalmente organizadas)',tipo:'documento',chave:'sofia-clue-anotacoes-organizadas',caso:'percurso',imagem:'assets/arco2/post4/caderno-aberto.png',texto:'Linha do tempo, mapa, nomes, símbolos, hipóteses e perguntas reunidos por Sofia. Não confundir pistas com respostas.',fonte:'Caderno da Sofia · anotação 04'}
   ],
   /* Por onde o catálogo lê o progresso. A Sala em modo leitura troca esta
      função pelo percurso do aluno que está sendo visitado, para que a

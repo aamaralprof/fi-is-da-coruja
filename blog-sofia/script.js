@@ -76,7 +76,8 @@ const laterClues = [
   ['08','linked-uniforms','dois uniformes, uma costura','O uniforme de Sofia e o do menino mudam como versões da mesma coisa.'],
   ['09','test-recognized-sofia','o teste reconheceu Sofia','Por um instante, o resultado deixou de ser um Caminho.'],
   ['10','fragmento-carta','o fragmento da carta','Heliópolis ligava a ordem do cosmos, a origem da vida e o destino humano.'],
-  ['11','mileto-post2','Mileto','O fragmento parece ligado a um pensador da antiga cidade. A presença recorrente da água pode ser importante.']
+  ['11','mileto-post2','Mileto','O fragmento parece ligado a um pensador da antiga cidade. A presença recorrente da água pode ser importante.'],
+  ['12','anotacoes-organizadas','Minhas anotações (finalmente organizadas)','Linha do tempo, mapa, nomes, símbolos, hipóteses e perguntas reunidos por Sofia. Não confundir pistas com respostas.']
 ];
 laterClues.forEach(([number,key,title,description]) => {
   if (journalList && !journalList.querySelector(`[data-clue-entry="${key}"]`)) {

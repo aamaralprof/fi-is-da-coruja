@@ -21,7 +21,9 @@ Aplicação web sem etapa de build: frontend estático em HTML, CSS e JavaScript
 - `blog-sofia/percurso.js`: sessão, isolamento local por passaporte, fila offline e sincronização de progresso.
 - `blog-sofia/arco2.css` e `blog-sofia/arco2.js`: componentes e desbloqueios dos posts do segundo arco.
 - `blog-sofia/post3.css` e `blog-sofia/post3.js`: a experiência inteira de **21:17**, terceiro post do arco 2. Não são compartilhados com nenhuma outra página.
+- `blog-sofia/post4.css` e `blog-sofia/post4.js`: a experiência de investigação **Como foi que eu vim parar aqui?**, quarto post do arco 2, com pesquisas, quebra-cabeça, linha do tempo, classificação, mapa e recompensa.
 - `blog-sofia/assets/arco2/post3/`: cenários, pranchas de figuras e as seis faixas de áudio de 21:17.
+- `blog-sofia/assets/arco2/post4/`: Explorador, caderno, post-its, rabiscos, mapa, rota e imagens de Sísifo do quarto post.
 - `blog-sofia/investigacao-dados.js`: catálogo central de casos e itens usados pela Sala.
 - `blog-sofia/sala-investigacao.html`, `blog-sofia/sala.css` e `blog-sofia/sala.js`: interface, visual e lógica da Sala de Investigação.
 - `blog-sofia/sala-professor.js`: monta o contexto de leitura da Sala quando o endereço traz `?aluno=` ou `?geral=1`. Não desenha nada.
@@ -35,7 +37,7 @@ Aplicação web sem etapa de build: frontend estático em HTML, CSS e JavaScript
 
 ## 3. Blog da Sofia
 
-Os posts ficam diretamente em `blog-sofia/post-*.html`. Há 13 arquivos: dez anotações do primeiro arco e três do segundo. Cada post é uma página HTML completa, ligada manualmente ao anterior/próximo e listada manualmente na página de seu arco (`arquivo-o-chamado.html` ou `arquivo-xvii.html`); a home apresenta somente os dois cards de entrada desses arquivos. Não existe CMS nem modelo gerador. O primeiro post do arco 2, **Sala 17**, concentra sua progressão em `arco2.js`: janela Quadra/Heliópolis, registro da carta, Caminho do Sol, Cifra Solar opcional, recompensas e conversa no aplicativo E Aí?.
+Os posts ficam diretamente em `blog-sofia/post-*.html`. Há 14 arquivos: dez anotações do primeiro arco e quatro do segundo. Cada post é uma página HTML completa, ligada manualmente ao anterior/próximo e listada manualmente na página de seu arco (`arquivo-o-chamado.html` ou `arquivo-xvii.html`); a home apresenta somente os dois cards de entrada desses arquivos. Não existe CMS nem modelo gerador. O primeiro post do arco 2, **Sala 17**, concentra sua progressão em `arco2.js`: janela Quadra/Heliópolis, registro da carta, Caminho do Sol, Cifra Solar opcional, recompensas e conversa no aplicativo E Aí?.
 
 Estrutura recorrente: navegação, cabeçalho com metadados, corpo narrativo, blocos interativos, paginação e rodapé. `blog-sofia/styles.css`, `blog-sofia/script.js`, `blog-sofia/percurso.js` e `blog-sofia/contraste.js` são compartilhados. Os posts do arco 2 também carregam `blog-sofia/arco2.css` e `blog-sofia/arco2.js`, com uma exceção: **`post-21-17.html` não carrega nenhum dos dois, nem `script.js`**. Ele traz a própria dupla `post3.css`/`post3.js`. Quem procurar o comportamento de 21:17 em `arco2.js` não encontra nada.
 
@@ -95,6 +97,14 @@ Modais/painéis: Caderno de Pistas, Inventário da Missão, Coleção de Emblema
 - Acesso: sem tranca. O card em `arquivo-xvii.html` é um link comum, e `arco2.js` não conhece este post.
 - Áudio: cinco falas de Atena (`atena-01..05.mp3`), destravadas junto com a lanterna, e `sussurro-final.mp3` no encerramento, que toca **uma vez**, com fade nos últimos oito segundos, e se cala se a aba sair de vista.
 - `sofia-post3_concluido` só é gravado no envio do campo IRREGULARIDADES, no fim do terminal. Quem parar antes faz os três testes e não consta como tendo concluído.
+
+### Como foi que eu vim parar aqui? (arco 2, post 4)
+
+- Finalidade: investigação posterior à iniciação, sem resolver os mistérios; organiza pesquisas, cronologia, observações, hipóteses e relações entre Heliópolis e Mileto.
+- Arquivos: `blog-sofia/post-como-foi-que-eu-vim-parar-aqui.html`, `blog-sofia/post4.css`, `blog-sofia/post4.js` e `blog-sofia/assets/arco2/post4/`.
+- Sequência essencial: quatro das seis pesquisas → linha do tempo → interpretação da cronologia → classificação de post-its → exame de Heliópolis e Mileto → rota → página final → recompensa.
+- Persistência: chaves `sofia-post4-*` pelo fluxo normal de `percurso.js`; a recompensa usa `sofia-clue-anotacoes-organizadas` e aparece no Caderno de Pistas e em `investigacao-dados.js`.
+- O quebra-cabeça de Sísifo é opcional e funciona por arraste ou seleção de duas peças. O glitch de substituição permanece desabilitado até existir a imagem canônica do Sísifo da Ordem.
 
 ### Sala de Investigação
 
