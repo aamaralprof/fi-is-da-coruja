@@ -47,16 +47,11 @@
     const later=(fn,delay)=>puzzleTimers.push(setTimeout(fn,delay));
     status.textContent='Imagem reconstruída. Há alguma coisa errada no registro...';
     if(reduced){
-      later(()=>{puzzleGrid.classList.add('is-order-reveal');status.textContent='Interferência: por um instante, aparece o Sísifo da Ordem.'},650);
-      later(()=>puzzleGrid.classList.remove('is-order-reveal'),3900);
-      later(()=>{status.textContent='A imagem mitológica retornou.'},4700);
+      later(()=>{puzzleGrid.classList.add('is-order-reveal');status.textContent='Registro revelado: Sísifo da Ordem.'},450);
       return;
     }
-    later(()=>puzzleGrid.classList.add('is-glitching'),550);
-    later(()=>{puzzleGrid.classList.remove('is-glitching');puzzleGrid.classList.add('is-order-reveal');status.textContent='Espera. Essa não era a imagem que eu montei.'},950);
-    later(()=>puzzleGrid.classList.add('is-glitching'),4200);
-    later(()=>puzzleGrid.classList.remove('is-glitching','is-order-reveal'),4450);
-    later(()=>{status.textContent='A imagem mitológica retornou.'},5250);
+    later(()=>puzzleGrid.classList.add('is-glitching'),450);
+    later(()=>{puzzleGrid.classList.remove('is-glitching');puzzleGrid.classList.add('is-order-reveal');status.textContent='Registro revelado: Sísifo da Ordem.'},850);
   }
   function drawPuzzle(){
     puzzleGrid.querySelectorAll('.puzzle-piece').forEach(piece=>piece.remove());

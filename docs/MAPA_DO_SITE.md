@@ -104,7 +104,7 @@ Modais/painéis: Caderno de Pistas, Inventário da Missão, Coleção de Emblema
 - Arquivos: `blog-sofia/post-como-foi-que-eu-vim-parar-aqui.html`, `blog-sofia/post4.css`, `blog-sofia/post4.js` e `blog-sofia/assets/arco2/post4/`.
 - Sequência essencial: quatro das seis pesquisas → linha do tempo → interpretação da cronologia → classificação de post-its → exame de Heliópolis e Mileto → rota → página final → recompensa.
 - Persistência: chaves `sofia-post4-*` pelo fluxo normal de `percurso.js`; a recompensa usa `sofia-clue-anotacoes-organizadas` e aparece no Caderno de Pistas e em `investigacao-dados.js`.
-- O quebra-cabeça de Sísifo é opcional, tem um único acesso dentro da pesquisa de Sísifo e funciona por arraste ou seleção de duas peças. Ao ser concluído, aguarda a imagem canônica carregar, faz uma interferência leve, revela o Sísifo da Ordem e retorna à imagem mitológica; a imagem de revelação é mantida no DOM para evitar recarga e travamento a cada troca. As pesquisas das Moiras e da coruja destacam o desenho correspondente com movimento reduzido acessível.
+- O quebra-cabeça de Sísifo é opcional, tem um único acesso dentro da pesquisa de Sísifo e funciona por arraste ou seleção de duas peças. Ao ser concluído, aguarda a imagem canônica carregar, faz uma interferência leve e mantém o Sísifo da Ordem revelado; ao reabrir um quebra-cabeça já resolvido, a revelação também permanece visível. A imagem de revelação é mantida no DOM para evitar recarga e travamento a cada troca. As pesquisas das Moiras e da coruja destacam o desenho correspondente com movimento reduzido acessível.
 
 ### Sala de Investigação
 
