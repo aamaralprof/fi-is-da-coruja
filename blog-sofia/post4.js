@@ -35,23 +35,14 @@
 
   const puzzleDialog=$('[data-puzzle-dialog]'), puzzleGrid=$('[data-puzzle-grid]');
   let puzzleOrder=[8,2,5,1,7,0,4,6,3], selectedPiece=null, puzzleRevealPlayed=false, puzzleTimers=[];
-  async function playOrderReveal(){
-    if(puzzleRevealPlayed)return;
+  function playOrderReveal(){
+    if(puzzleRevealPlayed||!puzzleDialog.open)return;
     puzzleRevealPlayed=true;
     const status=$('[data-puzzle-status]');
-    const orderImage=puzzleGrid.querySelector('.puzzle-order-reveal');
-    status.textContent='Imagem reconstruída. Verificando o registro...';
-    try{if(orderImage&&!orderImage.complete)await orderImage.decode()}catch{}
-    if(!puzzleDialog.open)return;
-    const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const later=(fn,delay)=>puzzleTimers.push(setTimeout(fn,delay));
-    status.textContent='Imagem reconstruída. Há alguma coisa errada no registro...';
-    if(reduced){
-      later(()=>{puzzleGrid.classList.add('is-order-reveal');status.textContent='Registro revelado: Sísifo da Ordem.'},450);
-      return;
-    }
-    later(()=>puzzleGrid.classList.add('is-glitching'),450);
-    later(()=>{puzzleGrid.classList.remove('is-glitching');puzzleGrid.classList.add('is-order-reveal');status.textContent='Registro revelado: Sísifo da Ordem.'},850);
+    puzzleTimers.forEach(clearTimeout);puzzleTimers=[];
+    puzzleGrid.classList.remove('is-glitching');
+    puzzleGrid.classList.add('is-order-reveal');
+    status.textContent='Registro revelado: Sísifo da Ordem.';
   }
   function drawPuzzle(){
     puzzleGrid.querySelectorAll('.puzzle-piece').forEach(piece=>piece.remove());
