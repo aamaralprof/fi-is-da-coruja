@@ -42,18 +42,21 @@
     const later=(fn,delay)=>puzzleTimers.push(setTimeout(fn,delay));
     status.textContent='Imagem reconstruída. Há alguma coisa errada no registro...';
     if(reduced){
-      later(()=>{puzzleGrid.classList.add('is-order-reveal');status.textContent='Interferência: por um instante, aparece o Sísifo da Ordem.'},500);
-      later(()=>{puzzleGrid.classList.remove('is-order-reveal');status.textContent='A imagem mitológica retornou.'},2200);
+      later(()=>{puzzleGrid.classList.add('is-order-reveal');status.textContent='Interferência: por um instante, aparece o Sísifo da Ordem.'},650);
+      later(()=>puzzleGrid.classList.remove('is-order-reveal'),2450);
+      later(()=>{status.textContent='A imagem mitológica retornou.'},3250);
       return;
     }
     later(()=>puzzleGrid.classList.add('is-glitching'),550);
-    later(()=>{puzzleGrid.classList.remove('is-glitching');puzzleGrid.classList.add('is-order-reveal');status.textContent='Espera. Essa não era a imagem que eu montei.'},800);
-    later(()=>puzzleGrid.classList.add('is-glitching'),1900);
-    later(()=>{puzzleGrid.classList.remove('is-glitching','is-order-reveal');status.textContent='A imagem mitológica retornou.'},2150);
+    later(()=>{puzzleGrid.classList.remove('is-glitching');puzzleGrid.classList.add('is-order-reveal');status.textContent='Espera. Essa não era a imagem que eu montei.'},950);
+    later(()=>puzzleGrid.classList.add('is-glitching'),2600);
+    later(()=>puzzleGrid.classList.remove('is-glitching','is-order-reveal'),2850);
+    later(()=>{status.textContent='A imagem mitológica retornou.'},3650);
   }
   function drawPuzzle(){
     puzzleGrid.innerHTML='';
     puzzleOrder.forEach((source,index)=>{const b=document.createElement('button');b.type='button';b.className='puzzle-piece';b.dataset.index=index;b.dataset.source=source;b.draggable=true;b.setAttribute('aria-label',`Peça ${index+1}, posição atual ${source+1}`);b.style.backgroundPosition=`${(source%3)*-50}% ${Math.floor(source/3)*-50}%`;puzzleGrid.append(b)});
+    const orderImage=document.createElement('img');orderImage.className='puzzle-order-reveal';orderImage.src='assets/arco2/post4/sofia-sisifo.png';orderImage.alt='';orderImage.setAttribute('aria-hidden','true');puzzleGrid.append(orderImage);
     if(puzzleOrder.every((v,i)=>v===i)){ $$('[data-puzzle-grid] button').forEach(b=>b.classList.add('is-solved')); set('sofia-post4-puzzle-sisifo'); toast('Imagem de Sísifo reconstruída'); playOrderReveal(); }
   }
   function swap(a,b){[puzzleOrder[a],puzzleOrder[b]]=[puzzleOrder[b],puzzleOrder[a]];selectedPiece=null;drawPuzzle()}
