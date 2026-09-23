@@ -50,7 +50,7 @@
     puzzleGrid.querySelectorAll('.puzzle-piece').forEach(piece=>piece.remove());
     let orderImage=puzzleGrid.querySelector('.puzzle-order-reveal');
     if(!orderImage){orderImage=document.createElement('img');orderImage.className='puzzle-order-reveal';orderImage.src='assets/arco2/post4/sofia-sisifo.png';orderImage.alt='';orderImage.decoding='async';orderImage.setAttribute('aria-hidden','true');puzzleGrid.append(orderImage)}
-    puzzleOrder.forEach((source,index)=>{const b=document.createElement('button');b.type='button';b.className='puzzle-piece';b.dataset.index=index;b.dataset.source=source;b.draggable=true;b.setAttribute('aria-label',`Peça ${index+1}, posição atual ${source+1}`);b.style.backgroundPosition=`${(source%3)*-50}% ${Math.floor(source/3)*-50}%`;puzzleGrid.insertBefore(b,orderImage)});
+    puzzleOrder.forEach((source,index)=>{const b=document.createElement('button');b.type='button';b.className='puzzle-piece';b.dataset.index=index;b.dataset.source=source;b.draggable=true;b.setAttribute('aria-label',`Peça ${index+1}, posição atual ${source+1}`);b.style.backgroundPosition=`${(source%3)*50}% ${Math.floor(source/3)*50}%`;puzzleGrid.insertBefore(b,orderImage)});
     if(puzzleOrder.every((v,i)=>v===i)){ $$('[data-puzzle-grid] button').forEach(b=>b.classList.add('is-solved')); set('sofia-post4-puzzle-sisifo'); puzzleRevealButton.textContent='Revelar o registro da Ordem'; $('[data-puzzle-status]').textContent='Imagem reconstruída. Há outro registro escondido aqui.'; toast('Imagem de Sísifo reconstruída'); }
   }
   function swap(a,b){[puzzleOrder[a],puzzleOrder[b]]=[puzzleOrder[b],puzzleOrder[a]];selectedPiece=null;drawPuzzle()}
