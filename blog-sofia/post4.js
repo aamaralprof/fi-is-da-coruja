@@ -73,7 +73,7 @@
   }
   $('[data-timeline-pool]').addEventListener('click',e=>{const b=e.target.closest('[data-memory]');if(!b)return;selectedMemory=b.dataset.memory;drawTimeline()});
   $('[data-timeline-slots]').addEventListener('click',e=>{const b=e.target.closest('[data-slot]');if(!b)return;const position=+b.dataset.slot;timelineHistory.push([...timeline]);if(selectedMemory){timeline.splice(position,0,selectedMemory);timeline=timeline.slice(0,5);selectedMemory=null}else if(timeline[position]){selectedMemory=timeline[position];timeline.splice(position,1)}drawTimeline()});
-  $('[data-timeline-undo]').addEventListener('click',()=>{timeline=timelineHistory.pop()||[];selectedMemory=null;drawTimeline()});
+  $('[data-timeline-undo]').addEventListener('click',()=>{if(!timelineHistory.length)return;timeline=timelineHistory.pop();selectedMemory=null;drawTimeline();$('[data-timeline-status]').textContent='Último movimento desfeito.'});
   $('[data-timeline-check]').addEventListener('click',()=>{const correct=memories.map(m=>m[0]).every((id,i)=>timeline[i]===id);if(!correct){$('[data-timeline-status]').textContent='Algumas lembranças ainda estão fora de ordem. Reorganize e tente de novo.';return}set('sofia-post4-timeline');$('[data-timeline-status]').textContent='Ótimo. Agora os acontecimentos absurdos estão em ordem cronológica.';reveal($('[data-chronology-question]'));toast('Linha do tempo organizada')});
   $$('[data-chronology]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.chronology!=='b'){$('[data-chronology-feedback]').textContent='A sequência não confirma isso. Observe o que aconteceu antes do convite.';return}set('sofia-post4-chronology');$('[data-chronology-feedback]').innerHTML='<strong>ISSO COMEÇOU ANTES DO CONVITE.</strong><br>A cronologia mostra quando os acontecimentos começaram, mas ainda não explica quem os organizou ou por quê.<br><em>Então por que me convidaram só depois?</em>';reveal($('[data-notes-step]'));scroll($('[data-notes-step]'))}));
 
@@ -89,7 +89,7 @@
 
   function restore(){
     renderResearch(); drawTimeline(); drawNote();
-    if(get('sofia-post4-timeline')){timeline=memories.map(m=>m[0]);drawTimeline();reveal($('[data-chronology-question]'))}
+    if(get('sofia-post4-timeline')){timeline=memories.map(m=>m[0]);timelineHistory=timeline.map((_,i)=>timeline.slice(0,i));drawTimeline();reveal($('[data-chronology-question]'))}
     if(get('sofia-post4-chronology'))reveal($('[data-notes-step]'));
     if(get('sofia-post4-notes'))reveal($('[data-map-step]'));
     if(get('sofia-post4-map')){$('.map-stage').classList.add('is-connected');reveal($('[data-final-step]'))}
