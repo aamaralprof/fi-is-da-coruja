@@ -8,10 +8,10 @@
 
   const research={
     carta:{title:'A carta e o nome escrito nela',label:'Atenas',image:'assets/arco2/convite-fieis-original.jpeg',alt:'Convite original recebido por Sofia',html:'<p><strong>Atenas</strong> é o nome da cidade grega historicamente associada à deusa Atena. No convite, a referência aparece na frase “Atenas, sob os auspícios da deusa da sabedoria”. Isso ajuda a compreender o nome, mas não identifica a mulher com quem Sofia conversou.</p><p class="sofia-line">— Interessante. Isso explica o nome. Não explica a pessoa.</p>',record:'ATENAS → qual é a relação com a mulher?'},
-    sisifo:{title:'Sísifo',label:'Sísifo',image:'assets/arco2/post4/sisifo-mitologico.png',alt:'Representação mitológica de Sísifo empurrando uma pedra montanha acima',html:'<p>Sísifo é uma figura da mitologia grega associada à punição de empurrar uma enorme pedra montanha acima, apenas para vê-la retornar, obrigando-o a recomeçar.</p><button type="button" class="reward-button" data-open-puzzle>Examinar imagem</button><p class="sofia-line">— Por que alguém escolheria o nome de um sujeito condenado a empurrar uma pedra para sempre?</p>',record:'SÍSIFO — por que esse nome?'},
+    sisifo:{title:'Sísifo',label:'Sísifo',image:'assets/arco2/post4/rabiscos.png',alt:'Rabiscos de Sofia com uma representação de Sísifo destacada entre outras pistas',html:'<p>Sísifo é uma figura da mitologia grega associada à punição de empurrar uma enorme pedra montanha acima, apenas para vê-la retornar, obrigando-o a recomeçar.</p><p class="sofia-line">— Por que alguém escolheria o nome de um sujeito condenado a empurrar uma pedra para sempre?</p>',record:'SÍSIFO — por que esse nome?'},
     coruja:{title:'A coruja',label:'coruja e Atena',image:'assets/arco2/post4/rabiscos.png',alt:'Rabiscos de Sofia, incluindo uma coruja e referências mitológicas',html:'<p>Na tradição grega, a coruja é frequentemente associada a Atena e a ideias de sabedoria, atenção e observação. Uma associação simbólica não é uma identificação.</p><p class="sofia-line">— Ah. Essa eu devia ter pesquisado há umas três semanas.</p>',record:'CORUJA → ATENA?'},
     mulheres:{title:'Três mulheres e o destino',label:'três mulheres',image:'assets/arco2/post4/rabiscos.png',alt:'Rabiscos com três figuras femininas ligadas por um fio',html:'<p>Uma possibilidade mitológica são as <strong>Moiras</strong>, três figuras ligadas ao fio da vida e ao destino. A semelhança não prova que as mulheres vistas por Sofia sejam elas.</p><p class="sofia-line">— Três mulheres que decidem o destino das pessoas. Espero sinceramente que seja coincidência.</p>',record:'TRÊS MULHERES → MOIRAS?'},
-    cores:{title:'Preto e roxo',label:'cores recorrentes',image:'assets/arco2/post4/sofia-sisifo.png',alt:'Figura vestida de preto em uma paisagem rochosa',html:'<p>Sofia lembra de duas aparições diferentes: um menino aparentemente usando uniforme preto e roxo e uma pessoa usando manto preto e roxo. As cores se repetem; a relação entre as pessoas permanece desconhecida.</p><p class="sofia-line">— Pesquisar “menino de uniforme preto e roxo” não foi exatamente meu momento mais brilhante.</p>',record:'MENINO + MANTO → MESMAS CORES?'},
+    cores:{title:'Preto e roxo',label:'cores recorrentes',image:'assets/arco2/post4/rabiscos.png',alt:'Rabiscos de Sofia reunindo pistas, símbolos e referências à Ordem',html:'<p>Sofia lembra de duas aparições diferentes: um menino aparentemente usando uniforme preto e roxo e uma pessoa usando manto preto e roxo. As cores se repetem; a relação entre as pessoas permanece desconhecida.</p><p class="sofia-line">— Pesquisar “menino de uniforme preto e roxo” não foi exatamente meu momento mais brilhante.</p>',record:'MENINO + MANTO → MESMAS CORES?'},
     lugares:{title:'Heliópolis e Mileto',label:'dois lugares',image:'assets/arco2/post4/mapa-heliopolis-mileto.png',alt:'Mapa ilustrado com Heliópolis e Mileto',html:'<p>Heliópolis, no Egito, reuniu tradições de observação do céu, do tempo e da ordem do mundo. Mileto, na Ásia Menor, ficou ligada a investigações sobre a natureza e seus princípios. São tradições distintas, mas ambas formularam perguntas sobre o mundo.</p>',record:'POR QUE COMEÇARAM POR ESSES DOIS LUGARES?'}
   };
   const researchDialog=$('[data-research-dialog]'), researchContent=$('[data-research-content]');
@@ -26,38 +26,38 @@
     const id=button.dataset.research, item=research[id];
     $('[data-search-label]').textContent=item.label;
     researchContent.dataset.topic=id;
-    const focus=id==='mulheres'||id==='coruja'?'<span class="research-focus" aria-hidden="true"></span>':'';
+    const focus=['sisifo','mulheres','coruja'].includes(id)?'<span class="research-focus" aria-hidden="true"></span>':'';
     researchContent.innerHTML=`<p class="eyebrow">resultado preparado</p><h2 id="research-title">${item.title}</h2><div class="research-visual-wrap"><img class="research-visual" src="${item.image}" alt="${item.alt}">${focus}</div>${item.html}<p class="research-record"><strong>Registro liberado</strong><br>${item.record}</p>`;
     set('sofia-post4-research-'+id); renderResearch(); researchDialog.showModal(); toast('Anotação liberada · '+item.label);
-    $('[data-open-puzzle]',researchContent)?.addEventListener('click',openPuzzle);
   }));
   $('[data-close-research]').addEventListener('click',()=>researchDialog.close());
 
-  const puzzleDialog=$('[data-puzzle-dialog]'), puzzleGrid=$('[data-puzzle-grid]');
-  let puzzleOrder=[8,2,5,1,7,0,4,6,3], selectedPiece=null, puzzleRevealPlayed=false, puzzleTimers=[];
+  const puzzleDialog=$('[data-puzzle-dialog]'), puzzleGrid=$('[data-puzzle-grid]'), puzzleRevealButton=$('[data-reveal-order]');
+  let puzzleOrder=[8,2,5,1,7,0,4,6,3], selectedPiece=null;
   function playOrderReveal(){
-    if(puzzleRevealPlayed||!puzzleDialog.open)return;
-    puzzleRevealPlayed=true;
+    if(!puzzleDialog.open)return;
     const status=$('[data-puzzle-status]');
-    puzzleTimers.forEach(clearTimeout);puzzleTimers=[];
-    puzzleGrid.classList.remove('is-glitching');
     puzzleGrid.classList.add('is-order-reveal');
     status.textContent='Registro revelado: Sísifo da Ordem.';
+    puzzleRevealButton.disabled=true;
+    puzzleRevealButton.textContent='Sísifo da Ordem revelado';
   }
   function drawPuzzle(){
     puzzleGrid.querySelectorAll('.puzzle-piece').forEach(piece=>piece.remove());
     let orderImage=puzzleGrid.querySelector('.puzzle-order-reveal');
     if(!orderImage){orderImage=document.createElement('img');orderImage.className='puzzle-order-reveal';orderImage.src='assets/arco2/post4/sofia-sisifo.png';orderImage.alt='';orderImage.decoding='async';orderImage.setAttribute('aria-hidden','true');puzzleGrid.append(orderImage)}
     puzzleOrder.forEach((source,index)=>{const b=document.createElement('button');b.type='button';b.className='puzzle-piece';b.dataset.index=index;b.dataset.source=source;b.draggable=true;b.setAttribute('aria-label',`Peça ${index+1}, posição atual ${source+1}`);b.style.backgroundPosition=`${(source%3)*-50}% ${Math.floor(source/3)*-50}%`;puzzleGrid.insertBefore(b,orderImage)});
-    if(puzzleOrder.every((v,i)=>v===i)){ $$('[data-puzzle-grid] button').forEach(b=>b.classList.add('is-solved')); set('sofia-post4-puzzle-sisifo'); toast('Imagem de Sísifo reconstruída'); if(puzzleDialog.open)playOrderReveal(); }
+    if(puzzleOrder.every((v,i)=>v===i)){ $$('[data-puzzle-grid] button').forEach(b=>b.classList.add('is-solved')); set('sofia-post4-puzzle-sisifo'); puzzleRevealButton.hidden=false; $('[data-puzzle-status]').textContent='Imagem reconstruída. Há outro registro escondido aqui.'; toast('Imagem de Sísifo reconstruída'); }
   }
   function swap(a,b){[puzzleOrder[a],puzzleOrder[b]]=[puzzleOrder[b],puzzleOrder[a]];selectedPiece=null;drawPuzzle()}
-  function openPuzzle(){researchDialog.close();puzzleRevealPlayed=false;puzzleTimers.forEach(clearTimeout);puzzleTimers=[];puzzleGrid.classList.remove('is-glitching','is-order-reveal');puzzleOrder=get('sofia-post4-puzzle-sisifo')?[0,1,2,3,4,5,6,7,8]:puzzleOrder;drawPuzzle();puzzleDialog.showModal();if(puzzleOrder.every((v,i)=>v===i))playOrderReveal()}
+  function openPuzzle(){researchDialog.close();puzzleGrid.classList.remove('is-order-reveal');puzzleRevealButton.hidden=true;puzzleRevealButton.disabled=false;puzzleRevealButton.textContent='Revelar o registro da Ordem';puzzleOrder=get('sofia-post4-puzzle-sisifo')?[0,1,2,3,4,5,6,7,8]:puzzleOrder;drawPuzzle();puzzleDialog.showModal()}
+  $$('[data-open-puzzle]').forEach(button=>button.addEventListener('click',openPuzzle));
+  puzzleRevealButton.addEventListener('click',playOrderReveal);
   puzzleGrid.addEventListener('click',e=>{const b=e.target.closest('.puzzle-piece');if(!b||get('sofia-post4-puzzle-sisifo'))return;const i=+b.dataset.index;if(selectedPiece===null){selectedPiece=i;b.classList.add('is-selected');$('[data-puzzle-status]').textContent='Agora selecione a peça que deve trocar de lugar.'}else swap(selectedPiece,i)});
   puzzleGrid.addEventListener('dragstart',e=>{const b=e.target.closest('.puzzle-piece');if(b)e.dataTransfer.setData('text/plain',b.dataset.index)});
   puzzleGrid.addEventListener('dragover',e=>e.preventDefault());
   puzzleGrid.addEventListener('drop',e=>{e.preventDefault();const b=e.target.closest('.puzzle-piece'),from=+e.dataTransfer.getData('text/plain');if(b&&!Number.isNaN(from))swap(from,+b.dataset.index)});
-  $('[data-close-puzzle]').addEventListener('click',()=>{puzzleTimers.forEach(clearTimeout);puzzleTimers=[];puzzleGrid.classList.remove('is-glitching','is-order-reveal');puzzleDialog.close()});
+  $('[data-close-puzzle]').addEventListener('click',()=>{puzzleGrid.classList.remove('is-order-reveal');puzzleDialog.close()});
 
   const memories=[['aparicoes','Acontecimentos estranhos · Arco I'],['heliopolis','Heliópolis'],['mileto','Mileto'],['convite','Convite'],['iniciacao','Iniciação']];
   let timeline=[],timelineHistory=[],selectedMemory=null;
