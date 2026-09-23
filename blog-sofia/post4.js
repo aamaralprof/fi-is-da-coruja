@@ -33,10 +33,14 @@
   $('[data-close-research]').addEventListener('click',()=>researchDialog.close());
 
   const puzzleDialog=$('[data-puzzle-dialog]'), puzzleGrid=$('[data-puzzle-grid]'), puzzleRevealButton=$('[data-reveal-order]');
+  const puzzleSource=new Image();
+  const puzzleSourceReady=new Promise(resolve=>{puzzleSource.addEventListener('load',resolve,{once:true});puzzleSource.addEventListener('error',resolve,{once:true})});
+  puzzleSource.src='assets/arco2/post4/sisifo-mitologico.png';
   let puzzleOrder=[8,2,5,1,7,0,4,6,3], selectedPiece=null;
   function playOrderReveal(){
     if(!puzzleDialog.open)return;
     const status=$('[data-puzzle-status]');
+    if(!puzzleOrder.every((v,i)=>v===i)){status.textContent='A montagem ainda não está correta. Continue trocando as peças.';return}
     puzzleGrid.classList.add('is-order-reveal');
     status.textContent='Registro revelado: Sísifo da Ordem.';
     puzzleRevealButton.disabled=true;
@@ -47,11 +51,11 @@
     let orderImage=puzzleGrid.querySelector('.puzzle-order-reveal');
     if(!orderImage){orderImage=document.createElement('img');orderImage.className='puzzle-order-reveal';orderImage.src='assets/arco2/post4/sofia-sisifo.png';orderImage.alt='';orderImage.decoding='async';orderImage.setAttribute('aria-hidden','true');puzzleGrid.append(orderImage)}
     puzzleOrder.forEach((source,index)=>{const b=document.createElement('button');b.type='button';b.className='puzzle-piece';b.dataset.index=index;b.dataset.source=source;b.draggable=true;b.setAttribute('aria-label',`Peça ${index+1}, posição atual ${source+1}`);b.style.backgroundPosition=`${(source%3)*-50}% ${Math.floor(source/3)*-50}%`;puzzleGrid.insertBefore(b,orderImage)});
-    if(puzzleOrder.every((v,i)=>v===i)){ $$('[data-puzzle-grid] button').forEach(b=>b.classList.add('is-solved')); set('sofia-post4-puzzle-sisifo'); puzzleRevealButton.hidden=false; $('[data-puzzle-status]').textContent='Imagem reconstruída. Há outro registro escondido aqui.'; toast('Imagem de Sísifo reconstruída'); }
+    if(puzzleOrder.every((v,i)=>v===i)){ $$('[data-puzzle-grid] button').forEach(b=>b.classList.add('is-solved')); set('sofia-post4-puzzle-sisifo'); puzzleRevealButton.textContent='Revelar o registro da Ordem'; $('[data-puzzle-status]').textContent='Imagem reconstruída. Há outro registro escondido aqui.'; toast('Imagem de Sísifo reconstruída'); }
   }
   function swap(a,b){[puzzleOrder[a],puzzleOrder[b]]=[puzzleOrder[b],puzzleOrder[a]];selectedPiece=null;drawPuzzle()}
-  function openPuzzle(){researchDialog.close();puzzleGrid.classList.remove('is-order-reveal');puzzleRevealButton.hidden=true;puzzleRevealButton.disabled=false;puzzleRevealButton.textContent='Revelar o registro da Ordem';puzzleOrder=get('sofia-post4-puzzle-sisifo')?[0,1,2,3,4,5,6,7,8]:puzzleOrder;drawPuzzle();puzzleDialog.showModal()}
-  $$('[data-open-puzzle]').forEach(button=>button.addEventListener('click',openPuzzle));
+  async function openPuzzle(launchButton){const originalLabel=launchButton.textContent;launchButton.disabled=true;launchButton.textContent='Carregando peças…';await puzzleSourceReady;researchDialog.close();puzzleGrid.classList.remove('is-order-reveal');puzzleRevealButton.disabled=false;puzzleRevealButton.textContent='Conferir montagem';puzzleOrder=get('sofia-post4-puzzle-sisifo')?[0,1,2,3,4,5,6,7,8]:puzzleOrder;drawPuzzle();puzzleDialog.showModal();launchButton.disabled=false;launchButton.textContent=originalLabel}
+  $$('[data-open-puzzle]').forEach(button=>button.addEventListener('click',()=>openPuzzle(button)));
   puzzleRevealButton.addEventListener('click',playOrderReveal);
   puzzleGrid.addEventListener('click',e=>{const b=e.target.closest('.puzzle-piece');if(!b||get('sofia-post4-puzzle-sisifo'))return;const i=+b.dataset.index;if(selectedPiece===null){selectedPiece=i;b.classList.add('is-selected');$('[data-puzzle-status]').textContent='Agora selecione a peça que deve trocar de lugar.'}else swap(selectedPiece,i)});
   puzzleGrid.addEventListener('dragstart',e=>{const b=e.target.closest('.puzzle-piece');if(b)e.dataTransfer.setData('text/plain',b.dataset.index)});
