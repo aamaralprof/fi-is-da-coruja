@@ -140,6 +140,9 @@ button { font: inherit; }
 .archive-page--xvii .archive-page-header { color: #eee8f3; background: linear-gradient(100deg, rgba(21, 14, 28, .95), rgba(31, 21, 40, .82) 58%, rgba(15, 53, 39, .66)), url("assets/arquivo-xvii-sem-bota.png") center 46% / cover; }
 .archive-page--xvii .archive-page-header .eyebrow, .archive-page--xvii .archive-page-header > p:last-child { color: #dfd3e8; }
 .archive-page--xvii .archive-page-header::after { border-color: rgba(154, 219, 174, .3); background: radial-gradient(circle, rgba(77, 190, 117, .16), transparent 68%); }
+.archive-page--called .archive-page-header { color: #f3eef8; background: linear-gradient(100deg, rgba(21, 14, 28, .92), rgba(31, 21, 40, .78) 58%, rgba(45, 30, 58, .5)), url("assets/o-chamado.png") center 42% / cover; }
+.archive-page--called .archive-page-header .eyebrow, .archive-page--called .archive-page-header > p:last-child { color: #ded0e7; }
+.archive-page--called .archive-page-header::after { border-color: rgba(216, 184, 105, .3); background: radial-gradient(circle, rgba(216, 184, 105, .16), transparent 68%); }
 .archive-chapters { padding-top: clamp(70px, 9vw, 110px); }
 .archive-chapters .chapter-card { height: 100%; }
 .archive-chapters .card-copy { min-height: 255px; }
