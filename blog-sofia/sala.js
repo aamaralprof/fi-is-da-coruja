@@ -180,7 +180,92 @@ function renderTray(){const tray=$('item-tray');tray.replaceChildren();$('select
  const proximaHora=horas[(horas.indexOf(state.appearance.time)+1)%3];
  const noite=trayButton(nomeDaHora[proximaHora],minDaHora[proximaHora],state.appearance.time!=='day',()=>{state.appearance.time=proximaHora;renderRoom();renderTray();change();});tray.append(rug,lights,persiana,luz,noite);return;}if(view==='board'){tray.append(el('p','As pistas disponíveis ficam no Arquivo.'));return;}for(const d of roomItems.filter(i=>i.view===view)){const s=state.roomItems[d.id];tray.append(trayButton(d.name,assetFor(d),s.placed,()=>{s.placed=!s.placed;selectedRoom=s.placed?d.id:null;renderRoom();renderTray();change();}));}if(selectedRoom)selectRoom(selectedRoom);}
 document.querySelectorAll('[data-nudge]').forEach(b=>b.onclick=()=>{if(!selectedRoom)return;const d=itemById(selectedRoom),s=state.roomItems[selectedRoom],[dx,dy]=b.dataset.nudge.split(',').map(Number);s.x=Math.max(0,Math.min(100-d.w,s.x+dx));s.y=Math.max(0,Math.min(88,s.y+dy));renderRoom();selectRoom(d.id);change();});
-$('toggle-item-state').onclick=()=>selectedRoom&&toggleState(selectedRoom);$('zoom-room-item').onclick=()=>{const d=itemById(selectedRoom);if(!d?.zoomable)return;$('room-item-zoom-title').textContent=d.name;$('room-item-zoom-image').src=assetFor(d);$('room-item-zoom-image').alt=d.name+' ampliado';$('room-item-zoom').showModal();};$('remove-room-item').onclick=()=>{if(!selectedRoom)return;state.roomItems[selectedRoom].placed=false;selectedRoom=null;renderRoom();renderTray();change();};
+$('toggle-item-state').onclick=()=>selectedRoom&&toggleState(selectedRoom);$('zoom-room-item').onclick=()=>{const d=itemById(selectedRoom);if(!d?.zoomable)return;$('room-item-zoom-title').textContent=d.name;$('room-item-zoom-image').src=assetFor(d);$('room-item-zoom-image').alt=d.name+' ampliado';zReset();$('room-item-zoom').showModal();};$('remove-room-item').onclick=()=>{if(!selectedRoom)return;state.roomItems[selectedRoom].placed=false;selectedRoom=null;renderRoom();renderTray();change();};
+
+/* Ampliação com pinça e arraste. A imagem some do fluxo (transform-origin
+   0 0) e o resto é matemática de manter, a cada quadro, o ponto sob os
+   dedos no mesmo lugar da tela — sem isso o zoom "foge" da direção do
+   gesto. offsetLeft/offsetTop/offsetWidth/offsetHeight não mudam com a
+   transformação, então servem de base fixa para o recorte. */
+const zoomImg=$('room-item-zoom-image'), zoomViewport=document.querySelector('.room-item-zoom-viewport'), zoomDialog=$('room-item-zoom');
+let zScale=1,zOx=0,zOy=0;
+const zMin=1,zMax=4;
+const zPointers=new Map();
+let zPinchDist=0,zPinchMid={x:0,y:0};
+let zPanId=null,zPanLast={x:0,y:0};
+let zLastTap=0,zLastTapPt=null;
+function zLocalPoint(e){const r=zoomViewport.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
+function zDist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function zMid(a,b){return{x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+function zApply(snap){
+ const bx=zoomImg.offsetLeft,by=zoomImg.offsetTop,bw=zoomImg.offsetWidth,bh=zoomImg.offsetHeight;
+ const vw=zoomViewport.clientWidth,vh=zoomViewport.clientHeight;
+ const rw=bw*zScale,rh=bh*zScale;
+ const left=rw<=vw?(vw-rw)/2:Math.min(0,Math.max(vw-rw,bx+zOx));
+ const top=rh<=vh?(vh-rh)/2:Math.min(0,Math.max(vh-rh,by+zOy));
+ zOx=left-bx;zOy=top-by;
+ zoomImg.classList.toggle('is-snapping',!!snap);
+ zoomImg.style.transform=`translate(${zOx}px,${zOy}px) scale(${zScale})`;
+ zoomImg.classList.toggle('is-zoomed',zScale>1.02);
+}
+function zReset(){zScale=1;zOx=0;zOy=0;zPointers.clear();zPanId=null;zLastTapPt=null;zoomImg.classList.remove('is-panning');zApply(false);}
+zoomImg?.addEventListener('dragstart',e=>e.preventDefault());
+zoomImg?.addEventListener('pointerdown',e=>{
+ zoomImg.setPointerCapture(e.pointerId);
+ zPointers.set(e.pointerId,zLocalPoint(e));
+ if(zPointers.size===2){const[a,b]=[...zPointers.values()];zPinchDist=Math.max(zDist(a,b),1);zPinchMid=zMid(a,b);zPanId=null;zoomImg.classList.remove('is-panning');}
+ else if(zPointers.size===1&&zScale>1.02){zPanId=e.pointerId;zPanLast=zLocalPoint(e);zoomImg.classList.add('is-panning');}
+});
+zoomImg?.addEventListener('pointermove',e=>{
+ if(!zPointers.has(e.pointerId))return;
+ zPointers.set(e.pointerId,zLocalPoint(e));
+ if(zPointers.size===2){
+  const[a,b]=[...zPointers.values()];
+  const dist=Math.max(zDist(a,b),1),mid=zMid(a,b);
+  const bx=zoomImg.offsetLeft,by=zoomImg.offsetTop;
+  const localX=(zPinchMid.x-bx-zOx)/zScale,localY=(zPinchMid.y-by-zOy)/zScale;
+  const newScale=Math.min(zMax,Math.max(zMin,zScale*(dist/zPinchDist)));
+  zOx=zPinchMid.x-bx-localX*newScale+(mid.x-zPinchMid.x);
+  zOy=zPinchMid.y-by-localY*newScale+(mid.y-zPinchMid.y);
+  zScale=newScale;zApply(false);
+  zPinchDist=dist;zPinchMid=mid;
+ } else if(zPanId===e.pointerId){
+  const pt=zLocalPoint(e);
+  zOx+=pt.x-zPanLast.x;zOy+=pt.y-zPanLast.y;zPanLast=pt;
+  zApply(false);
+ }
+});
+function zEndPointer(e){
+ zPointers.delete(e.pointerId);
+ try{zoomImg.releasePointerCapture(e.pointerId);}catch{}
+ if(zPanId===e.pointerId){zPanId=null;zoomImg.classList.remove('is-panning');}
+ if(zPointers.size===1&&zScale>1.02){
+  const[only]=[...zPointers.entries()];
+  zPanId=only[0];zPanLast=only[1];zoomImg.classList.add('is-panning');
+ }
+ if(zPointers.size===0&&zPanId===null){
+  const pt=zLocalPoint(e),now=Date.now();
+  if(zLastTapPt&&now-zLastTap<320&&zDist(pt,zLastTapPt)<24){
+   zLastTap=0;zLastTapPt=null;
+   if(zScale>1.02){zScale=1;zOx=0;zOy=0;}
+   else{const bx=zoomImg.offsetLeft,by=zoomImg.offsetTop,alvo=2.6;zOx=(pt.x-bx)*(1-alvo);zOy=(pt.y-by)*(1-alvo);zScale=alvo;}
+   zApply(true);
+   window.setTimeout(()=>zoomImg.classList.remove('is-snapping'),260);
+  } else {zLastTap=now;zLastTapPt=pt;}
+ }
+}
+zoomImg?.addEventListener('pointerup',zEndPointer);
+zoomImg?.addEventListener('pointercancel',zEndPointer);
+zoomImg?.addEventListener('wheel',e=>{
+ e.preventDefault();
+ const pt=zLocalPoint(e);
+ const bx=zoomImg.offsetLeft,by=zoomImg.offsetTop;
+ const localX=(pt.x-bx-zOx)/zScale,localY=(pt.y-by-zOy)/zScale;
+ const newScale=Math.min(zMax,Math.max(zMin,zScale*Math.exp(-e.deltaY*0.0015)));
+ zOx=pt.x-bx-localX*newScale;zOy=pt.y-by-localY*newScale;zScale=newScale;
+ zApply(false);
+},{passive:false});
+zoomDialog?.addEventListener('close',zReset);
 /* O interruptor da parede e um atalho, nao um segundo sistema: mexe no
    mesmo campo que a bandeja e volta pelo mesmo renderTray. */
 /* Uma tela so por enquanto. Se aparecerem outras, o data-abre do objeto ja

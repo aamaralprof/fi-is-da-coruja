@@ -151,4 +151,14 @@
 .sala-leitura .room-rug{cursor:default;pointer-events:none}
 .sala-leitura .hotspot-switch{display:none}
 .sala-leitura .board-card{cursor:zoom-in}
-.room-item-zoom{width:calc(100% - 28px);max-width:1100px;max-height:92vh;overflow:auto;padding:18px;border:1px solid #84718e;border-radius:16px;background:#24192b;color:#fff8e9}.room-item-zoom::backdrop{background:#21182bd9}.room-item-zoom form{text-align:right}.room-item-zoom h2{margin:0 0 8px;font:clamp(1.35rem,3vw,2rem) 'Playfair Display',serif}.room-item-zoom img{display:block;width:100%;max-height:76vh;object-fit:contain;margin:auto}.room-item-zoom button{background:#fffdf8}
+.room-item-zoom{width:calc(100% - 28px);max-width:1100px;max-height:92vh;overflow:auto;padding:18px;border:1px solid #84718e;border-radius:16px;background:#24192b;color:#fff8e9}.room-item-zoom::backdrop{background:#21182bd9}.room-item-zoom form{text-align:right}.room-item-zoom h2{margin:0 0 8px;font:clamp(1.35rem,3vw,2rem) 'Playfair Display',serif}.room-item-zoom button{background:#fffdf8}
+/* Ampliação com pinça/arraste: a imagem some do fluxo normal (width:100%
+   herdado do seletor antigo não serve mais) e passa a ser movida só por
+   transform, dentro de uma janela que recorta o que sair da borda. */
+.room-item-zoom-viewport{position:relative;overflow:hidden;touch-action:none;border-radius:10px;background:#160f1f}
+.room-item-zoom-viewport img{display:block;width:100%;max-height:76vh;object-fit:contain;margin:auto;transform-origin:0 0;touch-action:none;cursor:zoom-in;user-select:none;-webkit-user-drag:none}
+.room-item-zoom-viewport img.is-zoomed{cursor:grab}
+.room-item-zoom-viewport img.is-panning{cursor:grabbing}
+.room-item-zoom-viewport img.is-snapping{transition:transform .22s ease-out}
+.room-item-zoom-hint{margin:8px 2px 0;color:#c9bcd4;font-size:.82rem;text-align:center}
+@media(prefers-reduced-motion:reduce){.room-item-zoom-viewport img.is-snapping{transition:none}}
