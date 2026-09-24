@@ -71,14 +71,19 @@ function mountMissionInventory() {
 mountMissionInventory();
 
 const journalList = document.querySelector('.journal-list');
-const laterClues = [
+/* Pistas do arco 2 (10-12) e as três últimas do arco 1 (07-09) só entram no
+   caderno em páginas do arco 2: em páginas do arco 1 elas eram acrescentadas
+   sempre, inclusive na anotação 01, entregando pistas de capítulos (e até do
+   arco 2) que a leitora ainda não tinha alcançado. */
+const isArco2Page = document.body.classList.contains('arco2-page') || document.body.classList.contains('post4-page');
+const laterClues = isArco2Page ? [
   ['07','impossible-bookmark','o marcador impossível','Ele estava dentro de um livro que Sofia ainda não tinha aberto.'],
   ['08','linked-uniforms','dois uniformes, uma costura','O uniforme de Sofia e o do menino mudam como versões da mesma coisa.'],
   ['09','test-recognized-sofia','o teste reconheceu Sofia','Por um instante, o resultado deixou de ser um Caminho.'],
   ['10','fragmento-carta','o fragmento da carta','Heliópolis ligava a ordem do cosmos, a origem da vida e o destino humano.'],
   ['11','mileto-post2','Mileto','O fragmento parece ligado a um pensador da antiga cidade. A presença recorrente da água pode ser importante.'],
   ['12','anotacoes-organizadas','Minhas anotações (finalmente organizadas)','Linha do tempo, mapa, nomes, símbolos, hipóteses e perguntas reunidos por Sofia. Não confundir pistas com respostas.']
-];
+] : [];
 laterClues.forEach(([number,key,title,description]) => {
   if (journalList && !journalList.querySelector(`[data-clue-entry="${key}"]`)) {
     journalList.insertAdjacentHTML('beforeend', `<li class="journal-clue" data-clue-entry="${key}"><span class="journal-clue-number">${number}</span><div><strong class="clue-locked">pista ainda escondida</strong><strong class="clue-unlocked">${title}</strong><p class="clue-unlocked">${description}</p></div></li>`);
