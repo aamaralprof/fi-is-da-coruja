@@ -16,11 +16,21 @@
   };
   const researchDialog=$('[data-research-dialog]'), researchContent=$('[data-research-content]');
   const completedResearch=()=>Object.keys(research).filter(k=>get('sofia-post4-research-'+k)==='completed');
+  /* A página final do caderno mostrava sempre os seis nomes e hipóteses,
+     mesmo para quem tinha aberto só quatro pesquisas — prometia registros
+     que a leitora nunca liberou. Agora lista só o que ela de fato abriu. */
+  function renderFinalRecords(){
+    const list=$('[data-final-records]');
+    if(!list)return;
+    const done=completedResearch();
+    list.innerHTML=done.length?done.map(k=>`<li>${research[k].record}</li>`).join(''):'<li>Nenhum registro liberado ainda.</li>';
+  }
   function renderResearch(){
     const done=completedResearch();
     $$('[data-research]').forEach(b=>{const ok=done.includes(b.dataset.research);b.classList.toggle('is-done',ok);b.setAttribute('aria-pressed',String(ok));});
     $('[data-research-progress]').textContent=`${done.length} de 6 pesquisas registradas.${done.length<4?' Conclua mais '+(4-done.length)+' para abrir o caderno.':''}`;
     if(done.length>=4){reveal($('[data-notebook-step]'));set('sofia-post4-research-essential');}
+    renderFinalRecords();
   }
   $$('[data-research]').forEach(button=>button.addEventListener('click',()=>{
     const id=button.dataset.research, item=research[id];
