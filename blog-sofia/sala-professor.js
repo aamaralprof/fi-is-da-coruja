@@ -123,7 +123,13 @@
       'sofia-room-plant-unlocked': 'unlocked'
     };
     Object.values(D.casos).forEach(function (c) { chaves[c.chave] = 'unlocked'; });
-    D.itens.forEach(function (i) { chaves[i.chave] = i.tipo === 'emblema' ? 'collected' : 'found'; });
+    D.itens.forEach(function (i) {
+      chaves[i.chave] = i.tipo === 'emblema' ? 'collected' : 'found';
+      // Sub-registros de um item (ex.: as pesquisas do post 4) também
+      // precisam aparecer desbloqueados aqui, senão "tudo à mostra" mostra
+      // a pista como disponível mas o conteúdo dela continua vazio.
+      if (i.registros) i.registros.forEach(function (r) { chaves[r.chave] = 'completed'; });
+    });
     return {
       modo: 'bancada',
       codigo: 'sala-geral',
