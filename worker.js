@@ -230,6 +230,16 @@ function aparenciaValida(appearance) {
       && (appearance.rug === undefined || typeof appearance.rug === 'boolean');
 }
 
+/* O enigma dos tres caminhos: so booleanos, nunca exigido — Salas de antes
+   dele nao tem este campo, e normalize() no sala.js e quem decide como
+   preenche-lo na primeira leitura. */
+function enigmaValido(enigma) {
+  if (enigma === undefined) return true;
+  if (!objeto(enigma)) return false;
+  const bool = v => v === undefined || typeof v === 'boolean';
+  return bool(enigma.book) && bool(enigma.notebook) && bool(enigma.postit) && bool(enigma.completed);
+}
+
 /* Os objetos espalhados pela sala: onde estao, se estao postos, em que estado.
    O limite de 60 e folgado de proposito — o catalogo tem oito. */
 function objetosValidos(roomItems) {
@@ -262,7 +272,7 @@ async function sala(pedido, env) {
   const validPanels = ['heliopolis', 'tales', 'universo'];
   if (!body || !Number.isInteger(body.revisao) || body.revisao < 0 || !objeto(state) ||
       !objeto(state.paineis) ||
-      !legadoValido(state) || !aparenciaValida(state.appearance) || !objetosValidos(state.roomItems) ||
+      !legadoValido(state) || !aparenciaValida(state.appearance) || !objetosValidos(state.roomItems) || !enigmaValido(state.enigma) ||
       JSON.stringify(state).length > 64000) return responder({ erro: 'Sala inválida ou grande demais.' }, 400);
   for (const [key,panel] of Object.entries(state.paineis)) {
     if (!validPanels.includes(key) || !panel || !Array.isArray(panel.itens) || panel.itens.length > 30 ||

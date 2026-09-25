@@ -38,25 +38,49 @@ const viewData={
    quem já tinha colocado continua vendo, só ninguém consegue adicionar um
    novo. Ver renderTray(). */
 const roomItems=[
- {id:'luminaria_sofia',name:'Luminária',view:'desk',image:'assets/sala/luminaria.png',sprite:'lamp',states:['off','on'],action:{off:'Acender',on:'Apagar'},x:76,y:48,w:11,ratio:.58,defaultPlaced:true},
+ /* ov: onde o MESMO objeto aparece, refletido e sem interação, na visão
+    geral — outra foto, outra escala, exige transformar x/y/w/ratio de
+    novo por view. Ver o bloco de eco em renderRoom(). */
+ {id:'luminaria_sofia',name:'Luminária',view:'desk',image:'assets/sala/luminaria.png',sprite:'lamp',states:['off','on'],action:{off:'Acender',on:'Apagar'},x:76,y:48,w:11,ratio:.58,defaultPlaced:true,ov:{x:77.2,y:39.8,w:5.4,ratio:.34}},
  {id:'caneca_sofia',name:'Caneca lilás',view:'desk',image:'assets/sala/caneca.png',x:62,y:78,w:6,ratio:1,retirado:true},
- {id:'caderno_sofia',name:'Caderno da Sofia',view:'desk',image:'assets/sala/caderno-fechado-lilas.png',packStateImages:{sofia:{closed:'assets/sala/caderno-fechado-lilas.png',open:'assets/sala/caderno-aberto-lilas.png'},sofia2:{closed:'assets/sala/caderno-fechado-azul.png',open:'assets/sala/caderno-sofia-2-transparente.png'}},states:['closed','open'],action:{closed:'Abrir caderno',open:'Fechar caderno'},zoomable:true,x:38,y:65,w:18,ratio:1.45},
- {id:'porta_lapis_sofia',name:'Porta-lápis',view:'desk',image:'assets/sala/porta-lapis.png',x:68,y:74,w:8,ratio:.91},
- {id:'livro_filosofia',name:'Filosofia',view:'shelf',image:'assets/sala/livros.png',sprite:'book-filosofia',x:16,y:9,w:12,ratio:.5},
- {id:'livro_historia',name:'História',view:'shelf',image:'assets/sala/livros.png',sprite:'book-historia',x:34,y:29,w:12,ratio:.5},
- {id:'livro_literatura',name:'Literatura',view:'shelf',image:'assets/sala/livros.png',sprite:'book-literatura',x:21,y:50,w:12,ratio:.5},
- {id:'caixa_ideias',name:'Caixa Ideias',view:'shelf',image:'assets/sala/caixa-ideias.png',sprite:'box',states:['closed','open'],action:{closed:'Abrir caixa',open:'Fechar caixa'},x:30,y:72,w:22,ratio:1.12},
+ {id:'caderno_sofia',name:'Caderno da Sofia',view:'desk',image:'assets/sala/caderno-fechado-lilas.png',packStateImages:{sofia:{closed:'assets/sala/caderno-fechado-lilas.png',open:'assets/sala/caderno-aberto-lilas.png'},sofia2:{closed:'assets/sala/caderno-fechado-azul.png',open:'assets/sala/caderno-sofia-2-transparente.png'}},states:['closed','open'],action:{closed:'Abrir caderno',open:'Fechar caderno'},zoomable:true,x:38,y:65,w:18,ratio:1.45,ov:{x:58.4,y:40.5,w:8.9,ratio:.84}},
+ {id:'porta_lapis_sofia',name:'Porta-lápis',view:'desk',image:'assets/sala/porta-lapis.png',x:68,y:74,w:8,ratio:.91,ov:{x:73.3,y:47.3,w:4,ratio:.53}},
+ {id:'livro_filosofia',name:'Filosofia',view:'shelf',image:'assets/sala/livros.png',sprite:'book-filosofia',x:16,y:9,w:12,ratio:.5,ov:{x:6.1,y:4.2,w:3.9,ratio:.21}},
+ {id:'livro_historia',name:'História',view:'shelf',image:'assets/sala/livros.png',sprite:'book-historia',x:34,y:29,w:12,ratio:.5,ov:{x:11.9,y:18.1,w:3.9,ratio:.21}},
+ {id:'livro_literatura',name:'Literatura',view:'shelf',image:'assets/sala/livros.png',sprite:'book-literatura',x:21,y:50,w:12,ratio:.5,ov:{x:7.7,y:30.3,w:3.9,ratio:.21}},
+ {id:'caixa_ideias',name:'Caixa Ideias',view:'shelf',image:'assets/sala/caixa-ideias.png',sprite:'box',states:['closed','open'],action:{closed:'Abrir caixa',open:'Fechar caixa'},x:30,y:72,w:22,ratio:1.12,ov:{x:10.6,y:57.9,w:7.1,ratio:.48}},
  /* Quadros: decoração pura, sem estado. Zoomable porque a arte tem
     detalhe pequeno (constelações, legendas) que vale examinar de perto —
     mesmo mecanismo de pinça/arraste do caderno. */
- {id:'quadro_atena',name:'Quadro: Atena e a coruja',view:'desk',image:'assets/sala/quadro-atena-coruja.png',zoomable:true,x:77,y:8,w:8,ratio:.54},
- {id:'quadro_hora',name:'Quadro: A Hora Que Não Existe',view:'desk',image:'assets/sala/quadro-hora-que-nao-existe.png',zoomable:true,x:18,y:8,w:7,ratio:.58},
- {id:'quadro_lua',name:'Quadro: fases da lua',view:'shelf',image:'assets/sala/quadro-fases-da-lua.png',zoomable:true,x:64,y:12,w:11,ratio:.56},
- {id:'quadro_constelacoes',name:'Quadro: constelações',view:'shelf',image:'assets/sala/quadro-constelacoes.png',zoomable:true,x:64,y:44,w:11,ratio:.55},
- {id:'quadro_gata',name:'Quadro: gata nos livros',view:'shelf',image:'assets/sala/quadro-gata-nos-livros.png',zoomable:true,x:63,y:74,w:12,ratio:.68},
- {id:'quadro_mare_nostrum',name:'Quadro: Mare Nostrum',view:'shelf',image:'assets/sala/quadro-mare-nostrum.png',zoomable:true,x:78,y:58,w:18,ratio:1.33}
+ {id:'quadro_atena',name:'Quadro: Atena e a coruja',view:'desk',image:'assets/sala/quadro-atena-coruja.png',zoomable:true,x:77,y:8,w:8,ratio:.54,ov:{x:77.7,y:10.5,w:4,ratio:.31}},
+ {id:'quadro_hora',name:'Quadro: A Hora Que Não Existe',view:'desk',image:'assets/sala/quadro-hora-que-nao-existe.png',zoomable:true,x:18,y:8,w:7,ratio:.58,ov:{x:48.5,y:10.5,w:3.5,ratio:.34}},
+ {id:'quadro_lua',name:'Quadro: fases da lua',view:'shelf',image:'assets/sala/quadro-fases-da-lua.png',zoomable:true,x:64,y:12,w:11,ratio:.56,ov:{x:21.6,y:12.3,w:3.6,ratio:.24}},
+ {id:'quadro_constelacoes',name:'Quadro: constelações',view:'shelf',image:'assets/sala/quadro-constelacoes.png',zoomable:true,x:64,y:44,w:11,ratio:.55,ov:{x:21.6,y:36.6,w:3.6,ratio:.24}},
+ {id:'quadro_gata',name:'Quadro: gata nos livros',view:'shelf',image:'assets/sala/quadro-gata-nos-livros.png',zoomable:true,x:63,y:74,w:12,ratio:.68,ov:{x:21.3,y:59.4,w:3.9,ratio:.29}},
+ {id:'quadro_mare_nostrum',name:'Quadro: Mare Nostrum',view:'shelf',image:'assets/sala/quadro-mare-nostrum.png',zoomable:true,x:78,y:58,w:18,ratio:1.33,ov:{x:27.5,y:49,w:5.5,ratio:.57}},
+ {id:'quadro_glicinias',name:'Quadro: janela de glicínias',view:'shelf',image:'assets/sala/quadro-janela-glicinias.png',zoomable:true,x:46,y:10,w:10,ratio:.574},
+ {id:'quadro_flor_ideias',name:'Quadro: flor de ideias',view:'desk',image:'assets/sala/quadro-flor-ideias.png',zoomable:true,x:46,y:8,w:8,ratio:.543},
+ /* Objetos avulsos, mesmo tratamento dos quadros: decoração pura,
+    zoomable pela mesma razão (detalhe pequeno vale examinar de perto). */
+ {id:'globo_coruja',name:'Globo da coruja',view:'desk',image:'assets/sala/globo-lua-coruja.png',zoomable:true,x:4,y:50,w:13,ratio:.667},
+ {id:'vela_lua',name:'Vela da lua',view:'desk',image:'assets/sala/vela-lua-coruja.png',zoomable:true,x:84,y:60,w:7,ratio:.755},
+ {id:'livros_lua',name:'Livro e caderno da coruja',view:'desk',image:'assets/sala/livros-lua-coruja.png',zoomable:true,x:3,y:70,w:16,ratio:1.527},
+ {id:'chave_coruja',name:'Chave da coruja',view:'shelf',image:'assets/sala/chave-coruja.png',zoomable:true,x:42,y:55,w:9,ratio:1.548},
+ /* Os tres objetos da charada dos caminhos: vivem so na visao geral, nunca
+    entram na estante/mesa/mural de verdade. Ficam na bandeja como qualquer
+    outro item da visao geral — o aluno escolhe, poe na cena e arrasta ate a
+    area do caminho a que pertence; checkEnigma() confere pela posicao, nao
+    por um sistema de encaixe novo. O post-it abre a charada ao ser tocado
+    sem ser arrastado (mesmo mecanismo do notebook, so muda o alvo) — util
+    para reler depois do aviso automatico da primeira entrada. */
+ /* x/y de repouso escolhidos fora das tres zonas de hotspot (conferidas
+    contra os retangulos de sala.css) — nenhum objeto pode nascer "ja
+    resolvido" por coincidencia de posicao. Ver hotspotRect()/dentroDoCaminho(). */
+ {id:'charada_livro',name:'Um livro solto',view:'overview',image:'assets/sala/livros.png',sprite:'book-filosofia',categoria:'book',x:26,y:65,w:12,ratio:.5},
+ {id:'charada_caderno',name:'Um caderno solto',view:'overview',image:'assets/sala/caderno-fechado-lilas.png',categoria:'notebook',x:41,y:82,w:13,ratio:1.45},
+ {id:'charada_postit',name:'Um bilhete',view:'overview',image:'assets/sala/bilhete-charada.png',categoria:'postit',abre:'charada',x:58,y:82,w:8,ratio:.946}
 ];
-if(progresso('sofia-room-notebook-unlocked')==='unlocked')roomItems.push({id:'notebook_investigacao',name:'Notebook de Investigação',view:'desk',image:'assets/sala/notebook-laptop.webp',abre:'explorador',x:21.7,y:53.2,w:24.7,ratio:1.78});
+if(progresso('sofia-room-notebook-unlocked')==='unlocked')roomItems.push({id:'notebook_investigacao',name:'Notebook de Investigação',view:'desk',image:'assets/sala/notebook-laptop.webp',abre:'explorador',x:21.7,y:53.2,w:24.7,ratio:1.78,ov:{x:50.4,y:37.3,w:12.2,ratio:1.03}});
 if(progresso('sofia-room-plant-unlocked')==='unlocked')roomItems.push({id:'planta_investigacao',name:'Pequena planta',view:'desk',image:'assets/sala/planta-broto.png',stateImages:{broto:'assets/sala/planta-broto.png',pequena:'assets/sala/planta-pequena.png',desenvolvida:'assets/sala/planta-desenvolvida.png',florida:'assets/sala/planta-florida.png',sede:'assets/sala/planta-com-sede.png'},states:['broto','pequena','desenvolvida','florida','sede'],action:{broto:'Regar',pequena:'Regar',desenvolvida:'Regar',florida:'Regar',sede:'Regar e recuperar'},x:52,y:52,w:11,ratio:.78,plant:true});
 const itemById=id=>roomItems.find(i=>i.id===id);
 const blueAssets={caderno_sofia:'assets/sala/caderno-sofia-2-transparente.png',livro_filosofia:'assets/sala/livros-sofia-2-transparente.png',livro_historia:'assets/sala/livros-sofia-2-transparente.png',livro_literatura:'assets/sala/livros-sofia-2-transparente.png',caixa_ideias:'assets/sala/caixa-ideias-sofia-2-transparente.png'};
@@ -112,6 +136,17 @@ if(visita)remote={estado:ctx.estado,revisao:ctx.revisao||0};
 else try{remote=await Percurso.requisitar('sala');}catch(e){$('room-gate').textContent='Não foi possível abrir sua Sala. '+e.message;const b=el('button','Tentar novamente');b.onclick=()=>location.reload();$('room-gate').append(b);status('A Sala ainda não foi carregada.');return;}
 state=normalize(remote.estado||defaults());revision=remote.revisao;
 if(!visita)try{const draft=JSON.parse(localStorage.getItem(draftKey));if(draft){state=normalize(draft.estado);dirty=true;if(draft.revisao!==revision){conflict=true;status('Há um rascunho neste aparelho e outra versão salva. Seu rascunho foi preservado.');$('reload-room').hidden=false;}else status('Rascunho recuperado. Tentando salvar…');}}catch{}
+/* Quem ja tinha Sala salva nao repete a charada: os tres caminhos ja eram
+   livres antes dela existir. So uma Sala nova (sem remote.estado) comeca
+   com o enigma ativo. Uma vez gravado, este campo manda sozinho — nunca mais
+   se olha para remote.estado depois desta linha. */
+if(!state.enigma){
+ const jaTinhaSala=!!remote.estado;
+ state.enigma=jaTinhaSala?{book:true,notebook:true,postit:true,completed:true}:{book:false,notebook:false,postit:false,completed:false};
+ /* Objetos da charada nao fazem sentido na Sala de quem a herdou pronta —
+    sem isso ficariam soltos na visao geral pra sempre, sem explicacao. */
+ if(jaTinhaSala)for(const d of roomItems.filter(i=>i.categoria))state.roomItems[d.id].placed=false;
+}
 /* Em leitura, um painel já preenchido também conta: se o aluno organizou um
    caso, a professora precisa vê-lo mesmo que o desbloqueio tenha mudado. */
 const cases=Object.entries(D.casos).filter(([k,c])=>progresso(c.chave)||(visita&&state.paineis[k]));
@@ -130,14 +165,53 @@ if(bancada)for(const id of ['retry-save','reload-room','conclude'])$(id).hidden=
 if(visita)status(ctx.rotulo||'Somente leitura.');
 else if(!remote.estado&&!dirty)status('Sua Sala está pronta para ser personalizada.');else if(!dirty)status('Tudo salvo no seu passaporte.');
 function cache(){if(visita)return;try{localStorage.setItem(draftKey,JSON.stringify({estado:state,revisao:revision}));}catch{status('Não foi possível guardar o rascunho neste aparelho.');}}
-function change(){if(visita)return;dirty=true;cache();if(!conflict)status('Guardando suas mudanças…');clearTimeout(timer);timer=setTimeout(save,800);}
+function change(){if(visita)return;checkEnigma();dirty=true;cache();if(!conflict)status('Guardando suas mudanças…');clearTimeout(timer);timer=setTimeout(save,800);}
 async function save(){if(visita||!dirty||saving||conflict)return;if(Percurso.codigo()!==owner){status('O passaporte mudou. Reabra a Sala.');return;}saving=true;const snapshot=JSON.stringify(state);try{const r=await Percurso.requisitar('sala',{method:'POST',body:JSON.stringify({estado:JSON.parse(snapshot),revisao:revision})});revision=r.revisao;dirty=JSON.stringify(state)!==snapshot;if(dirty)cache();else localStorage.removeItem(draftKey);status(dirty?'Guardando a próxima mudança…':'Tudo salvo no seu passaporte.');$('retry-save').hidden=true;}catch(e){status(e.message);$('retry-save').hidden=e.status===409;conflict=e.status===409;if(conflict)$('reload-room').hidden=false;cache();}finally{saving=false;}if(dirty&&!conflict&&$('retry-save').hidden)timer=setTimeout(save,800);}
 $('retry-save').onclick=save;$('reload-room').onclick=()=>{localStorage.setItem('sala-copia:'+owner+':'+Date.now(),JSON.stringify(state));localStorage.removeItem(draftKey);dirty=false;location.reload();};
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});window.addEventListener('online',save);
 
+/* O recado do enigma some sob "Guardando suas mudanças…", que change() escreve
+   logo depois — mesmo problema documentado para a planta. Reaparece depois
+   pelo mesmo remédio: escrever de novo, atrasado. */
+function recadoDoEnigma(texto){status(texto);clearTimeout(recadoDoEnigma.t);recadoDoEnigma.t=setTimeout(()=>status(texto),1400);}
+/* Onde cada caminho fica, em porcentagem do palco — lido do proprio hotspot,
+   nao duplicado como numero magico aqui, para nunca desalinhar do CSS. */
+function hotspotRect(view){const n=document.querySelector('.hotspot-'+view);if(!n)return null;const palco=$('room-stage').getBoundingClientRect(),r=n.getBoundingClientRect();return{x:(r.left-palco.left)/palco.width*100,y:(r.top-palco.top)/palco.height*100,w:r.width/palco.width*100,h:r.height/palco.height*100};}
+function itemCentro(d,s){return{x:s.x+d.w/2,y:s.y+(d.w/d.ratio)/2};}
+function dentroDoCaminho(d,s,view){const rect=hotspotRect(view);if(!rect)return false;const c=itemCentro(d,s);return c.x>=rect.x&&c.x<=rect.x+rect.w&&c.y>=rect.y&&c.y<=rect.y+rect.h;}
+/* Cada acerto e permanente: uma vez true, nunca mais se reavalia sozinho —
+   e assim que tirar o livro depois nao tranca o caminho de novo, sem
+   precisar de nenhuma regra extra pra isso. */
+function checkEnigma(){
+ if(visita||state.enigma.completed)return;
+ const e=state.enigma,alvo={book:'shelf',notebook:'desk',postit:'board'};let novos=0;
+ for(const categoria of ['book','notebook','postit']){
+  if(e[categoria])continue;
+  const d=roomItems.find(i=>i.categoria===categoria),s=d&&state.roomItems[d.id];
+  if(s?.placed&&dentroDoCaminho(d,s,alvo[categoria])){e[categoria]=true;novos++;const n=document.querySelector('.room-item[data-id="'+d.id+'"]');if(n){n.classList.remove('brilho-enigma');void n.offsetWidth;n.classList.add('brilho-enigma');}}
+ }
+ if(novos){
+  const total=['book','notebook','postit'].filter(c=>e[c]).length;
+  recadoDoEnigma({1:'A Sala respondeu.',2:'Outro caminho parece despertar.',3:'A Sala reconheceu a ordem.'}[total]||'');
+ }
+ if(e.book&&e.notebook&&e.postit){
+  e.completed=true;
+  for(const categoria of ['book','notebook','postit']){const d=roomItems.find(i=>i.categoria===categoria);if(d)state.roomItems[d.id].placed=false;}
+  updateHotspots();playUnlockSequence();renderRoom();renderTray();
+ }
+}
+/* Ha tres jeitos de pedir uma view — os tres precisam concordar sobre o
+   que esta trancado, senao o botao de cima da pagina vira um atalho que
+   pula a charada inteira. */
+function caminhoTrancado(v){return !visita&&!state.enigma.completed&&(v==='shelf'||v==='desk'||v==='board');}
+function irPara(v){if(caminhoTrancado(v)){status('Este caminho ainda não despertou.');return;}setView(v);}
+function updateHotspots(){const dormant=!visita&&!state.enigma.completed;for(const v of['shelf','desk','board']){const n=document.querySelector('.hotspot-'+v);if(n){n.classList.toggle('hotspot--dormant',dormant);if(dormant)n.setAttribute('aria-label','Este caminho ainda não despertou.');else n.removeAttribute('aria-label');}
+ const tab=document.querySelector('[data-view="'+v+'"]');if(tab){tab.classList.toggle('hotspot--dormant',dormant);tab.setAttribute('aria-disabled',String(dormant));if(dormant)tab.setAttribute('aria-label',tab.textContent+'. Este caminho ainda não despertou.');else tab.removeAttribute('aria-label');}}}
+function playUnlockSequence(){['shelf','desk','board'].forEach((v,i)=>{const alvos=[document.querySelector('.hotspot-'+v),document.querySelector('[data-view="'+v+'"]')].filter(Boolean);setTimeout(()=>{alvos.forEach(n=>{n.classList.add('hotspot--acordando');setTimeout(()=>n.classList.remove('hotspot--acordando'),900);});},i*350);});recadoDoEnigma('A Sala reconheceu a ordem.');}
+
 function setView(next){view=next;selectedRoom=null;const meta=viewData[view];$('room-stage').dataset.view=view;$('room-stage').dataset.pack=state.appearance.pack;$('room-stage').dataset.wall=state.appearance.wall;$('package-select').value=state.appearance.pack;$('wall-select').value=state.appearance.wall;$('scene').src=sceneFor(meta);$('scene').alt=meta.alt;$('view-description').textContent=meta.description;$('customization-title').textContent=meta.title;$('hotspots').hidden=view!=='overview';$('overview-decor').hidden=view!=='overview';$('board-layer').hidden=view!=='board';$('case-question-wrap').hidden=view!=='board';$('selection').hidden=true;document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));renderRoom();renderTray();if(view==='board'){renderCase();requestAnimationFrame(drawLines);}}
-document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>setView(b.dataset.go));
-$('previous-view').onclick=()=>setView(views[(views.indexOf(view)+views.length-1)%views.length]);$('next-view').onclick=()=>setView(views[(views.indexOf(view)+1)%views.length]);
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>irPara(b.dataset.view));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>irPara(b.dataset.go));
+$('previous-view').onclick=()=>irPara(views[(views.indexOf(view)+views.length-1)%views.length]);$('next-view').onclick=()=>irPara(views[(views.indexOf(view)+1)%views.length]);
 function roomPosition(n,s){n.style.left=s.x+'%';n.style.top=s.y+'%';}
 function selectRoom(id){selectedRoom=id;document.querySelectorAll('.room-item').forEach(n=>n.setAttribute('aria-pressed',String(n.dataset.id===id)));const d=itemById(id),s=state.roomItems[id];$('selected-controls').hidden=!d;if(!d)return;$('selected-item-name').textContent=d.name;$('toggle-item-state').hidden=!d.states;$('zoom-room-item').hidden=!d.zoomable;if(d.states)$('toggle-item-state').textContent=d.action[s.state];}
 function toggleState(id){if(leitura)return;const d=itemById(id),s=state.roomItems[id];if(!d?.states)return;let recado='';if(d.plant){const now=Date.now(),last=Number(s.lastWatered||0);
@@ -180,7 +254,11 @@ function recadoNoObjeto(id,texto){const n=document.querySelector('.room-item[dat
  recadoNoObjeto.t=setTimeout(()=>{b.classList.remove('aparece');
   recadoNoObjeto.t2=setTimeout(()=>{b.hidden=true;},260);},2600);}
 function renderRoom(){const host=$('placed-items'),rug=$('rug');host.replaceChildren();$('room-stage').dataset.pack=state.appearance.pack;$('room-stage').dataset.wall=state.appearance.wall;$('scene').src=sceneFor(viewData[view]);rug.style.setProperty('--rug-image',`url('${state.appearance.pack==='sofia2'?'assets/sala/tapete-sofia-2.png':'assets/sala/tapete-retangular.png'}')`);rug.style.setProperty('--rug-x',state.appearance.rugX+'%');rug.style.setProperty('--rug-y',state.appearance.rugY+'%');const palco=$('room-stage'),persiana=$('blind'),janela=viewData[view].blind;palco.dataset.blind=state.appearance.blind;palco.dataset.time=state.appearance.time;if(arteDaHora(viewData[view]))delete palco.dataset.veu;else palco.dataset.veu='sim';palco.dataset.roomLight=state.appearance.roomLight;persiana.style.setProperty('--blind-x',janela.x+'%');persiana.style.setProperty('--blind-y',janela.y+'%');persiana.style.setProperty('--blind-w',janela.w+'%');persiana.style.setProperty('--blind-h',janela.h+'%');rug.hidden=!state.appearance.rug;rug.tabIndex=leitura?-1:0;rug.setAttribute('aria-label','Tapete.'+(leitura?'':' Arraste ou use as setas para mover.'));$('lights').dataset.state=state.appearance.lights;for(const d of roomItems.filter(i=>i.view===view)){const s=state.roomItems[d.id];if(!s.placed)continue;const n=el('button');n.type='button';n.className='room-item';n.dataset.id=d.id;n.dataset.state=s.state;n.dataset.recolored=String(!!blueAssets[d.id]);if(d.sprite)n.dataset.sprite=d.sprite;n.style.setProperty('--item-image',`url('${assetFor(d)}')`);n.style.setProperty('--item-w',d.w+'%');n.style.setProperty('--item-ratio',d.ratio);/* Na leitura o rotulo nao promete acao: o objeto esta ali para ser visto. */
-  n.setAttribute('aria-label',leitura?d.name+'. Somente leitura.':d.name+(d.states?'. '+d.action[s.state]+'.':'')+(d.abre?'. Abrir a tela.':'')+' Arraste ou use as setas para mover.');n.setAttribute('aria-pressed',String(d.id===selectedRoom));roomPosition(n,s);host.append(n);if(leitura){n.tabIndex=-1;n.onclick=()=>{const r='Esta Sala é de um aluno. Aqui você só observa.';status(r);recadoNoObjeto(d.id,r);};continue;}let drag=null,moved=false;n.onpointerdown=e=>{if(e.button!==0)return;selectRoom(d.id);drag={clientX:e.clientX,clientY:e.clientY,x:s.x,y:s.y,id:e.pointerId};moved=false;n.setPointerCapture(e.pointerId);};n.onpointermove=e=>{if(!drag)return;const px=e.clientX-drag.clientX,py=e.clientY-drag.clientY;if(!moved&&Math.hypot(px,py)<=ARRASTO_MINIMO)return;moved=true;const rect=$('room-stage').getBoundingClientRect(),dx=px/rect.width*100,dy=py/rect.height*100;s.x=Math.max(0,Math.min(100-d.w,drag.x+dx));s.y=Math.max(0,Math.min(88,drag.y+dy));roomPosition(n,s);};n.onpointerup=n.onpointercancel=e=>{if(!drag)return;n.releasePointerCapture?.(drag.id);drag=null;if(moved)change();else if(d.states)toggleState(d.id);else if(d.abre)abrirTela(d.abre);};n.onkeydown=e=>{if(d.abre&&(e.key==='Enter'||e.key===' ')){e.preventDefault();return abrirTela(d.abre);}const step={ArrowLeft:[-2,0],ArrowRight:[2,0],ArrowUp:[0,-2],ArrowDown:[0,2]}[e.key];if(!step)return;e.preventDefault();selectRoom(d.id);s.x=Math.max(0,Math.min(100-d.w,s.x+step[0]));s.y=Math.max(0,Math.min(88,s.y+step[1]));roomPosition(n,s);change();};}}
+  n.setAttribute('aria-label',leitura?d.name+'. Somente leitura.':d.name+(d.states?'. '+d.action[s.state]+'.':'')+(d.abre?'. Abrir a tela.':'')+' Arraste ou use as setas para mover.');n.setAttribute('aria-pressed',String(d.id===selectedRoom));roomPosition(n,s);host.append(n);if(leitura){n.tabIndex=-1;n.onclick=()=>{const r='Esta Sala é de um aluno. Aqui você só observa.';status(r);recadoNoObjeto(d.id,r);};continue;}let drag=null,moved=false;n.onpointerdown=e=>{if(e.button!==0)return;selectRoom(d.id);drag={clientX:e.clientX,clientY:e.clientY,x:s.x,y:s.y,id:e.pointerId};moved=false;n.setPointerCapture(e.pointerId);};n.onpointermove=e=>{if(!drag)return;const px=e.clientX-drag.clientX,py=e.clientY-drag.clientY;if(!moved&&Math.hypot(px,py)<=ARRASTO_MINIMO)return;moved=true;const rect=$('room-stage').getBoundingClientRect(),dx=px/rect.width*100,dy=py/rect.height*100;s.x=Math.max(0,Math.min(100-d.w,drag.x+dx));s.y=Math.max(0,Math.min(88,drag.y+dy));roomPosition(n,s);};n.onpointerup=n.onpointercancel=e=>{if(!drag)return;n.releasePointerCapture?.(drag.id);drag=null;if(moved)change();else if(d.states)toggleState(d.id);else if(d.abre)abrirTela(d.abre);};n.onkeydown=e=>{if(d.abre&&(e.key==='Enter'||e.key===' ')){e.preventDefault();return abrirTela(d.abre);}const step={ArrowLeft:[-2,0],ArrowRight:[2,0],ArrowUp:[0,-2],ArrowDown:[0,2]}[e.key];if(!step)return;e.preventDefault();selectRoom(d.id);s.x=Math.max(0,Math.min(100-d.w,s.x+step[0]));s.y=Math.max(0,Math.min(88,s.y+step[1]));roomPosition(n,s);change();};}
+ /* Eco da visão geral: mesmos objetos, outra posição (d.ov), sem
+    interação nenhuma — quem edita é a mesa/estante, a visão geral só
+    mostra o que já foi colocado lá, pra não parecer sempre vazia. */
+ if(view==='overview')for(const d of roomItems.filter(i=>i.ov)){const s=state.roomItems[d.id];if(!s.placed)continue;const n=el('div');n.className='room-item room-item--echo';n.dataset.state=s.state;n.dataset.recolored=String(!!blueAssets[d.id]);if(d.sprite)n.dataset.sprite=d.sprite;n.style.setProperty('--item-image',`url('${assetFor(d)}')`);n.style.setProperty('--item-w',d.ov.w+'%');n.style.setProperty('--item-ratio',d.ov.ratio);n.style.left=d.ov.x+'%';n.style.top=d.ov.y+'%';n.setAttribute('aria-hidden','true');host.append(n);}}
 function trayButton(text,thumb,pressed,onclick){const b=el('button',text);b.type='button';b.className='tray-item';b.style.setProperty('--thumb',/^(url|linear|radial|repeating)/.test(thumb)?thumb:`url('${thumb}')`);b.setAttribute('aria-pressed',String(pressed));b.onclick=onclick;return b;}
 function renderTray(){const tray=$('item-tray');tray.replaceChildren();$('selected-controls').hidden=true;if(leitura)return;if(view==='overview'){/* O tapete saiu da bandeja (retirado, nao apagado): quem ja tinha um
     continua vendo e podendo arrastar; so ninguem adiciona um novo. */const lights=trayButton('Cordão de luzes','assets/sala/cordao-luzes.png',state.appearance.lights==='on',()=>{state.appearance.lights=state.appearance.lights==='on'?'off':'on';renderRoom();renderTray();change();});const trocar=(campo,ligado,desligado)=>{state.appearance[campo]=state.appearance[campo]===ligado?desligado:ligado;renderRoom();renderTray();change();};const persiana=trayButton(state.appearance.blind==='closed'?'Persiana fechada':'Persiana aberta',"repeating-linear-gradient(180deg,#7a6047 0 16%,#584431 16% 21%)",state.appearance.blind==='closed',()=>trocar('blind','closed','open'));const luz=trayButton('Luz da sala',"radial-gradient(circle at 50% 36%,#ffe9bd,#7a5f33)",state.appearance.roomLight==='on',()=>trocar('roomLight','on','off'));const horas=['day','night','rain'];
@@ -191,7 +269,11 @@ function renderTray(){const tray=$('item-tray');tray.replaceChildren();$('select
  /* O rotulo e a miniatura mostram PARA ONDE o botao leva, nao onde se esta:
     num botao que gira, dizer o estado atual faz o aluno clicar para voltar. */
  const proximaHora=horas[(horas.indexOf(state.appearance.time)+1)%3];
- const noite=trayButton(nomeDaHora[proximaHora],minDaHora[proximaHora],state.appearance.time!=='day',()=>{state.appearance.time=proximaHora;renderRoom();renderTray();change();});tray.append(lights,persiana,luz,noite);return;}if(view==='board'){tray.append(el('p','As pistas disponíveis ficam no Arquivo.'));return;}for(const d of roomItems.filter(i=>i.view===view&&!i.retirado)){const s=state.roomItems[d.id];tray.append(trayButton(d.name,assetFor(d),s.placed,()=>{s.placed=!s.placed;selectedRoom=s.placed?d.id:null;renderRoom();renderTray();change();}));}if(selectedRoom)selectRoom(selectedRoom);}
+ const noite=trayButton(nomeDaHora[proximaHora],minDaHora[proximaHora],state.appearance.time!=='day',()=>{state.appearance.time=proximaHora;renderRoom();renderTray();change();});tray.append(lights,persiana,luz,noite);
+ /* Os objetos da charada somem da bandeja quando ela ja foi resolvida —
+    nao ha mais o que colocar. */
+ if(!state.enigma.completed)for(const d of roomItems.filter(i=>i.view==='overview'&&i.categoria)){const s=state.roomItems[d.id];tray.append(trayButton(d.name,assetFor(d),s.placed,()=>{s.placed=!s.placed;selectedRoom=s.placed?d.id:null;renderRoom();renderTray();change();}));}
+ return;}if(view==='board'){tray.append(el('p','As pistas disponíveis ficam no Arquivo.'));return;}for(const d of roomItems.filter(i=>i.view===view&&!i.retirado)){const s=state.roomItems[d.id];tray.append(trayButton(d.name,assetFor(d),s.placed,()=>{s.placed=!s.placed;selectedRoom=s.placed?d.id:null;renderRoom();renderTray();change();}));}if(selectedRoom)selectRoom(selectedRoom);}
 document.querySelectorAll('[data-nudge]').forEach(b=>b.onclick=()=>{if(!selectedRoom)return;const d=itemById(selectedRoom),s=state.roomItems[selectedRoom],[dx,dy]=b.dataset.nudge.split(',').map(Number);s.x=Math.max(0,Math.min(100-d.w,s.x+dx));s.y=Math.max(0,Math.min(88,s.y+dy));renderRoom();selectRoom(d.id);change();});
 $('toggle-item-state').onclick=()=>selectedRoom&&toggleState(selectedRoom);$('zoom-room-item').onclick=()=>{const d=itemById(selectedRoom);if(!d?.zoomable)return;$('room-item-zoom-title').textContent=d.name;$('room-item-zoom-image').src=assetFor(d);$('room-item-zoom-image').alt=d.name+' ampliado';zReset();$('room-item-zoom').showModal();};$('remove-room-item').onclick=()=>{if(!selectedRoom)return;state.roomItems[selectedRoom].placed=false;selectedRoom=null;renderRoom();renderTray();change();};
 
@@ -303,7 +385,7 @@ if(!leitura){const daquiAPouco=()=>14000+Math.random()*26000;
 $('light-switch').onclick=()=>{if(leitura)return;state.appearance.roomLight=state.appearance.roomLight==='on'?'off':'on';renderRoom();renderTray();change();};
 $('package-select').onchange=()=>{state.appearance.pack=$('package-select').value;renderRoom();renderTray();change();};
 $('wall-select').onchange=()=>{state.appearance.wall=$('wall-select').value;renderRoom();change();};
-$('reset-view').onclick=()=>{if(view==='overview')state.appearance={...state.appearance,wall:'lilas',rug:false,rugX:13,rugY:67,lights:'on',blind:'open',time:'day',roomLight:'off'};else for(const d of roomItems.filter(i=>i.view===view))state.roomItems[d.id]={x:d.x,y:d.y,state:d.states?.[0]||'default',placed:!!d.defaultPlaced};selectedRoom=null;renderRoom();renderTray();change();};
+$('reset-view').onclick=()=>{if(view==='overview')state.appearance={...state.appearance,wall:'lilas',rug:false,rugX:13,rugY:67,lights:'on',blind:'open',time:'day',roomLight:'off'};for(const d of roomItems.filter(i=>i.view===view&&!(state.enigma.completed&&d.categoria)))state.roomItems[d.id]={x:d.x,y:d.y,state:d.states?.[0]||'default',placed:!!d.defaultPlaced};selectedRoom=null;renderRoom();renderTray();change();};
 
 const rug=$('rug');let rugDrag=null;
 rug.onpointerdown=e=>{if(leitura||e.button!==0)return;rugDrag={clientX:e.clientX,clientY:e.clientY,x:state.appearance.rugX,y:state.appearance.rugY,id:e.pointerId};rug.setPointerCapture(e.pointerId);};
@@ -329,5 +411,12 @@ $('connect').onclick=()=>{const other=$('connect-target').value;if(other&&panel(
 $('note').oninput=()=>{panel().nota=$('note').value;change();};$('conclusion').oninput=()=>{panel().conclusao=$('conclusion').value;change();};$('conclude').onclick=()=>{if(!$('conclusion').value.trim()){status('Escreva uma frase antes de guardar sua conclusão.');$('conclusion').focus();return;}change();save();};
 new ResizeObserver(()=>{if(view==='board'){panel().itens.forEach(i=>{const n=document.querySelector('[data-clue="'+i.id+'"]');if(n)cluePosition(n,i);});drawLines();}}).observe($('room-stage'));
 window.addEventListener('percurso-atualizado',()=>{if(visita)return;if(Percurso.codigo()!==owner){$('room-content').hidden=true;$('room-gate').hidden=false;$('room-gate').textContent='O passaporte mudou. Reabra esta página para continuar.';status('Sala fechada.');}else renderArchive();});
-setView('overview');if(dirty&&!conflict)save();
+updateHotspots();setView('overview');if(dirty&&!conflict)save();
+/* A charada se apresenta sozinha sempre que a Sala abre e o enigma ainda
+   nao foi resolvido — nao precisa achar o bilhete para saber que ele
+   existe, nem lembrar de onde o deixou numa sessao anterior. Uma vez
+   resolvido, nunca mais aparece sozinha; continua podendo ser relida a
+   qualquer momento tocando o post-it (abre:'charada'). Nunca aparece na
+   Area do Professor. */
+if(!visita&&!state.enigma.completed)abrirTela('charada');
 })();
