@@ -45,7 +45,16 @@ const roomItems=[
  {id:'livro_filosofia',name:'Filosofia',view:'shelf',image:'assets/sala/livros.png',sprite:'book-filosofia',x:16,y:9,w:12,ratio:.5},
  {id:'livro_historia',name:'História',view:'shelf',image:'assets/sala/livros.png',sprite:'book-historia',x:34,y:29,w:12,ratio:.5},
  {id:'livro_literatura',name:'Literatura',view:'shelf',image:'assets/sala/livros.png',sprite:'book-literatura',x:21,y:50,w:12,ratio:.5},
- {id:'caixa_ideias',name:'Caixa Ideias',view:'shelf',image:'assets/sala/caixa-ideias.png',sprite:'box',states:['closed','open'],action:{closed:'Abrir caixa',open:'Fechar caixa'},x:30,y:72,w:22,ratio:1.12}
+ {id:'caixa_ideias',name:'Caixa Ideias',view:'shelf',image:'assets/sala/caixa-ideias.png',sprite:'box',states:['closed','open'],action:{closed:'Abrir caixa',open:'Fechar caixa'},x:30,y:72,w:22,ratio:1.12},
+ /* Quadros: decoração pura, sem estado. Zoomable porque a arte tem
+    detalhe pequeno (constelações, legendas) que vale examinar de perto —
+    mesmo mecanismo de pinça/arraste do caderno. */
+ {id:'quadro_atena',name:'Quadro: Atena e a coruja',view:'desk',image:'assets/sala/quadro-atena-coruja.png',zoomable:true,x:77,y:8,w:8,ratio:.54},
+ {id:'quadro_hora',name:'Quadro: A Hora Que Não Existe',view:'desk',image:'assets/sala/quadro-hora-que-nao-existe.png',zoomable:true,x:18,y:8,w:7,ratio:.58},
+ {id:'quadro_lua',name:'Quadro: fases da lua',view:'shelf',image:'assets/sala/quadro-fases-da-lua.png',zoomable:true,x:64,y:12,w:11,ratio:.56},
+ {id:'quadro_constelacoes',name:'Quadro: constelações',view:'shelf',image:'assets/sala/quadro-constelacoes.png',zoomable:true,x:64,y:44,w:11,ratio:.55},
+ {id:'quadro_gata',name:'Quadro: gata nos livros',view:'shelf',image:'assets/sala/quadro-gata-nos-livros.png',zoomable:true,x:63,y:74,w:12,ratio:.68},
+ {id:'quadro_mare_nostrum',name:'Quadro: Mare Nostrum',view:'shelf',image:'assets/sala/quadro-mare-nostrum.png',zoomable:true,x:78,y:58,w:18,ratio:1.33}
 ];
 if(progresso('sofia-room-notebook-unlocked')==='unlocked')roomItems.push({id:'notebook_investigacao',name:'Notebook de Investigação',view:'desk',image:'assets/sala/notebook-laptop.webp',abre:'explorador',x:21.7,y:53.2,w:24.7,ratio:1.78});
 if(progresso('sofia-room-plant-unlocked')==='unlocked')roomItems.push({id:'planta_investigacao',name:'Pequena planta',view:'desk',image:'assets/sala/planta-broto.png',stateImages:{broto:'assets/sala/planta-broto.png',pequena:'assets/sala/planta-pequena.png',desenvolvida:'assets/sala/planta-desenvolvida.png',florida:'assets/sala/planta-florida.png',sede:'assets/sala/planta-com-sede.png'},states:['broto','pequena','desenvolvida','florida','sede'],action:{broto:'Regar',pequena:'Regar',desenvolvida:'Regar',florida:'Regar',sede:'Regar e recuperar'},x:52,y:52,w:11,ratio:.78,plant:true});
