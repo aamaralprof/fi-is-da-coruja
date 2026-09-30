@@ -23,9 +23,11 @@ Aplicação web sem etapa de build: frontend estático em HTML, CSS e JavaScript
 - `blog-sofia/post3.css` e `blog-sofia/post3.js`: a experiência inteira de **21:17**, terceiro post do arco 2. Não são compartilhados com nenhuma outra página.
 - `blog-sofia/post4.css` e `blog-sofia/post4.js`: a experiência de investigação **Como foi que eu vim parar aqui?**, quarto post do arco 2, com pesquisas, quebra-cabeça, linha do tempo, classificação, mapa e recompensa.
 - `blog-sofia/post5.css` e `blog-sofia/post5.js`: a experiência noturna **Algumas respostas só existem à noite**, quinto post do arco 2, com quarto explorável, telescópio, conversas no Eaí e o minigame Quase × Vírgula.
+- `blog-sofia/post-o-liquidificador-cosmico.html`, `blog-sofia/post7.css` e `blog-sofia/post7.js`: **Frágil: Contém um Universo**, o sétimo post do arco 2, com a encomenda da Companhia Hermes, duas receitas filosóficas, o segredo opcional da Água/Ligeia e a apresentação de Lumiar.
 - `blog-sofia/assets/arco2/post3/`: cenários, pranchas de figuras e as seis faixas de áudio de 21:17.
 - `blog-sofia/assets/arco2/post4/`: Explorador, caderno, post-its, rabiscos, mapa, rota e imagens de Sísifo do quarto post.
 - `blog-sofia/assets/arco2/post5/`: quartos de Téo, cenas de Quase, mapa e sprites do quinto post.
+- `blog-sofia/assets/arco2/post7/`: capa do post, caixa da Companhia Hermes, estudo visual de Lumiar e fotografia de Ligeia.
 - `blog-sofia/investigacao-dados.js`: catálogo central de casos e itens usados pela Sala.
 - `blog-sofia/sala-investigacao.html`, `blog-sofia/sala.css` e `blog-sofia/sala.js`: interface, visual e lógica da Sala de Investigação.
 - `blog-sofia/sala-professor.js`: monta o contexto de leitura da Sala quando o endereço traz `?aluno=` ou `?geral=1`. Não desenha nada.
@@ -117,6 +119,7 @@ Modais/painéis: Caderno de Pistas, Inventário da Missão, Coleção de Emblema
 - Enigma dos caminhos: na visão geral, três objetos soltos (`charada_livro`, `charada_caderno`, `charada_postit`, catálogo em `sala.js` com `view:'overview'` e `categoria:'book'|'notebook'|'postit'`) esperam ser arrastados até a área do caminho correspondente (Estante/Mesa/Mural continuam exatamente como eram — a charada não entra nelas). `checkEnigma()`, chamada ao final de `change()`, confere a posição contra o retângulo de cada hotspot (`getBoundingClientRect()`, não números duplicados). Cada acerto é permanente (só liga, nunca desliga sozinho); completo, os três hotspots despertam (removem `hotspot--dormant` em `sala.css`) e liberam a navegação normal para Estante/Mesa/Mural. Uma Sala que já existia antes deste recurso nasce com `enigma.completed=true` — não retroage a charada para quem já tinha decorado a Sala. O post-it (`assets/sala/bilhete-charada.png`) também abre a charada em `<dialog id="charada">` ao ser tocado sem ser arrastado (`abre:'charada'`, mesmo mecanismo do notebook).
 - Persistência: D1 em `salas.estado`, com revisão otimista; rascunho local `sala-rascunho:<codigo>` e cópias locais de conflito.
 - Relação com Passaporte: exige sessão aberta e `sofia-room-unlocked`; usa `Percurso.requisitar('sala')`.
+- Coruja de Hefesto: ao existir `sofia-student-owl-incubation-start`, a mesa recebe o ovo mecânico como objeto posicionável. O toque informa a contagem regressiva de 72 horas; concluído o prazo, `sofia-student-owl-unlocked` é gravado pelo fluxo normal do `Percurso` e o asset troca para a coruja do aluno. Os arquivos canônicos ficam em `assets/sala/coruja-hefesto-ovo.png` e `assets/sala/coruja-hefesto-isolada.png`; Lumiar continua sendo apenas a personagem de Sofia no Post 7.
 - Como adicionar: pistas continuam registradas em `investigacao-dados.js`; decorações entram no catálogo `roomItems` de `sala.js`, apontando para um asset em `blog-sofia/assets/sala/` e uma perspectiva válida.
 
 ### Área do Professor

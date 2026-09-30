@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Protótipo narrativo do Post 6: descoberta do aplicativo ARCHÉ e batalha de filósofos.">
+  <title>Post 6 · ARCHÉ</title>
+  <link rel="stylesheet" href="styles.css?v=40">
+  <link rel="stylesheet" href="prototipo-post6-arche.css?v=2">
+  <link rel="stylesheet" href="prototipo-post6-arche-fix.css?v=2">
+  <link rel="icon" href="favicon.ico">
+</head>
+<body class="arche-story-page">
+  <a class="skip-link" href="#historia">Pular para a história</a>
+  <header class="story-nav"><a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true">?</span><span>arquivo da sofia</span></a><span>protótipo narrativo · post 6</span></header>
+  <main id="historia" class="story-shell">
+    <section class="story-step is-current" data-step="reading" aria-labelledby="reading-title">
+      <p class="eyebrow">naquela noite</p><h1 id="reading-title">A Hora que Não Existe</h1>
+      <article class="book-fragment"><p>Mei já tinha aprendido duas coisas sobre a Hora Ausente.</p><p>A primeira: não confiar nos relógios.</p><p>A segunda: nunca seguir alguém que soubesse o seu nome.</p><p>Por isso, quando ouviu:</p><p class="book-voice">— Mei.</p><p>continuou andando.</p><p>A rua estava vazia. As vitrines permaneciam acesas, mas não havia ninguém atrás delas. Nenhum carro passava. Nenhuma janela se abria.</p><p class="book-voice">— Mei.</p><p>Dessa vez, a voz veio mais perto.</p><p>Ela apertou a lanterna contra o peito e apressou o passo.</p><p>Então ouviu:</p><p class="book-voice">— Você deixou uma coisa do outro lado.</p><p>Mei parou.</p><p><strong>Não deveria ter parado.</strong></p></article>
+      <p class="sofia-aside">Eu sabia que ela não devia parar.</p>
+      <button class="story-action" type="button" data-next="collection">continuar lendo o post</button>
+    </section>
+
+    <section class="story-step" data-step="collection" aria-labelledby="collection-title" hidden>
+      <p class="eyebrow">veio dentro da edição</p><h2 id="collection-title">Não é uma coleção</h2>
+      <p>Uma cartela de adesivos. O tipo de coisa que uma pessoa guarda por motivos estritamente documentais.</p>
+      <button class="sticker-card" type="button" data-collect aria-describedby="collection-status"><img src="assets/arco2/post6-narrative/cartela-hora-ausente.png" alt="Cartela de adesivos da edição de colecionador de A Hora que Não Existe"><span>registrar cartela</span></button>
+      <p id="collection-status" class="story-status" aria-live="polite">Toque para registrar em “Não é uma Coleção”.</p>
+      <button class="story-action" type="button" data-next="phone" hidden>guardar a cartela</button>
+    </section>
+
+    <section class="story-step" data-step="phone" aria-labelledby="phone-title" hidden>
+      <div class="buzz" aria-hidden="true">BZZ.</div><p class="eyebrow">o celular vibrou</p><h2 id="phone-title">Um aplicativo que não estava ali antes.</h2>
+      <div class="sofia-phone-shell">
+        <img src="assets/celular-da-sofia.jpeg" alt="Tela inicial do celular de Sofia, com seus aplicativos">
+        <button class="arche-phone-app" type="button" data-open-arche aria-label="Abrir o aplicativo ARCHÉ">
+          <img src="assets/arco2/post6-narrative/arche-icon.png" alt="">
+          <strong>ἀρχή</strong>
+        </button>
+      </div>
+      <p class="sofia-aside">Eu não instalei isso.<br>Também não faço ideia de como se pronuncia.<br><br>Então, obviamente, eu abri.</p>
+    </section>
+
+    <section class="story-step arche-boot" data-step="boot" aria-live="polite" hidden><div><strong>ἀρχή</strong><span>ARCHÉ</span><p>Encontre o princípio.</p></div></section>
+
+    <section class="story-step chat-step" data-step="chat" aria-labelledby="chat-title" hidden>
+      <div class="arche-chat">
+        <header class="arche-chat-header">
+          <img src="assets/arco2/post6-narrative/arche-icon.png" alt="">
+          <div><h2 id="chat-title">Tudo flui... ou não</h2><p>Anaximandro, Anaxímenes, Heráclito, Parmênides</p></div>
+          <span aria-hidden="true">•••</span>
+        </header>
+        <ol class="arche-messages" data-arche-messages aria-live="polite" aria-relevant="additions"></ol>
+        <div class="arche-typing" data-typing hidden><span></span><span></span><span></span><em>digitando…</em></div>
+        <footer class="arche-chat-compose" aria-hidden="true"><span>+</span><p>Escrever mensagem…</p><b>↑</b></footer>
+      </div>
+      <button class="chat-skip" type="button" data-skip-chat>mostrar conversa completa</button>
+      <button class="story-action" type="button" data-glitch hidden>o que aconteceu?</button>
+    </section>
+
+    <section class="story-step incompatibility" data-step="glitch" aria-live="assertive" hidden><div class="glitch-title" data-text="ἀρχή">ἀρχή</div><strong>INCOMPATIBILIDADE DETECTADA</strong><p>Quatro princípios.<br>Quatro maneiras de explicar a realidade.</p><button class="story-action" type="button" data-next="battle">ESCOLHA UMA.</button></section>
+
+    <section class="story-step battle-step" data-step="battle" aria-labelledby="battle-title" hidden>
+      <div class="battle-heading"><p class="eyebrow">aplicativo ARCHÉ</p><h2 id="battle-title">Escolha. Lute. Continue.</h2></div>
+      <iframe title="Minijogo ARCHÉ: batalha de filósofos" src="prototipo-arche.html?v=17" loading="lazy" allow="fullscreen"></iframe>
+      <section class="arche-clue-reward" data-arche-clue hidden aria-labelledby="arche-clue-title" aria-live="polite">
+        <div class="arche-clue-symbol" aria-hidden="true">?</div>
+        <div><p class="eyebrow">pista adicionada ao caderno</p><h3 id="arche-clue-title">O princípio</h3><p>O ARCHÉ reuniu quatro explicações incompatíveis para a mesma realidade. Nenhuma delas encerrou o confronto.</p></div>
+      </section>
+      <nav class="post-pagination arche-post-pagination" data-story-continue hidden aria-label="Navegação entre anotações">
+        <a href="post-algumas-respostas-so-existem-a-noite.html"><span>anterior</span>Algumas respostas só existem à noite</a>
+        <span class="arche-next-pending" aria-disabled="true"><span>próxima</span>nova anotação em breve</span>
+      </nav>
+    </section>
+  </main>
+  <script src="prototipo-post6-arche.js?v=3" defer></script>
+</body>
+</html>

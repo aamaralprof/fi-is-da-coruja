@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Protótipo isolado do combate do ARCHÉ: Heráclito contra Parmênides.">
+  <title>ARCHÉ · Protótipo de combate</title>
+  <link rel="stylesheet" href="prototipo-arche.css?v=3">
+  <link rel="stylesheet" href="prototipo-arche-ajustes.css?v=16">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/heraclito-neutro.png">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/heraclito-movimento.png">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/heraclito-ataque.png">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/heraclito-defesa.png">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/parmenides-neutro-v2.png">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/parmenides-movimento-v2.png">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/parmenides-ataque-v2.png">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/parmenides-defesa-v2.png">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/anaximenes-neutro.png">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/anaximandro-neutro.png">
+  <link rel="icon" href="favicon.ico">
+</head>
+<body>
+  <a class="skip-link" href="#arena">Pular para a arena</a>
+  <main class="prototype-shell">
+    <header class="prototype-header">
+      <div><p class="kicker">ARCHÉ · FASE C</p><h1>Quatro princípios em confronto</h1></div>
+      <p>Escolha um filósofo · o ARCHÉ define o adversário</p>
+    </header>
+
+    <section class="fight-frame" aria-labelledby="fight-title">
+      <h2 class="sr-only" id="fight-title">Arena de combate</h2>
+      <section class="fighter-select" data-selection aria-labelledby="selection-title">
+        <div class="selection-heading"><p class="kicker">ἀρχή · INCOMPATIBILIDADE DETECTADA</p><h2 id="selection-title">Escolha um princípio</h2><p>Quatro maneiras de explicar a realidade. Nenhuma encerra a disputa.</p></div>
+        <div class="fighter-grid">
+          <button class="fighter-card fighter-card--heraclito" type="button" data-select-fighter="heraclito"><span class="fighter-card__portrait" aria-hidden="true"></span><strong>Heráclito</strong><b>MUDANÇA</b><small>Tudo está em movimento.</small></button>
+          <button class="fighter-card fighter-card--parmenides" type="button" data-select-fighter="parmenides"><span class="fighter-card__portrait" aria-hidden="true"></span><strong>Parmênides</strong><b>PERMANÊNCIA</b><small>O ser é uno e imutável.</small></button>
+          <button class="fighter-card fighter-card--anaximenes" type="button" data-select-fighter="anaximenes"><span class="fighter-card__portrait" aria-hidden="true"></span><strong>Anaxímenes</strong><b>TRANSFORMAÇÃO</b><small>O ar é o princípio de tudo.</small></button>
+          <button class="fighter-card fighter-card--anaximandro" type="button" data-select-fighter="anaximandro"><span class="fighter-card__portrait" aria-hidden="true"></span><strong>Anaximandro</strong><b>ORIGEM</b><small>Tudo vem do ápeiron.</small></button>
+        </div>
+      </section>
+      <div class="hud" aria-label="Placar da luta">
+        <div class="fighter-hud fighter-hud--player">
+          <div class="portrait portrait--heraclito" aria-hidden="true"></div>
+          <div class="hud-data"><strong data-player-name>HERÁCLITO</strong><div class="health-track" role="meter" aria-label="Vida do jogador" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" data-player-meter><span data-player-health></span></div></div>
+        </div>
+        <div class="timer" aria-label="Tempo restante"><span data-time>60</span></div>
+        <div class="fighter-hud fighter-hud--enemy">
+          <div class="hud-data"><strong data-enemy-name>PARMÊNIDES</strong><div class="health-track" role="meter" aria-label="Vida do adversário" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" data-enemy-meter><span data-enemy-health></span></div></div>
+          <div class="portrait portrait--parmenides" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div class="arena" id="arena" tabindex="0" aria-label="Arena. Use A e D ou as setas para mover. J ataca, K defende, L usa o ataque de princípio e Espaço ativa o especial." data-arena>
+        <img class="arena-background" src="assets/arco2/post6-prototype/arena-base.png" alt="Ruínas gregas sob um céu azul e lilás, com plataforma circular" width="1672" height="941">
+        <div class="arena-shade" aria-hidden="true"></div>
+        <div class="round-callout" data-callout role="status" aria-live="assertive"><strong>PREPARE-SE</strong><span>Toque em COMEÇAR</span></div>
+        <div class="impact-layer" aria-hidden="true" data-impact></div>
+        <div class="power-effect" aria-hidden="true" data-power-effect></div>
+        <div class="action-name" data-action-name role="status" aria-live="polite"></div>
+        <div class="fighter fighter--player state-idle" data-player aria-label="Heráclito"><div class="sprite"></div><span class="guard" aria-hidden="true"></span></div>
+        <div class="fighter fighter--enemy state-idle facing-left" data-enemy aria-label="Parmênides"><div class="sprite"></div><span class="guard" aria-hidden="true"></span></div>
+      </div>
+
+      <div class="controls" aria-label="Controles do jogador">
+        <div class="move-controls" aria-label="Movimentação">
+          <button type="button" data-hold="left" aria-label="Mover Heráclito para a esquerda"><span aria-hidden="true">←</span><small>ESQUERDA</small></button>
+          <button type="button" data-hold="right" aria-label="Mover Heráclito para a direita"><span aria-hidden="true">→</span><small>DIREITA</small></button>
+        </div>
+        <button class="start-button" type="button" data-start>COMEÇAR</button>
+        <div class="combat-controls">
+          <button class="attack-button" type="button" data-action="attack"><span class="control-mark" aria-hidden="true"></span><strong data-basic-label>IMPULSO</strong><small>J</small></button>
+          <button class="defend-button" type="button" data-hold="defend" aria-pressed="false"><span class="shield-mark" aria-hidden="true"></span><strong>DEFESA</strong><small>K</small></button>
+          <button class="principle-button" type="button" data-action="principle"><span class="principle-mark" aria-hidden="true"></span><strong data-principle-label>CHAMA DO DEVIR</strong><small>L</small></button>
+          <button class="special-button" type="button" data-action="special" disabled aria-disabled="true"><span class="special-mark" aria-hidden="true"></span><strong data-special-label>FLUXO ETERNO</strong><small>ESPAÇO</small></button>
+        </div>
+      </div>
+      <div class="special-hud" aria-label="Medidores especiais">
+        <div><span data-player-special-name>JOGADOR · ESPECIAL</span><div class="special-track" role="meter" aria-label="Carga especial do jogador" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-player-special-meter><i data-player-special></i></div></div>
+        <div class="special-hud__enemy"><span data-enemy-special-name>ADVERSÁRIO · ESPECIAL</span><div class="special-track special-track--enemy" role="meter" aria-label="Carga especial do adversário" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-enemy-special-meter><i data-enemy-special></i></div></div>
+      </div>
+      <p class="instructions">No teclado: <kbd>A</kbd>/<kbd>D</kbd> mover · <kbd>J</kbd> Impulso · <kbd>K</kbd> Defesa · <kbd>L</kbd> Chama do Devir · <kbd>Espaço</kbd> Fluxo Eterno</p>
+    </section>
+
+    <section class="prototype-notes" aria-label="Escopo do protótipo">
+      <p><strong>Fase C:</strong> escolha um dos quatro filósofos, enfrente um adversário aleatório e experimente cada estilo.</p>
+      <button type="button" data-restart>Reiniciar confronto</button>
+    </section>
+  </main>
+  <script src="prototipo-arche.js?v=9" defer></script>
+</body>
+</html>

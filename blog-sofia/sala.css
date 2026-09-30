@@ -113,6 +113,13 @@
 /* O brilho de quem acertou a charada — no objeto, nao num aviso a parte. */
 .room-item.brilho-enigma{animation:brilha-enigma 1.1s ease-out}
 @keyframes brilha-enigma{0%,100%{filter:drop-shadow(2px 6px 5px #1c101b88)}40%{filter:drop-shadow(2px 6px 5px #1c101b88) drop-shadow(0 0 16px #f4d58bcc)}}
+/* O companheiro conquistado no Post 7 continua vivo dentro da Sala. O ovo
+   pulsa durante a incubacao; depois do nascimento, o brilho passa ao peito e
+   aos olhos da corujinha. O movimento nao altera sua area clicavel. */
+.room-item[data-owl=egg]{animation:ovo-respira 2.6s ease-in-out infinite;filter:drop-shadow(2px 6px 5px #1c101b88) drop-shadow(0 0 8px #9e63d688)}
+.room-item[data-owl=hatched]{animation:coruja-desperta 3.2s ease-in-out infinite;filter:drop-shadow(2px 6px 5px #1c101b88) drop-shadow(0 0 7px #b86cff99)}
+@keyframes ovo-respira{0%,100%{transform:scale(1);filter:drop-shadow(2px 6px 5px #1c101b88) drop-shadow(0 0 5px #8b4bc766)}50%{transform:scale(1.055);filter:drop-shadow(2px 7px 6px #1c101b88) drop-shadow(0 0 15px #c184ffcc)}}
+@keyframes coruja-desperta{0%,100%{filter:drop-shadow(2px 6px 5px #1c101b88) drop-shadow(0 0 5px #9c55d777)}45%,55%{filter:drop-shadow(2px 6px 5px #1c101b88) drop-shadow(0 0 15px #d293ffdd) brightness(1.12)}}
 /* A resposta tem de aparecer onde o olho esta. A linha de estado fica no
    alto da pagina, em letra de 13px, e num palco rolado ela sai da tela:
    medido, o aviso caiu 622px longe do objeto e acima da area visivel.

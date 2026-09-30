@@ -36,7 +36,9 @@ const missionRecords = [
   { key: 'sofia-mission-passport', title: 'Passaporte de percurso', note: 'Titular reconhecida: Sofia', image: 'assets/passaporte-frente.png' },
   { key: 'sofia-mission-postal-arche', title: 'Postal endereçado a Sofia', note: 'Uma pergunta sobre o princípio de todas as coisas.', image: 'assets/arco2/postal-arche-sofia.jpeg' },
   { key: 'sofia-mission-fragmento-desconhecido', title: 'Fragmento desconhecido', note: 'Apareceu no caderno de Sofia durante a aula de Ciências.', image: 'assets/arco2/fragmento-desconhecido.png' },
-  { key: 'sofia-mission-convite-fieis', title: 'Convite dos Fiéis da Coruja', note: 'Um chamado para atravessar as fronteiras do tempo e do pensamento.', image: 'assets/arco2/convite-fieis-original.jpeg' }
+  { key: 'sofia-mission-convite-fieis', title: 'Convite dos Fiéis da Coruja', note: 'Um chamado para atravessar as fronteiras do tempo e do pensamento.', image: 'assets/arco2/convite-fieis-original.jpeg' },
+  { key: 'sofia-mission-registro-sisifo', title: 'Registro celeste de Sísifo', note: 'Recompensa da perseguição Quase × Vírgula.', image: 'assets/arco2/post5/registro-celeste-sisifo.png' },
+  { key: 'sofia-mission-ligeia-photo', title: 'Fotografia de Ligeia', note: 'Arquivo residual associado a um ingrediente não catalogado.', image: 'assets/arco2/post7/ligeia.png' }
 ];
 
 function missionFound(key) { try { return localStorage.getItem(key) === 'found'; } catch { return false; } }
@@ -54,8 +56,8 @@ function mountMissionInventory() {
       <div class="mission-head"><div><p>ACESSO PARCIAL · ${found.length}/${missionRecords.length}</p><h2 id="mission-title">Inventário de missão</h2></div><button type="button" data-close-mission aria-label="Fechar inventário">×</button></div>
       <p>Objetos e registros que o Sistema associou a este percurso.</p>
       <div class="mission-grid">${missionRecords.map((item, index) => missionFound(item.key)
-        ? `<article class="mission-item is-found"><span>0${index + 1}</span><img src="${item.image}" alt=""><div><h3>${item.title}</h3><p>${item.note}</p></div></article>`
-        : `<article class="mission-item is-locked"><span>0${index + 1}</span><div class="mission-lock" aria-hidden="true">?</div><div><h3>registro indisponível</h3><p>Continue observando.</p></div></article>`).join('')}</div>
+        ? `<article class="mission-item is-found" data-mission-key="${item.key}"><span>0${index + 1}</span><img src="${item.image}" alt=""><div><h3>${item.title}</h3><p>${item.note}</p></div></article>`
+        : `<article class="mission-item is-locked" data-mission-key="${item.key}"><span>0${index + 1}</span><div class="mission-lock" aria-hidden="true">?</div><div><h3>registro indisponível</h3><p>Continue observando.</p></div></article>`).join('')}</div>
     </aside>`);
   const launcher = document.querySelector('.mission-launcher');
   const panel = document.querySelector('.mission-inventory');
@@ -67,8 +69,22 @@ function mountMissionInventory() {
   closer.addEventListener('click', close);
   backdrop.addEventListener('click', close);
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !panel.hidden) close(); });
+  window.addEventListener('sofia:mission-found', (event) => {
+    const item = missionRecords.find((record) => record.key === event.detail?.key);
+    const card = item && document.querySelector(`[data-mission-key="${item.key}"]`);
+    if (!item || !card) return;
+    const index = missionRecords.indexOf(item);
+    card.className = 'mission-item is-found';
+    card.innerHTML = `<span>0${index + 1}</span><img src="${item.image}" alt=""><div><h3>${item.title}</h3><p>${item.note}</p></div>`;
+    const totalFound = missionRecords.filter((record) => missionFound(record.key)).length;
+    launcher.querySelector('b').textContent = `${totalFound}/${missionRecords.length}`;
+    panel.querySelector('.mission-head p').textContent = `ACESSO PARCIAL · ${totalFound}/${missionRecords.length}`;
+  });
 }
 mountMissionInventory();
+window.addEventListener('sofia:mission-found', () => {
+  if (!document.querySelector('.mission-launcher')) mountMissionInventory();
+});
 
 const journalList = document.querySelector('.journal-list');
 /* Pistas do arco 2 (10-12) e as três últimas do arco 1 (07-09) só entram no
@@ -82,7 +98,9 @@ const laterClues = isArco2Page ? [
   ['09','test-recognized-sofia','o teste reconheceu Sofia','Por um instante, o resultado deixou de ser um Caminho.'],
   ['10','fragmento-carta','o fragmento da carta','Heliópolis ligava a ordem do cosmos, a origem da vida e o destino humano.'],
   ['11','mileto-post2','Mileto','O fragmento parece ligado a um pensador da antiga cidade. A presença recorrente da água pode ser importante.'],
-  ['12','anotacoes-organizadas','Minhas anotações (finalmente organizadas)','Linha do tempo, mapa, nomes, símbolos, hipóteses e perguntas reunidos por Sofia. Não confundir pistas com respostas.']
+  ['12','anotacoes-organizadas','Minhas anotações (finalmente organizadas)','Linha do tempo, mapa, nomes, símbolos, hipóteses e perguntas reunidos por Sofia. Não confundir pistas com respostas.'],
+  ['13','arche-principles','O princípio','O ARCHÉ reuniu quatro explicações incompatíveis para a mesma realidade. Nenhuma delas encerrou o confronto.'],
+  ['14','cosmic-recipes','Duas receitas, um cosmos','O que cada receita considera fundamental para explicar a realidade?']
 ] : [];
 laterClues.forEach(([number,key,title,description]) => {
   if (journalList && !journalList.querySelector(`[data-clue-entry="${key}"]`)) {
@@ -439,10 +457,12 @@ function saveEmblem() {
 function ensureEmblemInventory() {
   let eclipseIsCollected = false;
   let officeIsCollected = false;
+  let hefestoIsCollected = false;
   try { eclipseIsCollected = localStorage.getItem('sofia-emblem-ordem-do-eclipse') === 'collected'; } catch {}
   try { officeIsCollected = localStorage.getItem('sofia-emblem-escritorio-do-destino') === 'collected'; } catch {}
+  try { hefestoIsCollected = localStorage.getItem('sofia-emblem-loja-de-hefesto') === 'collected'; } catch {}
   const fieisIsCollected = emblemWasCollected();
-  const emblemTotal = Number(fieisIsCollected) + Number(eclipseIsCollected) + Number(officeIsCollected);
+  const emblemTotal = Number(fieisIsCollected) + Number(eclipseIsCollected) + Number(officeIsCollected) + Number(hefestoIsCollected);
   if (!emblemTotal || document.querySelector('.emblem-inventory-launcher')) return;
   document.body.insertAdjacentHTML('beforeend', `
     <button class="emblem-inventory-launcher" type="button" aria-expanded="false" aria-controls="emblem-inventory">
@@ -454,6 +474,7 @@ function ensureEmblemInventory() {
       ${fieisIsCollected ? '<div class="emblem-inventory-card"><img src="assets/fieis-da-coruja-inventario.png" alt="Emblema dos Fiéis da Coruja"><h3>Fiéis da Coruja</h3><p>Origem ainda não identificada.</p></div>' : ''}
       ${eclipseIsCollected ? '<div class="emblem-inventory-card" data-eclipse-inventory-card><img src="assets/ordem-do-eclipse-inventario.png" alt="Emblema da Ordem do Eclipse"><h3>Ordem do Eclipse</h3><p>Encontrado numa perspectiva que Sofia não viu.</p></div>' : ''}
       ${officeIsCollected ? '<div class="emblem-inventory-card"><img src="assets/escritorio-do-destino-inventario.png" alt="Emblema do Escritório do Destino"><h3>Escritório do Destino</h3><p>Encontrado junto ao fragmento de Heliópolis.</p></div>' : ''}
+      ${hefestoIsCollected ? '<div class="emblem-inventory-card"><img src="assets/arco2/post7/emblema-hefesto.png" alt="Emblema da Oficina Submersível de Hefesto"><h3>Loja de Hefesto</h3><p>Artefatos, mecanismos e soluções improváveis.</p></div>' : ''}
     </aside>`);
 
   const launcher = document.querySelector('.emblem-inventory-launcher');

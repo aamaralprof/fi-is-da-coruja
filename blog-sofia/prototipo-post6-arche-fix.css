@@ -1,0 +1,305 @@
+.sticker-card img {
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+}
+
+.sofia-phone-shell {
+  position: relative;
+  width: min(82vw, 23rem);
+  margin: 1.5rem auto;
+  filter: drop-shadow(0 1.2rem 2rem #0009);
+}
+
+.sofia-phone-shell > img {
+  display: block;
+  width: 100%;
+  border-radius: 13%;
+}
+
+.arche-phone-app {
+  position: absolute;
+  left: 20.5%;
+  top: 56.5%;
+  display: grid;
+  justify-items: center;
+  gap: .28rem;
+  width: 18%;
+  padding: 0;
+  border: 0;
+  color: #fff;
+  background: transparent;
+  font: 600 clamp(.52rem, 2.6vw, .72rem)/1 Arial, sans-serif;
+  text-shadow: 0 1px 3px #000;
+  cursor: pointer;
+}
+
+.arche-phone-app img {
+  display: block;
+  width: 100%;
+  border-radius: 22%;
+  box-shadow: 0 .35rem .8rem #0008;
+  transition: transform .2s ease;
+}
+
+.arche-phone-app:hover img,
+.arche-phone-app:focus-visible img {
+  transform: translateY(-3px) scale(1.05);
+}
+
+.arche-phone-app:focus-visible {
+  outline: 3px solid #fff1a8;
+  outline-offset: 5px;
+  border-radius: .6rem;
+}
+
+.chat-step {
+  padding: clamp(.45rem, 2vw, 1rem);
+  background: #ede0c4;
+}
+
+.arche-chat {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  width: min(100%, 48rem);
+  min-height: min(78vh, 52rem);
+  margin: auto;
+  overflow: hidden;
+  border: 1px solid #b98d50;
+  border-radius: 1.2rem;
+  color: #1c1915;
+  background: linear-gradient(#f3e8d1dd, #eadbbccc), url('assets/arco2/post6-narrative/chat-1.png') center/cover;
+  box-shadow: 0 1rem 3rem #0006;
+}
+
+.arche-chat-header {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  align-items: center;
+  gap: .75rem;
+  padding: .8rem 1rem;
+  color: #f8e9c5;
+  background: #111b25f5;
+  border-bottom: 2px solid #bd8f4d;
+}
+
+.arche-chat-header img {
+  width: 3.5rem;
+  border-radius: 50%;
+}
+
+.arche-chat-header h2 {
+  margin: 0;
+  font-size: clamp(1.15rem, 4vw, 1.8rem);
+}
+
+.arche-chat-header p {
+  margin: .2rem 0 0;
+  color: #ded0b2;
+  font: .72rem/1.25 Arial, sans-serif;
+}
+
+.arche-chat-header > span {
+  letter-spacing: .22em;
+}
+
+.arche-messages {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  min-height: 24rem;
+  max-height: 62vh;
+  margin: 0;
+  padding: 1rem;
+  overflow-y: auto;
+  list-style: none;
+  scroll-behavior: smooth;
+}
+
+.arche-message {
+  display: grid;
+  grid-template-columns: 3.1rem minmax(0, 1fr);
+  align-items: end;
+  gap: .65rem;
+  animation: message-in .35s ease both;
+}
+
+.arche-message img {
+  width: 3.1rem;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: top;
+  border: 2px solid #d6aa5d;
+  border-radius: 50%;
+  background: #172436;
+}
+
+.arche-bubble {
+  max-width: 36rem;
+  padding: .7rem .85rem;
+  border: 1px solid #caa66c;
+  border-radius: .25rem 1rem 1rem 1rem;
+  background: #fff7e7ee;
+  box-shadow: 0 .35rem .8rem #3b2a1740;
+}
+
+.arche-bubble strong {
+  display: block;
+  margin-bottom: .22rem;
+  color: var(--speaker-color, #63371e);
+  font-size: 1rem;
+}
+
+.arche-bubble p {
+  margin: 0;
+  font-size: clamp(.95rem, 2.5vw, 1.15rem);
+  line-height: 1.35;
+}
+
+.arche-message--system {
+  display: block;
+  align-self: center;
+  width: min(90%, 28rem);
+  padding: .7rem 1rem;
+  border: 1px solid #a99573;
+  border-radius: 2rem;
+  color: #615747;
+  background: #f4ead8dd;
+  text-align: center;
+  font-style: italic;
+}
+
+.arche-typing {
+  min-height: 2rem;
+  padding: .3rem 1rem .55rem 4.8rem;
+  color: #655b4d;
+  font: .72rem/1 Arial, sans-serif;
+}
+
+.arche-typing span {
+  display: inline-block;
+  width: .38rem;
+  height: .38rem;
+  margin-right: .18rem;
+  border-radius: 50%;
+  background: #695d4c;
+  animation: typing .8s ease-in-out infinite alternate;
+}
+
+.arche-typing span:nth-child(2) { animation-delay: .15s; }
+.arche-typing span:nth-child(3) { animation-delay: .3s; }
+.arche-typing em { margin-left: .35rem; }
+
+.arche-chat-compose {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr 2.2rem;
+  align-items: center;
+  gap: .6rem;
+  padding: .65rem 1rem;
+  border-top: 1px solid #bda77e;
+  color: #756a59;
+  background: #f4e8d1;
+}
+
+.arche-chat-compose p { margin: 0; }
+.arche-chat-compose span,
+.arche-chat-compose b { font-size: 1.5rem; text-align: center; }
+
+.chat-skip {
+  display: block;
+  margin: .65rem auto 0;
+  padding: .5rem .8rem;
+  border: 0;
+  color: #594523;
+  background: transparent;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@keyframes message-in {
+  from { opacity: 0; transform: translateY(.65rem) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes typing {
+  to { opacity: .25; transform: translateY(-.18rem); }
+}
+
+@media (max-width: 560px) {
+  .arche-chat { min-height: calc(100svh - 2rem); border-radius: .7rem; }
+  .arche-messages { max-height: 66svh; padding: .7rem; }
+  .arche-message { grid-template-columns: 2.5rem minmax(0, 1fr); gap: .48rem; }
+  .arche-message img { width: 2.5rem; }
+  .arche-chat-header { grid-template-columns: 2.8rem 1fr auto; padding: .65rem; }
+  .arche-chat-header img { width: 2.8rem; }
+  .arche-typing { padding-left: 3.7rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arche-messages { scroll-behavior: auto; }
+}
+
+.arche-clue-reward {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  align-items: center;
+  gap: 1rem;
+  width: min(100%, 42rem);
+  margin: 1.25rem auto 0;
+  padding: 1rem;
+  border: 1px solid #d6aa5d;
+  border-radius: 1rem;
+  color: #f7edcf;
+  background: linear-gradient(135deg, #2a1c3c, #101a2d);
+  box-shadow: 0 .8rem 2rem #0006;
+  animation: message-in .45s ease both;
+}
+
+.arche-clue-reward[hidden] { display: none; }
+
+.arche-clue-symbol {
+  display: grid;
+  width: 4rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 2px solid #d6aa5d;
+  border-radius: 50%;
+  color: #182035;
+  background: #f3d88f;
+  font: 700 2rem Georgia, serif;
+}
+
+.arche-clue-reward .eyebrow { margin: 0 0 .2rem; color: #dbb968; }
+.arche-clue-reward h3 { margin: 0; font-size: 1.5rem; }
+.arche-clue-reward p:last-child { margin: .4rem 0 0; line-height: 1.5; }
+
+@media (max-width: 480px) {
+  .arche-clue-reward { grid-template-columns: 3.2rem 1fr; }
+  .arche-clue-symbol { width: 3.2rem; }
+}
+
+.arche-post-pagination {
+  width: min(100%, 48rem);
+  margin-top: 2rem;
+  border-color: #d6aa5d66;
+}
+
+.arche-post-pagination a {
+  color: #f7edcf;
+  text-underline-offset: .3rem;
+}
+
+.arche-post-pagination > * {
+  min-height: 48px;
+  justify-content: center;
+}
+
+.arche-post-pagination span > span,
+.arche-post-pagination a > span {
+  color: #d6aa5d;
+}
+
+.arche-next-pending {
+  color: #b8ad96;
+  opacity: .72;
+}
