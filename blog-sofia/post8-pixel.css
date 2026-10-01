@@ -1,0 +1,348 @@
+/* Post 8 — camada 8 bits.
+   Carregada depois de post8.css. Só muda a aparência das áreas de jogo
+   (a abertura no cais e a chegada a Atenas continuam na arte final).
+   Linguagem das pranchas: pergaminho com letra pixelada, painéis escuros com
+   moldura dourada, bordas retas, sombras duras, nada de cantos arredondados. */
+
+:root {
+  --p8-pixel-font: "VT323", "DM Sans", ui-monospace, monospace;
+  --p8-parchment: #f1e3c2;
+  --p8-parchment-edge: #3a2a1c;
+  --p8-frame-gold: #c79a55;
+  --p8-frame-dark: #0b1420;
+}
+
+/* ---------- tipografia de jogo ---------- */
+.p8-transition-screen, .p8-repair-status, .p8-repair-dialogue b, .p8-tools span, .p8-tools small,
+.p8-tool-hint, .p8-repair-log, .p8-repair-complete .eyebrow, .p8-repair-complete h3,
+.p8-puzzle-bar, .p8-puzzle-status, .p8-gate span, .p8-gate i, .p8-river span, .p8-field strong, .p8-field small,
+.p8-tales-complete .eyebrow, .p8-tales-complete h3, .p8-tales-complete > strong,
+.p8-climb-meta, .p8-state-chip, .p8-climb-overlay, .p8-climb-controls, .p8-flag span,
+.p8-parmenides-complete .eyebrow, .p8-parmenides-complete h3, .p8-parmenides-complete > strong,
+.p8-heraclito-complete .eyebrow, .p8-heraclito-complete h3, .p8-heraclito-complete > strong,
+.p8-anaximenes-complete .eyebrow, .p8-anaximenes-complete h3, .p8-anaximenes-complete > strong,
+.p8-kitchen-label, .p8-shelf-items button, .p8-bowl-slots button, .p8-kitchen-result span, .p8-kitchen-result h3,
+.p8-recipe-cards span, .p8-recipe-cards h3,
+.p8-recipes-complete .eyebrow, .p8-recipes-complete h3, .p8-recipes-complete > strong,
+.p8-sailing-kicker, .p8-sailing-title, .p8-sailing-skip,
+.p8-final .p8-island-intro, .p8-route li, .p8-route .eyebrow, .p8-route h2 {
+  font-family: var(--p8-pixel-font);
+  font-size-adjust: .58;
+  letter-spacing: .03em;
+}
+
+/* ---------- títulos das ilhas: pergaminho, como nas pranchas ---------- */
+.p8-tales .p8-island-intro, .p8-parmenides .p8-island-intro, .p8-heraclito .p8-island-intro,
+.p8-anaximenes .p8-island-intro, .p8-recipes .p8-island-intro, .p8-final .p8-island-intro {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.1rem 1.5rem 1.2rem;
+  border: 4px solid var(--p8-parchment-edge);
+  background: var(--p8-parchment);
+  color: #2a1d14;
+  box-shadow: 0 0 0 4px #c9a96a, 8px 8px 0 4px rgba(20, 12, 6, .3);
+  font-family: var(--p8-pixel-font);
+}
+.p8-tales .p8-island-intro h2, .p8-parmenides .p8-island-intro h2, .p8-heraclito .p8-island-intro h2,
+.p8-anaximenes .p8-island-intro h2, .p8-recipes .p8-island-intro h2, .p8-final .p8-island-intro h2 {
+  margin: .35rem auto .5rem;
+  font-family: var(--p8-pixel-font);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 4.2vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: #2a1d14;
+}
+.p8-tales .p8-island-intro .eyebrow, .p8-parmenides .p8-island-intro .eyebrow, .p8-heraclito .p8-island-intro .eyebrow,
+.p8-anaximenes .p8-island-intro .eyebrow, .p8-recipes .p8-island-intro .eyebrow, .p8-final .p8-island-intro .eyebrow {
+  font-family: var(--p8-pixel-font);
+  color: #7a4a22;
+}
+.p8-island-intro > p:last-child { font-size: 1.05rem; }
+.p8-final .p8-island-intro h2 { color: #2a1d14; }
+
+/* falas: caixas de pergaminho com nome em destaque */
+.p8-island-dialogue p {
+  border: 3px solid var(--p8-parchment-edge) !important;
+  border-radius: 0;
+  background: var(--p8-parchment) !important;
+  color: #2a1d14;
+  box-shadow: 4px 4px 0 rgba(20, 12, 6, .3) !important;
+  font-family: var(--p8-pixel-font);
+  font-size: 1.02rem;
+  line-height: 1.4;
+}
+.p8-island-dialogue b { font-family: var(--p8-pixel-font); color: #7a3a1a !important; }
+
+/* ---------- painéis de jogo: escuros, com moldura dourada ---------- */
+.p8-transition-screen, .p8-water-puzzle, .p8-climb, .p8-kitchen, .p8-boat, .p8-toolbox, .p8-repair-status,
+.p8-repair-complete, .p8-sailing-sea {
+  border-radius: 0 !important;
+  border: 3px solid var(--p8-frame-gold) !important;
+  box-shadow: inset 0 0 0 3px var(--p8-frame-dark), 0 0 0 3px var(--p8-frame-dark), 8px 8px 0 3px rgba(0, 0, 0, .28) !important;
+}
+.p8-repair-dialogue { border-radius: 0; border-left: 0; border: 3px solid var(--p8-parchment-edge); background: var(--p8-parchment); color: #2a1d14; font-family: var(--p8-pixel-font); }
+.p8-repair-dialogue b { color: #7a3a1a; }
+.p8-tales-complete, .p8-parmenides-complete, .p8-heraclito-complete, .p8-anaximenes-complete, .p8-recipes-complete {
+  border-radius: 0;
+  border: 4px solid var(--p8-parchment-edge);
+  background: var(--p8-parchment);
+  box-shadow: 0 0 0 4px #c9a96a, 8px 8px 0 4px rgba(20, 12, 6, .3);
+}
+.p8-tales-complete h3, .p8-parmenides-complete h3, .p8-heraclito-complete h3, .p8-anaximenes-complete h3, .p8-recipes-complete h3 { text-transform: uppercase; letter-spacing: .03em; }
+
+/* ---------- botões pixelados ---------- */
+.p8-primary:not(.p8-harbor .p8-primary) {
+  border-radius: 0;
+  border: 3px solid #3a2410;
+  background: #e2bc72;
+  color: #2a1808;
+  font-family: var(--p8-pixel-font);
+  font-size: .95rem;
+  letter-spacing: .08em;
+  box-shadow: inset -3px -3px 0 #b07a3a, inset 3px 3px 0 #f6dca0, 0 4px 0 #2a1808;
+}
+.p8-primary:not(.p8-harbor .p8-primary):hover { filter: none; transform: translateY(-2px); box-shadow: inset -3px -3px 0 #b07a3a, inset 3px 3px 0 #f6dca0, 0 6px 0 #2a1808; }
+.p8-primary:not(.p8-harbor .p8-primary):active { transform: translateY(2px); box-shadow: inset -3px -3px 0 #b07a3a, inset 3px 3px 0 #f6dca0, 0 2px 0 #2a1808; }
+.p8-puzzle-bar button, .p8-sailing-skip, .p8-climb-controls button {
+  border-radius: 0 !important;
+  border: 3px solid #6f95a0;
+  box-shadow: inset -3px -3px 0 rgba(0, 0, 0, .35), inset 3px 3px 0 rgba(255, 255, 255, .12), 0 3px 0 #050a10;
+  font-family: var(--p8-pixel-font);
+}
+
+/* ---------- reparo: itens da prancha e marcadores em cantoneira ---------- */
+.p8-tools button { grid-template-rows: 62px auto auto; border-radius: 0; border-width: 3px; box-shadow: inset -3px -3px 0 rgba(0, 0, 0, .3); }
+.p8-tools img { width: auto; height: 58px; max-width: 100%; object-fit: contain; filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, .45)); }
+.p8-tools .p8-shell img { height: 52px; }
+.p8-damage {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background:
+    linear-gradient(#7ee8ec, #7ee8ec) 0 0 / 14px 4px no-repeat, linear-gradient(#7ee8ec, #7ee8ec) 0 0 / 4px 14px no-repeat,
+    linear-gradient(#7ee8ec, #7ee8ec) 100% 0 / 14px 4px no-repeat, linear-gradient(#7ee8ec, #7ee8ec) 100% 0 / 4px 14px no-repeat,
+    linear-gradient(#7ee8ec, #7ee8ec) 0 100% / 14px 4px no-repeat, linear-gradient(#7ee8ec, #7ee8ec) 0 100% / 4px 14px no-repeat,
+    linear-gradient(#7ee8ec, #7ee8ec) 100% 100% / 14px 4px no-repeat, linear-gradient(#7ee8ec, #7ee8ec) 100% 100% / 4px 14px no-repeat,
+    rgba(126, 232, 236, .1);
+  animation: p8-blink-box 1.2s steps(2) infinite;
+}
+.p8-damage:hover, .p8-damage.is-target { background-color: rgba(126, 232, 236, .28); transform: none; }
+.p8-damage span { border-radius: 0; border: 2px solid #7ee8ec; font-family: var(--p8-pixel-font); font-size: .7rem; }
+@keyframes p8-blink-box { 50% { filter: brightness(1.35); } }
+.p8-progress i { border-radius: 0; height: 10px; }
+.p8-repair-log li { border-radius: 0; border-width: 3px; font-size: .78rem; }
+
+/* ---------- Ilha I: terra, água e sprites da prancha ---------- */
+.p8-water-board {
+  background: url("assets/arco2/post8/pixel/tales-terra.png") 0 0 / 32px 32px repeat;
+  image-rendering: pixelated;
+}
+.p8-water-board::before { display: none; }
+.p8-river {
+  background: url("assets/arco2/post8/pixel/agua.png") 0 0 / 64px 32px repeat;
+  box-shadow: inset 0 -6px 0 #2a5e7c, 0 4px 0 #6a4a2c;
+  image-rendering: pixelated;
+}
+.p8-river::after { display: none; }
+.p8-river span { border: 2px solid #f1e3c2; font-family: var(--p8-pixel-font); }
+.p8-channel {
+  border: 0;
+  background: #5a3e22;
+  box-shadow: 0 0 0 6px #8c7a62, 0 0 0 9px #4a3a2a, inset 0 4px 0 rgba(0, 0, 0, .35);
+  transition: none;
+}
+.p8-channel.is-wet {
+  background: url("assets/arco2/post8/pixel/agua.png") 0 0 / 64px 32px repeat;
+  image-rendering: pixelated;
+  box-shadow: 0 0 0 6px #8c7a62, 0 0 0 9px #4a3a2a, inset 0 0 0 3px #9fe0f0;
+  animation: p8-flow .8s steps(4) infinite;
+}
+@keyframes p8-flow { to { background-position: 64px 0; } }
+.p8-channel--dead { box-shadow: 0 0 0 6px #8c7a62, 0 0 0 9px #4a3a2a; }
+.p8-gate {
+  display: grid;
+  justify-items: center;
+  min-width: 92px;
+  padding: .25rem .3rem .35rem;
+  border: 3px solid #2a1808;
+  border-radius: 0;
+  background: #3a2a1c;
+  box-shadow: 0 4px 0 #1a0f06;
+  overflow: hidden;
+}
+.p8-gate::before { display: none; }
+.p8-gate img { width: 78px; height: auto; margin-bottom: .2rem; transition: transform .2s steps(3); }
+.p8-gate[aria-pressed="true"] img { transform: translateY(-38%); clip-path: inset(0 0 38% 0); }
+.p8-gate[aria-pressed="true"] { background: #1e4a66; border-color: #9fe0f0; }
+.p8-gate span { font-size: .72rem; }
+.p8-gate i { font-size: .68rem; color: #f2d79a; }
+.p8-field {
+  min-width: 150px;
+  padding: .6rem;
+  border: 3px solid #3a2410;
+  border-radius: 0;
+  background: #7a5432;
+  box-shadow: 0 4px 0 #2a1808;
+}
+.p8-field span { display: flex; justify-content: center; align-items: flex-end; gap: .2rem; height: 86px; background: #6a4a2c; box-shadow: inset 0 0 0 3px #4a3220; filter: none; }
+.p8-field span img { height: 78px; width: auto; image-rendering: auto; }
+.p8-field .is-wet { display: none; }
+.p8-field.is-irrigated span { background: #4a5a2c; }
+.p8-field.is-irrigated .is-dry { display: none; }
+.p8-field.is-irrigated .is-wet { display: block; }
+.p8-decor { position: absolute; z-index: 0; pointer-events: none; height: auto; filter: drop-shadow(3px 3px 0 rgba(40, 24, 10, .35)); }
+.p8-decor--palms { right: 1%; top: 104px; width: min(190px, 22%); }
+.p8-decor--trees { left: 0; top: 232px; width: min(118px, 12%); }
+.p8-decor--rocks { left: 1%; bottom: 1%; width: min(150px, 20%); }
+.p8-puzzle-status { border-top: 3px solid var(--p8-frame-gold); }
+
+@media (max-width: 700px) {
+  .p8-gate { min-width: 66px; }
+  .p8-gate img { width: 54px; }
+  .p8-decor--trees { display: none; }
+  .p8-field span { height: 64px; }
+  .p8-field span img { height: 58px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .post8-page .p8-damage, .post8-page .p8-channel.is-wet { animation: none !important; }
+}
+
+/* VT323 é estreita: corpo um pouco maior nos títulos e caixas de fala */
+.p8-island-intro, .p8-island-intro h2, .p8-island-dialogue p, .p8-repair-dialogue, .p8-primary:not(.p8-harbor .p8-primary) { font-size-adjust: .58; }
+.p8-island-dialogue p { font-size: 1.2rem; }
+
+/* comporta aberta: a tábua sobe e a água aparece por baixo */
+.p8-gate[aria-pressed="true"] { background: url("assets/arco2/post8/pixel/agua.png") 0 0 / 64px 32px repeat-x, url("assets/arco2/post8/pixel/agua.png") 0 28px / 64px 32px repeat-x, #123a52; background-size: 64px 32px, 64px 32px; background-clip: padding-box; image-rendering: pixelated; }
+.p8-gate[aria-pressed="true"] span, .p8-gate[aria-pressed="true"] i { position: relative; padding: 0 .2rem; background: #123a52; }
+
+/* barco avariado: recorte limpo da prancha de sprites, com os danos nos lugares certos */
+.p8-boat { width: min(100%, 560px); justify-self: center; aspect-ratio: 347 / 368; background: #0a1a2a; }
+.p8-boat > img { left: 0; top: 0; width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+.p8-damage--sail { left: 58%; top: 30%; width: 26%; height: 28%; }
+.p8-damage--rigging { left: 13%; top: 36%; width: 20%; height: 22%; right: auto; }
+.p8-damage--hull { left: 45%; top: 81%; width: 22%; height: 12%; }
+.p8-damage--rudder { left: 1%; top: 66%; right: auto; width: 21%; height: 22%; }
+.p8-damage--rudder span { left: 100%; translate: 0 0; }
+
+/* tudo dentro dos painéis de jogo usa a letra pixelada (os componentes antigos fixavam a fonte no próprio elemento) */
+.p8-repair *, .p8-transition *, .p8-water-puzzle *, .p8-climb *, .p8-kitchen *, .p8-sailing * {
+  font-family: var(--p8-pixel-font) !important;
+  font-size-adjust: .58;
+}
+/* títulos das ilhas em duas linhas, como nas pranchas */
+.p8-title-num, .p8-title-name { display: block; }
+.p8-title-num { font-size: .78em; color: #7a4a22; }
+.p8-repair-log li { font-size: 1rem !important; }
+.p8-damage span { font-size: .9rem !important; }
+.p8-tales-complete .eyebrow, .p8-parmenides-complete .eyebrow, .p8-heraclito-complete .eyebrow, .p8-anaximenes-complete .eyebrow, .p8-recipes-complete .eyebrow, .p8-repair-complete .eyebrow { color: #7a4a22; }
+.p8-puzzle-bar span { font-size: .85rem !important; }
+/* VT323 não tem negrito: o negrito falso do navegador borra o M (vira N). Peso normal sempre. */
+.p8-repair *, .p8-transition *, .p8-water-puzzle *, .p8-climb *, .p8-kitchen *, .p8-sailing *, .p8-island-intro, .p8-island-intro *, .p8-island-dialogue *, .p8-repair-dialogue *, .p8-primary, [class$="-complete"] .eyebrow, [class$="-complete"] h3, [class$="-complete"] > strong, .p8-route li *, .p8-route .eyebrow, .p8-route h2 { font-weight: 400 !important; font-synthesis: none; }
+/* a ligadura "fi" da VT323 parece um ñ ("Soña"): sem ligaduras no post */
+.post8-page { font-variant-ligatures: none; font-feature-settings: "liga" 0, "clig" 0; }
+/* rótulos curtos em maiúsculas e minúsculas, como na prancha (o M maiúsculo da VT323 em corpo pequeno parece N) */
+.p8-tools span, .p8-damage span, .p8-repair-log li, .p8-repair-status span, .p8-puzzle-bar span, .p8-climb-meta > span, .p8-kitchen-label, .p8-kitchen-result span, .p8-recipe-cards span, .p8-shelf-items button { text-transform: none !important; letter-spacing: .04em !important; }
+.p8-tools span, .p8-damage span, .p8-repair-log li { font-size: 1.05rem !important; }
+
+/* ================= ilhas de plataforma (II, III, IV) ================= */
+.p8-climb-world { image-rendering: pixelated; }
+.p8-sprite { position: absolute; z-index: 1; height: auto; transform: translateY(-100%); pointer-events: none; image-rendering: auto; filter: drop-shadow(2px 2px 0 rgba(20, 12, 20, .35)); }
+.p8-temple-img { z-index: 2; }
+.p8-sprite--far { z-index: 0; filter: brightness(.6) saturate(.7); }
+.p8-sprite--cloud { z-index: 0; image-rendering: pixelated; filter: none; }
+.p8-climb .p8-rock { border-radius: 0; }
+.p8-flag i { clip-path: polygon(0 0, 100% 0, 100% 25%, 75% 25%, 75% 50%, 100% 50%, 100% 100%, 0 100%); }
+
+/* Ilha II: céu do entardecer em faixas, montanha e pedra clara da prancha */
+.p8-parmenides .p8-climb-viewport { background: #3a3e7c url("assets/arco2/post8/pixel/ceu-parm.png") center / cover; image-rendering: pixelated; }
+.p8-parmenides .p8-climb-viewport::before { display: none; }
+.p8-mountain { background: linear-gradient(rgba(255, 190, 140, .14), transparent 30%, transparent 60%, rgba(24, 12, 30, .3)), url("assets/arco2/post8/pixel/parm-montanha.png") 0 0 / 320px 480px; image-rendering: pixelated; filter: brightness(.88); }
+.p8-parmenides .p8-rock {
+  border: 2px solid #4a3830;
+  background: url("assets/arco2/post8/pixel/parm-grama.png") 0 0 / 16px 6px repeat-x, url("assets/arco2/post8/pixel/parm-pedra.png") 0 0 / 16px 16px;
+  box-shadow: 0 3px 0 rgba(30, 18, 24, .45);
+}
+.p8-parmenides .p8-rock--summit { background: url("assets/arco2/post8/pixel/parm-ruina.png") 0 0 / 16px 16px; border-color: #6d6150; }
+.p8-parmenides .p8-rock--decor { opacity: .6; }
+
+/* Ilha III: céu de crepúsculo, pedra roxa com musgo, alternativas azul (A) e brasa (B) */
+.p8-climb-viewport--dusk { background: #2b2a55 url("assets/arco2/post8/pixel/ceu-her.png") center bottom / cover; image-rendering: pixelated; }
+.p8-dusk-world .p8-water { background: url("assets/arco2/post8/pixel/agua.png") 0 0 / 32px 16px repeat, #1c4f96; }
+.p8-dusk-world .p8-rock--ground, .p8-dusk-world .p8-rock--stone {
+  border-color: #1d1a2c;
+  background: url("assets/arco2/post8/pixel/her-musgo.png") 0 0 / 16px 6px repeat-x, url("assets/arco2/post8/pixel/her-pedra.png") 0 0 / 16px 16px;
+}
+.p8-dusk-world .p8-rock--ruin, .p8-dusk-world .p8-rock--lintel { border-color: #2a2440; background: url("assets/arco2/post8/pixel/her-ruina.png") 0 0 / 16px 16px; }
+.p8-dusk-world .p8-rock--alt.p8-phase-a { border-color: #16243a; background: url("assets/arco2/post8/pixel/her-a.png") 0 0 / 16px 16px; }
+.p8-dusk-world .p8-rock--alt.p8-phase-b { border-color: #2a1810; background: linear-gradient(#ff9a3c, #ff9a3c) 0 0 / 100% 3px no-repeat, url("assets/arco2/post8/pixel/her-b.png") 0 0 / 16px 16px; }
+.p8-dusk-world .p8-rock.is-off { background: transparent; }
+.p8-bg-cliff { background: url("assets/arco2/post8/pixel/her-pedra.png") 0 0 / 16px 16px; filter: brightness(.5); opacity: 1; clip-path: polygon(0 8%, 12% 8%, 12% 0, 70% 0, 70% 5%, 100% 5%, 100% 100%, 0 100%); }
+.p8-rock--fire > span { clip-path: polygon(10% 100%, 10% 60%, 0 60%, 0 35%, 20% 35%, 20% 20%, 40% 20%, 40% 0, 60% 0, 60% 25%, 80% 25%, 80% 15%, 100% 15%, 100% 60%, 90% 60%, 90% 100%); background: linear-gradient(0deg, #ffe27a 0 30%, #ff8a2a 30% 62%, #d63b1f 62% 88%, transparent 88%); }
+.p8-brazier::before { clip-path: polygon(0 0, 100% 0, 100% 50%, 80% 50%, 80% 100%, 20% 100%, 20% 50%, 0 50%); background: #4a3426; }
+.p8-brazier i { clip-path: polygon(20% 100%, 20% 60%, 0 60%, 0 30%, 30% 30%, 30% 0, 70% 0, 70% 30%, 100% 30%, 100% 60%, 80% 60%, 80% 100%); background: linear-gradient(0deg, #ffe27a 0 35%, #ff8a2a 35% 70%, #d63b1f 70%); }
+
+/* Ilha IV: céu de dia, pedra cinza com musgo, mar de nuvens e correntes em faixas */
+.p8-climb-viewport--sky { background: #6aa6e0 url("assets/arco2/post8/pixel/ceu-ana.png") center / cover; image-rendering: pixelated; }
+.p8-sky-world .p8-rock--cliff {
+  border-color: #2a2f2a;
+  background: url("assets/arco2/post8/pixel/ana-grama.png") 0 0 / 16px 6px repeat-x, url("assets/arco2/post8/pixel/ana-pedra.png") 0 0 / 16px 16px;
+}
+.p8-cloud-sea { background: url("assets/arco2/post8/pixel/nuvem.png") 0 0 / 40px 16px repeat-x, linear-gradient(#f4f9ff, #f4f9ff) 0 13px / 100% 100% no-repeat; image-rendering: pixelated; }
+.p8-current { background: repeating-linear-gradient(90deg, rgba(160, 220, 255, .22) 0 8px, rgba(200, 240, 255, .38) 8px 16px); box-shadow: inset 2px 0 0 rgba(220, 245, 255, .7), inset -2px 0 0 rgba(220, 245, 255, .7); }
+.p8-current::before { background: repeating-linear-gradient(150deg, transparent 0 24px, rgba(240, 252, 255, .85) 24px 28px, transparent 28px 52px); animation-timing-function: steps(6); }
+.p8-current::after { background: repeating-linear-gradient(30deg, transparent 0 24px, rgba(150, 214, 255, .7) 24px 27px, transparent 27px 52px); animation-timing-function: steps(6); }
+.p8-current i { filter: none; }
+.p8-far-isles i { clip-path: polygon(0 0, 100% 0, 100% 25%, 85% 25%, 85% 50%, 65% 50%, 65% 75%, 55% 75%, 55% 100%, 45% 100%, 45% 75%, 30% 75%, 30% 50%, 12% 50%, 12% 25%, 0 25%); }
+.p8-birds i { border-radius: 0; height: 3px; border-top-width: 2px; }
+
+/* ================= Ilha V: cozinha ================= */
+.p8-kitchen-scene { background: #5a3a5c url("assets/arco2/post8/pixel/ceu-receitas.png") center / cover; image-rendering: pixelated; }
+.p8-kitchen-scene::before { display: none; }
+.p8-shelf-items button { border-radius: 0; box-shadow: inset -3px -3px 0 rgba(0, 0, 0, .35), inset 3px 3px 0 rgba(255, 255, 255, .08); }
+.p8-shelf-items button i { width: 44px; height: 40px; }
+.p8-shelf-items button i img { width: 40px; height: 40px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 3px rgba(255, 230, 170, .35)); }
+.p8-shelf-items button.is-arche i img { image-rendering: auto; }
+.p8-bowl { border-radius: 0; clip-path: polygon(0 0, 100% 0, 100% 45%, 94% 45%, 94% 70%, 84% 70%, 84% 88%, 70% 88%, 70% 100%, 30% 100%, 30% 88%, 16% 88%, 16% 70%, 6% 70%, 6% 45%, 0 45%); background: #d9caa8; border: 0; padding-bottom: 1.4rem; }
+.p8-bowl-slots button { border-radius: 0; }
+.p8-bench { box-shadow: inset 0 3px 0 #a8744a, 0 8px 0 #2a180e; }
+.p8-oven-body { border-radius: 0; border: 0; clip-path: polygon(0 100%, 0 30%, 8% 30%, 8% 16%, 20% 16%, 20% 6%, 36% 6%, 36% 0, 64% 0, 64% 6%, 80% 6%, 80% 16%, 92% 16%, 92% 30%, 100% 30%, 100% 100%); background: url("assets/arco2/post8/pixel/parm-pedra.png") 0 0 / 24px 24px; image-rendering: pixelated; }
+.p8-oven-fire { border-radius: 0; clip-path: polygon(0 100%, 0 40%, 15% 40%, 15% 15%, 35% 15%, 35% 0, 65% 0, 65% 15%, 85% 15%, 85% 40%, 100% 40%, 100% 100%); background: linear-gradient(0deg, #ffe27a 0 30%, #ff8a2a 30% 60%, #b8321a 60% 85%, #2a1210 85%); }
+.p8-oven-fx i { border-radius: 0 !important; }
+.p8-oven.is-poof .p8-oven-fx i { background: #ff9a3c; box-shadow: 0 0 0 6px #ffd36a, 0 0 0 12px rgba(60, 40, 40, .7); }
+.p8-oven.is-glow .p8-oven-fx i:first-child { background: url("assets/arco2/post8/pixel/receita-luz.png") center / contain no-repeat; box-shadow: none; animation: p8-orb 2.4s steps(8) infinite; }
+.p8-recipe-cards article { border-radius: 0; }
+
+/* ================= transição de barco ================= */
+.p8-sailing { background: #0a1a2a; }
+.p8-sailing-sea { background: url("assets/arco2/post8/pixel/agua.png") 0 100% / 64px 32px repeat-x, linear-gradient(#2a3e66 0 52%, #1d5a85 52%); image-rendering: pixelated; }
+.p8-sailing-sea::before { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .post8-page .p8-current::before, .post8-page .p8-current::after { animation: none !important; }
+  /* sem o pulso, o aviso de troca na Ilha III vira um contorno fixo */
+  .post8-page .is-warning .p8-rock[class*="p8-phase-"]:not(.is-off) { outline: 2px dashed #ffe27a; outline-offset: -2px; }
+}
+/* plataforma que "não está ali agora": contorno tracejado claro, sem textura */
+.p8-dusk-world .p8-rock.is-off { border: 2px dashed rgba(255, 255, 255, .75) !important; background: transparent !important; box-shadow: none !important; }
+.p8-dusk-world .p8-rock--fire.is-off, .p8-dusk-world .p8-rock--falls.is-off { border: 0 !important; }
+
+/* foco de teclado: anel duplo (escuro por dentro, dourado por fora), visível no pergaminho e nos painéis escuros */
+.post8-page :is(button, a, [tabindex]):focus-visible { outline: 3px solid #f2cb78; outline-offset: 3px; box-shadow: 0 0 0 6px #1a1020; }
+
+/* botão de som (desligado por padrão): mesmo botão no cais e em cada ilha de plataforma */
+.p8-sound { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; padding: .45rem .9rem; border: 2px solid currentColor; border-radius: 0; background: transparent; color: inherit; font-family: var(--p8-pixel-font); font-size: 1.15rem; cursor: pointer; }
+.p8-sound i { font-style: normal; opacity: .7; }
+.p8-sound[aria-pressed="true"] i { opacity: 1; }
+.p8-callout .p8-sound { display: flex; margin: 1rem auto 0; color: #5a3a20; }
+.p8-puzzle-bar .p8-sound i { color: #9fc3c9; }
+.p8-puzzle-bar .p8-sound[aria-pressed="true"] i { color: #f0c676; }
+.p8-climb-meta { flex-wrap: wrap; }
+
+/* barco da transição: sprite da Maré já reparada (52x42, ampliado 2x) */
+.p8-sailing-boat { top: -2px; left: -110px; width: 104px; height: 84px; }
+.p8-sailing-boat img { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+@keyframes p8-sail-pixel { from { left: -110px; } to { left: calc(100% + 10px); } }
+.p8-sailing.is-moving .p8-sailing-boat { animation: p8-sail-pixel 2.8s steps(56) forwards, p8-bob .7s steps(2) infinite; }
+@media (prefers-reduced-motion: reduce) { .post8-page .p8-sailing-boat { left: calc(50% - 52px) !important; animation: none !important; } }
