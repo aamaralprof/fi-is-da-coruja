@@ -1,19 +1,9 @@
-PACOTE DE IMAGENS — POST 8: MARÉ DOS SUSSURROS
+IMAGENS DO POST 8: MARÉ DOS SUSSURROS
 
-Organização:
-01_Anime — artes produzidas para a abertura/cais. A versão marcada como "final" é a referência principal aprovada.
-02_Pixel_Art_Microjogos — pranchas visuais dos microjogos: reparo, Tales, Parmênides, Heráclito, Anaxímenes e Receitas do Universo.
-03_Assets_e_Sprites — pranchas de sprites/assets da Maré, personagens, cais, água e objetos.
-04_Storyboards — storyboard visual da chegada a Atenas.
+Aqui ficam só as imagens que o post usa:
+- cais-ligeia-mare-final.webp: arte anime da abertura no cais (também usada no card do Arquivo XVII).
+- atenas-*.webp e dossie-001-livro.webp: recortes do storyboard da chegada a Atenas e do Dossiê 001.
+- pixel/: elementos recortados das pranchas (fundo removido) e texturas pixeladas geradas na paleta delas, usados pela camada 8 bits (post8-pixel.css).
+  Dois desenhos foram feitos do zero, sem prancha: mare-navegando.png (a Maré já reparada, usada na transição entre ilhas) e parm-montanha.png (textura da parede da montanha da Ilha II, com emenda invisível).
 
-IMPORTANTE PARA IMPLEMENTAÇÃO:
-- As pranchas de microjogos e storyboards são referências visuais/funcionais, não telas estáticas a serem usadas como jogo.
-- Extrair ou recriar os assets necessários conforme o blueprint do Post 8.
-- A chegada a Atenas presente aqui é storyboard; a arte anime final limpa pode ser produzida separadamente se desejado.
-- As imagens de referência originalmente fornecidas pela usuária (retratos/referências canônicas) não foram duplicadas neste pacote de imagens produzidas.
-
-OBSERVAÇÃO: os nomes de dois arquivos estão trocados. 02_Tales_Curso_das_Aguas.png contém a prancha de Anaxímenes, e 05_Anaximenes_Sopro_que_Sustenta.png contém a prancha de Tales.
-A prancha correta da Ilha IV está em 05b_Anaximenes_Sopro_que_Sustenta_prancha_correta.webp.
-
-A pasta pixel/ guarda elementos recortados das pranchas (fundo removido) e texturas pixeladas geradas na paleta delas, usados pela camada 8 bits (post8-pixel.css).
-Dois desenhos foram feitos do zero, sem prancha: mare-navegando.png (a Maré já reparada, usada na transição entre ilhas) e parm-montanha.png (textura da parede da montanha da Ilha II, com emenda invisível).
+As pranchas originais (anime, microjogos, sprites e storyboard), o PNG original da abertura e o próprio pacote de assets ficam fora do repositório, em arquivos/post8-mare-dos-sussurros/ na pasta do projeto, com o LEIA-ME delas.
