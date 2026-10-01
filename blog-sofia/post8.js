@@ -192,13 +192,23 @@
   $('[data-reset-water]')?.addEventListener('click',resetWater);
 
   /* Ilhas de plataforma (II Parmênides, III Heráclito): mesma tela, mesmo motor (post8-plataforma.js). */
-  const sofiaSprite = '<svg viewBox="0 0 8 14" aria-hidden="true" shape-rendering="crispEdges">'
-    + '<path fill="#3b2418" d="M2 0h4v1h1v5H6V2H2v4H1V1h1z"/><path fill="#e9b893" d="M2 2h4v4H2z"/>'
-    + '<path fill="#1c2430" d="M2 3h1v1H2zm3 0h1v1H5z"/><path fill="#b9a2d8" d="M0 6h1v4H0z"/>'
-    + '<path fill="#2f6b4a" d="M1 6h6v4H1z"/><path fill="#f4efe4" d="M3 6h2v1H3z"/><path fill="#a33b3b" d="M4 7h0.6v2H4z"/>'
-    + '<path fill="#e9b893" d="M7 7h1v2H7z"/><path fill="#1f4430" d="M1 10h6v1H1z"/>'
-    + '<path class="p8-leg-a" fill="#e9b893" d="M2 11h1v2H2z"/><path class="p8-leg-b" fill="#e9b893" d="M5 11h1v2H5z"/>'
-    + '<path fill="#2a1d17" d="M1 13h2v1H1zm4 0h2v1H5z"/></svg>';
+  /* Personagens em resolução 2x: mantêm a leitura pixel art, mas recuperam os traços
+     canônicos das pranchas (óculos, mochila, gravata e mechas de Sofia). */
+  const sofiaSprite = '<svg viewBox="0 0 16 28" aria-hidden="true" shape-rendering="crispEdges">'
+    + '<path fill="#241713" d="M4 1h7v1h2v2h1v7h-2V5H4v7H2V4h2z"/><path fill="#4a2b20" d="M3 3h9v2H3zm-1 3h3v7H2zm9-1h3v9h-3z"/>'
+    + '<path fill="#efbd96" d="M5 5h7v7H5z"/><path fill="#f6d0aa" d="M6 11h5v2H6z"/>'
+    + '<path fill="#18222e" d="M5 7h3v3H5zm4 0h3v3H9z"/><path fill="#86a8b5" d="M6 8h1v1H6zm4 0h1v1h-1z"/><path fill="#18222e" d="M8 8h1v1H8z"/>'
+    + '<path fill="#ad9ace" d="M1 13h4v10H1z"/><path fill="#766394" d="M0 15h2v7H0zm2 6h3v2H2z"/><path fill="#e7b45e" d="M2 20h2v1H2z"/>'
+    + '<path fill="#285f43" d="M4 13h9v8H4z"/><path fill="#173f2d" d="M4 19h9v3H4z"/><path fill="#f2eadb" d="M7 13h3v3H7z"/><path fill="#963b42" d="M8 15h1v5H8z"/>'
+    + '<path fill="#d6b07c" d="M5 13h1v7H5zm6 0h1v7h-1z"/><path fill="#efbd96" d="M13 15h2v5h-2z"/>'
+    + '<path class="p8-leg-a" fill="#294a3a" d="M5 21h3v5H5z"/><path class="p8-leg-b" fill="#294a3a" d="M10 21h3v5h-3z"/>'
+    + '<path fill="#2a1c19" d="M4 25h4v3H3v-2h1zm6 0h3v1h2v2h-5z"/></svg>';
+  const ligeiaSprite = '<svg viewBox="0 0 18 30" aria-hidden="true" shape-rendering="crispEdges">'
+    + '<path fill="#241915" d="M4 4h10v8H3V6h1z"/><path fill="#b3422f" d="M5 5h10v2h2v12h-3V9H5v11H2V7h3z"/><path fill="#d7613b" d="M3 10h3v11H2v-8h1zm10-2h3v13h-4z"/>'
+    + '<path fill="#edb28a" d="M6 7h7v7H6z"/><path fill="#315368" d="M6 10h2v1H6zm5 0h2v1h-2z"/><path fill="#1a2733" d="M8 14h3v1H8z"/>'
+    + '<path fill="#17283c" d="M3 3h13v3H3zM5 1h9v2H5z"/><path fill="#c5913e" d="M8 2h3v1H8zm1 1h1v2H9z"/>'
+    + '<path fill="#18314c" d="M4 15h11v9H4z"/><path fill="#294d6e" d="M5 16h9v2H5z"/><path fill="#c18b3e" d="M6 17h1v5H6zm6 0h1v5h-1zM8 19h3v1H8z"/>'
+    + '<path fill="#edb28a" d="M2 17h2v5H2zm13 0h2v5h-2z"/><path fill="#182b43" d="M5 24h4v5H5zm6 0h4v5h-4z"/><path fill="#171c25" d="M4 28h5v2H4zm7 0h5v2h-5z"/></svg>';
   const routeSmall = () => $$('.p8-route li')[2]?.querySelector('small');
 
   /* o botão fixo do caderno cobre o botão de pulo; some só enquanto controles de alguma ilha estão na tela */
@@ -220,7 +230,8 @@
     const t = level.temple || g;
     const templeW = Math.min(t.w + 20, 96);
     bits.push(templeImg ? sprite(templeImg, t.x + t.w / 2 - templeW / 2, g.y + g.h, templeW, ' p8-temple-img') : `<div class="p8-temple" style="left:${t.x - 10}px;top:${g.y + g.h - 58}px;width:${t.w + 20}px"><b></b><i></i><i></i><i></i><i></i></div>`);
-    bits.push(`<div class="p8-sofia" data-climb-sofia>${sofiaSprite}</div>`);
+    bits.push(`<div class="p8-companion" aria-hidden="true">${ligeiaSprite}<i></i></div>`);
+    bits.push(`<div class="p8-sofia" data-climb-sofia>${sofiaSprite}<i class="p8-sprite-shadow"></i></div>`);
     world.style.width = `${level.width}px`;
     world.style.height = `${level.height}px`;
     world.innerHTML = bits.join('');
@@ -344,7 +355,7 @@
     keys: {checkpoint: keys.parmenidesCheckpoint, complete: keys.parmenidesComplete},
     route: ['ilha II em andamento', 'ilha II concluída'],
     event: 'sofia:post8-parmenides-complete',
-    scenery: '<div class="p8-mountain" aria-hidden="true"></div>'
+    scenery: '<div class="p8-mountain" aria-hidden="true"></div><div class="p8-parallax-haze" aria-hidden="true"></div><div class="p8-seabirds" aria-hidden="true"><i></i><i></i><i></i></div>'
       + sprite('parm-rochas.png', 0, 1200, 112) + sprite('parm-rochas.png', 368, 1200, 112) + sprite('parm-cipreste.png', 452, 1005, 16)
       + sprite('parm-arvore.png', 72, 810, 34) + sprite('parm-arbustos.png', 428, 615, 36) + sprite('parm-arvore.png', 66, 420, 32)
       + sprite('parm-cipreste.png', 462, 225, 14) + sprite('estandarte.png', 296, 160, 22),
@@ -428,7 +439,7 @@
     keys: {checkpoint: keys.heraclitoCheckpoint, complete: keys.heraclitoComplete},
     route: ['ilha III em andamento', 'ilha III concluída'],
     event: 'sofia:post8-heraclito-complete',
-    scenery: '<div class="p8-bg-cliff" style="left:880px;top:110px;width:190px;height:200px" aria-hidden="true"></div>'
+    scenery: '<div class="p8-bg-cliff" style="left:880px;top:110px;width:190px;height:200px" aria-hidden="true"></div><div class="p8-dusk-glow" aria-hidden="true"></div><div class="p8-embers" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>'
       + sprite('her-ruinas.png', 896, 112, 60, ' p8-sprite--far')
       + '<div class="p8-deco-falls" style="left:960px;top:118px;height:186px" aria-hidden="true"></div>'
       + '<div class="p8-deco-falls" style="left:720px;top:214px;height:90px" aria-hidden="true"></div>'
