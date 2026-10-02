@@ -390,11 +390,12 @@
 }
 .p8-sofia.is-left::before { transform: scaleX(-1); }
 .p8-sofia.is-airborne::before { rotate: -5deg; }
-.p8-companion { width: 25px; height: 51px; background: url("assets/arco2/post8/pixel/personagens-pranchas-v2.webp") -54px -8px / 92px 61px no-repeat; }
+/* recorte da prancha inclui o quepe e o rosto de Ligeia (a figura começa em y≈2 na escala 92x61) */
+.p8-companion { width: 25px; height: 59px; background: url("assets/arco2/post8/pixel/personagens-pranchas-v2.webp") -52px -1px / 92px 61px no-repeat; }
 .p8-companion svg, .p8-companion::before { display: none; }
 .p8-companion > i { bottom: 0; }
-.p8-parmenides .p8-companion { top: 1149px; }
-.p8-heraclito .p8-companion, .p8-anaximenes .p8-companion { top: 249px; }
+.p8-parmenides .p8-companion { top: 1142px; }
+.p8-heraclito .p8-companion, .p8-anaximenes .p8-companion { top: 242px; }
 
 /* As duas protagonistas enquadram os cartões de abertura das ilhas. */
 .p8-tales .p8-island-intro, .p8-parmenides .p8-island-intro, .p8-heraclito .p8-island-intro,

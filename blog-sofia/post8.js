@@ -222,6 +222,9 @@
     entries.forEach((entry) => entry.isIntersecting ? controlsOnScreen.add(entry.target) : controlsOnScreen.delete(entry.target));
     document.body.classList.toggle('p8-climb-onscreen', controlsOnScreen.size > 0);
   }) : null;
+  /* Ilha I: o botão "Reiniciar comportas" fica no mesmo canto do caderno */
+  const waterBar = $('.p8-tales .p8-puzzle-bar');
+  if (waterBar) controlsObserver?.observe(waterBar);
 
   /* sprite das pranchas apoiado no chão: x à esquerda, base em y, largura w (px lógicos) */
   const sprite = (file, x, y, w, extra = '') => `<img class="p8-sprite${extra}" src="assets/arco2/post8/pixel/${file}" style="left:${x}px;top:${y}px;width:${w}px" alt="" aria-hidden="true">`;
