@@ -21,6 +21,7 @@
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const som = (name) => window.P8Som?.play(name);
   let selectedTool = '';
+  let replayingTales = false;
   if (!startButton || !scene || !transition || !repair) return;
 
   const get = (key) => { try { return localStorage.getItem(key); } catch { return null; } };
@@ -109,16 +110,18 @@
       $('[data-field-state]').textContent = 'irrigada';
       waterStatus.textContent = 'CURSO RESTABELECIDO ✓';
       talesComplete.hidden = false;
-      $$('[data-gate]').forEach((gate) => { gate.disabled = true; });
-      $('[data-reset-water]').disabled = true;
       revealTales();
       if (first) { som('vitoria'); window.dispatchEvent(new CustomEvent('sofia:post8-tales-complete')); talesComplete.focus({preventScroll:true}); }
     } else if (!solved) {
+      $('[data-field]')?.classList.remove('is-irrigated');
+      $('[data-field-state]').textContent = 'seca';
+      talesComplete.hidden = true;
       waterStatus.textContent = wet.some(Boolean) ? 'A água avançou, mas ainda não alcançou a plantação.' : 'Observe os canais e altere as comportas.';
     }
   }
 
   function resetWater() {
+    replayingTales = true;
     const initial = {1:false,2:true,3:false,4:true};
     Object.entries(initial).forEach(([number,open]) => {
       const gate = $(`[data-gate="${number}"]`);
@@ -183,6 +186,7 @@
   $('[data-close-shell]')?.addEventListener('click', () => shellDialog?.close());
 
   $$('[data-gate]').forEach((gate) => gate.addEventListener('click', () => {
+    replayingTales = true;
     const open = gate.getAttribute('aria-pressed') !== 'true';
     gate.setAttribute('aria-pressed',String(open));
     gate.querySelector('i').textContent = open ? 'aberta' : 'fechada';
@@ -868,7 +872,7 @@
     if (get(keys.started) || completedCount() > 0) revealRepair();
     renderRepair();
     if (get(keys.talesStarted) || get(keys.talesComplete) === 'complete') revealTales();
-    if (get(keys.talesComplete) === 'complete') {
+    if (get(keys.talesComplete) === 'complete' && !replayingTales) {
       [1,2,3,4].forEach((number) => {
         const gate = $(`[data-gate="${number}"]`); const open = number !== 2;
         gate?.setAttribute('aria-pressed',String(open)); const state = gate?.querySelector('i'); if (state) state.textContent = open ? 'aberta' : 'fechada';
