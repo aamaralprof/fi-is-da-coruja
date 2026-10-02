@@ -349,7 +349,7 @@
 
 /* Cenários e personagens feitos a partir da direção visual das pranchas originais. */
 .p8-tales .p8-water-board {
-  background: #927044 url("assets/arco2/post8/pixel/cenario-aguas-v3.webp") center / cover no-repeat;
+  background: #927044 url("assets/arco2/post8/pixel/cenario-aguas-v2.webp") center / cover no-repeat;
 }
 .p8-boat {
   background: #10243a url("assets/arco2/post8/pixel/cenario-cais-reparo-v2.webp") center / cover no-repeat;
@@ -474,3 +474,37 @@
 @keyframes p8-sail-pixel { from { left: -110px; } to { left: calc(100% + 10px); } }
 .p8-sailing.is-moving .p8-sailing-boat { animation: p8-sail-pixel 2.8s steps(56) forwards, p8-bob .7s steps(2) infinite; }
 @media (prefers-reduced-motion: reduce) { .post8-page .p8-sailing-boat { left: calc(50% - 52px) !important; animation: none !important; } }
+
+/* Ilha I: a arte contém canais e comportas; a camada do jogo só indica o estado. */
+.p8-tales .p8-water-board { container-type: inline-size; aspect-ratio: 1672 / 941; min-height: 0; max-height: 520px; }
+.p8-tales .p8-river, .p8-tales .p8-channel, .p8-tales .p8-decor { display: none; }
+.p8-scene-flow { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: hidden; }
+.p8-scene-flow path { fill: none; stroke: #48c5e4; stroke-width: 21; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity .2s ease; filter: drop-shadow(0 0 8px #9de7ff); }
+.p8-scene-flow path.is-wet { opacity: .7; }
+.p8-tales .p8-gate { width: 58px; min-width: 58px; height: 78px; min-height: 78px; padding: 0; border: 0; background: transparent; box-shadow: none; overflow: visible; translate: -50% -35%; }
+.p8-tales .p8-gate[aria-pressed="true"] { background: transparent; border: 0; box-shadow: none; }
+.p8-tales .p8-gate img { display: none; }
+.p8-tales .p8-gate span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.p8-tales .p8-gate::before { content: attr(data-gate); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 24px; height: 24px; margin: 0; border: 2px solid #fff0c3; border-radius: 50%; background: #3a2a1c; color: #fff; font: 22px/1 var(--p8-pixel-font); box-shadow: 0 2px 4px #21120b; translate: 0 0; }
+.p8-tales .p8-gate[aria-pressed="true"]::before { background: #135b83; border-color: #a4eeff; translate: 0 0; }
+.p8-tales .p8-gate i { position: absolute; left: 50%; bottom: -6px; translate: -50% 0; margin: 0; padding: 1px 5px; background: rgba(19,31,40,.88); color: #fff0c3; font-size: .9rem; white-space: nowrap; }
+.p8-tales .p8-gate[aria-pressed="true"] i { color: #a4eeff; }
+.p8-tales .p8-gate:hover { outline: 2px solid #f2cb78; outline-offset: 2px; }
+.p8-tales .p8-gate--1 { left: 26%; top: calc(50% - 10.2cqw - 12px); }
+.p8-tales .p8-gate--2 { left: 41%; top: calc(50% - 10cqw - 12px); }
+.p8-tales .p8-gate--3 { left: 53%; top: calc(50% - 10.2cqw - 12px); }
+.p8-tales .p8-gate--4 { left: 66%; top: calc(50% - 6.4cqw - 12px); }
+.p8-tales .p8-field { left: 35%; top: calc(50% + 9.5cqw); right: auto; bottom: auto; display: flex; align-items: end; justify-content: center; gap: .4rem; width: 31%; min-width: 0; height: 10.8cqw; padding: 0 0 .25rem; border: 0; background: transparent; box-shadow: none; pointer-events: none; }
+.p8-tales .p8-field::before { content: ""; position: absolute; inset: 0; background: rgba(81, 164, 85, .42); opacity: 0; transition: opacity .3s ease; }
+.p8-tales .p8-field.is-irrigated::before { opacity: 1; }
+.p8-tales .p8-field span { display: none; }
+.p8-tales .p8-field strong, .p8-tales .p8-field small { position: relative; z-index: 1; margin: 0; padding: 0 5px; background: rgba(19,31,40,.88); color: #fff; font-size: .95rem; line-height: 1.2; }
+@media (max-width: 568px) {
+  .p8-tales .p8-water-board { min-height: 320px; }
+  .p8-tales .p8-gate--1 { left: max(29px, calc(50% - 136px)); top: 28%; }
+  .p8-tales .p8-gate--2 { left: calc(50% - 51px); top: 29%; }
+  .p8-tales .p8-gate--3 { left: calc(50% + 17px); top: 28%; }
+  .p8-tales .p8-gate--4 { left: calc(50% + 91px); top: 35%; }
+  .p8-tales .p8-field { left: calc(50% - 85px); top: 69%; width: 170px; height: 20%; }
+  .p8-tales .p8-field strong, .p8-tales .p8-field small { font-size: .85rem; }
+}
