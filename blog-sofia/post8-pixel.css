@@ -476,7 +476,7 @@
 @media (prefers-reduced-motion: reduce) { .post8-page .p8-sailing-boat { left: calc(50% - 52px) !important; animation: none !important; } }
 
 /* Ilha I: a arte contém canais e comportas; a camada do jogo só indica o estado. */
-.p8-tales .p8-water-board { container-type: inline-size; aspect-ratio: 1672 / 941; min-height: 0; max-height: 520px; }
+.p8-tales .p8-water-board { box-sizing: border-box; width: 100%; container-type: inline-size; aspect-ratio: 1672 / 941; min-height: 0; max-height: 520px; }
 .p8-tales .p8-river, .p8-tales .p8-channel, .p8-tales .p8-decor { display: none; }
 .p8-scene-flow { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: hidden; }
 .p8-scene-flow path { fill: none; stroke: #48c5e4; stroke-width: 21; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity .2s ease; filter: drop-shadow(0 0 8px #9de7ff); }
