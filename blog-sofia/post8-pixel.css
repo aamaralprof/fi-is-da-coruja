@@ -494,6 +494,7 @@
 .p8-tales .p8-gate--2 { left: 41%; top: calc(50% - 10cqw - 12px); }
 .p8-tales .p8-gate--3 { left: 53%; top: calc(50% - 10.2cqw - 12px); }
 .p8-tales .p8-gate--4 { left: 66%; top: calc(50% - 6.4cqw - 12px); }
+.p8-tales .p8-gate--5 { left: 86%; top: calc(50% - 3.5cqw - 12px); }
 .p8-tales .p8-field { left: 35%; top: calc(50% + 9.5cqw); right: auto; bottom: auto; display: flex; align-items: end; justify-content: center; gap: .4rem; width: 31%; min-width: 0; height: 10.8cqw; padding: 0 0 .25rem; border: 0; background: transparent; box-shadow: none; pointer-events: none; }
 .p8-tales .p8-field::before { content: ""; position: absolute; inset: 0; background: rgba(81, 164, 85, .42); opacity: 0; transition: opacity .3s ease; }
 .p8-tales .p8-field.is-irrigated::before { opacity: 1; }
@@ -505,6 +506,7 @@
   .p8-tales .p8-gate--2 { left: calc(50% - 51px); top: 29%; }
   .p8-tales .p8-gate--3 { left: calc(50% + 17px); top: 28%; }
   .p8-tales .p8-gate--4 { left: calc(50% + 91px); top: 35%; }
+  .p8-tales .p8-gate--5 { display: none; }
   .p8-tales .p8-field { left: calc(50% - 85px); top: 69%; width: 170px; height: 20%; }
   .p8-tales .p8-field strong, .p8-tales .p8-field small { font-size: .85rem; }
 }

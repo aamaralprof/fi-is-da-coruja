@@ -102,6 +102,7 @@
     const states = [gateState(1),gateState(2),gateState(3),gateState(4)];
     const wet = [states[0],states[0] && !states[1],states[0] && !states[1] && states[2],states[0] && !states[1] && states[2] && states[3]];
     wet.forEach((active,index) => $(`[data-channel="${index + 1}"]`)?.classList.toggle('is-wet',active));
+    $('[data-channel="5"]')?.classList.toggle('is-wet',gateState(5));
     const solved = wet[3];
     if (solved && allowCompletion) {
       const first = get(keys.talesComplete) !== 'complete';
@@ -116,13 +117,13 @@
       $('[data-field]')?.classList.remove('is-irrigated');
       $('[data-field-state]').textContent = 'seca';
       talesComplete.hidden = true;
-      waterStatus.textContent = wet.some(Boolean) ? 'A água avançou, mas ainda não alcançou a plantação.' : 'Observe os canais e altere as comportas.';
+      waterStatus.textContent = gateState(5) ? 'A água entrou no canal de desvio. Ele não leva à plantação.' : wet.some(Boolean) ? 'A água avançou, mas ainda não alcançou a plantação.' : 'Observe os canais e altere as comportas.';
     }
   }
 
   function resetWater() {
     replayingTales = true;
-    const initial = {1:false,2:true,3:false,4:true};
+    const initial = {1:false,2:true,3:false,4:true,5:false};
     Object.entries(initial).forEach(([number,open]) => {
       const gate = $(`[data-gate="${number}"]`);
       gate?.setAttribute('aria-pressed',String(open));
