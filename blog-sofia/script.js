@@ -520,6 +520,14 @@ emblemCollectButton?.addEventListener('click', () => {
 
 renderEmblemCollection();
 
+/* no fim do post os botões flutuantes (caderno, emblemas) cobriam os links de anterior/próxima no celular */
+const postPagination = document.querySelector('.post-pagination');
+if (postPagination && 'IntersectionObserver' in window) {
+  new IntersectionObserver((entries) => {
+    document.body.classList.toggle('pagination-onscreen', entries.some((entry) => entry.isIntersecting));
+  }).observe(postPagination);
+}
+
 /* emblema ganho sem recarregar a página (post 7): remonta a coleção para ele aparecer na hora */
 window.addEventListener('sofia:emblem-found', () => {
   document.querySelectorAll('.emblem-inventory-launcher, .emblem-inventory-backdrop, .emblem-inventory').forEach((node) => node.remove());

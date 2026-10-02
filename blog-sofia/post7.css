@@ -50,4 +50,7 @@ button:focus-visible{outline:3px solid #9b68b2;outline-offset:3px}@keyframes p7-
 /* onde está o ovo do aluno */
 .p7-companion .p7-egg-link{display:inline-flex;align-items:center;margin:.4rem 0 .5rem;text-decoration:none}
 .p7-companion small{display:block;opacity:.8}
+/* olhos da Lumiar: brilho em anel ao redor da íris (a pupila e o reflexo da arte continuam visíveis), acende uma vez e assenta */
+.p7-eye{background:radial-gradient(circle,transparent 0 36%,rgba(222,166,255,.6) 47%,rgba(160,70,235,.32) 58%,transparent 72%);animation:p7-eyes-glow 1.8s 1s ease-out forwards}
+@keyframes p7-eyes-glow{0%{opacity:0;scale:.8}45%{opacity:1;scale:1.06}100%{opacity:.62;scale:1}}
 

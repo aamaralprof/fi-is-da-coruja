@@ -1044,3 +1044,7 @@ body.after-four .easter-link { border-bottom-color: rgba(226, 214, 240, .42); }
    Agora cada canto tem uma coluna: embaixo o que está sempre presente,
    acima o que só aparece depois de descoberto. */
 .mission-launcher { bottom: 86px; left: 22px; }
+
+/* os links do fim do post ficam livres: os botões flutuantes saem enquanto eles estão na tela (script.js) */
+.pagination-onscreen .journal-launcher, .pagination-onscreen .emblem-inventory-launcher { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .2s ease, visibility 0s .2s; }
+
