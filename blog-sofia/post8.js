@@ -22,6 +22,7 @@
   const som = (name) => window.P8Som?.play(name);
   let selectedTool = '';
   let replayingTales = false;
+  let resetFeedbackTimer = 0;
   if (!startButton || !scene || !transition || !repair) return;
 
   const get = (key) => { try { return localStorage.getItem(key); } catch { return null; } };
@@ -131,6 +132,12 @@
     });
     renderWater({allowCompletion:false});
     waterStatus.textContent = 'Comportas reiniciadas. Tente um novo caminho.';
+    const resetButton = $('[data-reset-water]');
+    if (resetButton) {
+      window.clearTimeout(resetFeedbackTimer);
+      resetButton.textContent = 'Comportas reiniciadas ✓';
+      resetFeedbackTimer = window.setTimeout(() => { resetButton.textContent = 'Reiniciar comportas'; }, 1800);
+    }
   }
 
   function renderRepair({firstCompletion = false} = {}) {

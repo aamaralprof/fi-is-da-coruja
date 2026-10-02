@@ -412,7 +412,7 @@
 .p8-tales .p8-island-intro::before, .p8-parmenides .p8-island-intro::before,
 .p8-heraclito .p8-island-intro::before, .p8-anaximenes .p8-island-intro::before, .p8-recipes .p8-island-intro::before { left: -105px; background-position: -43px -22px; }
 .p8-tales .p8-island-intro::after, .p8-parmenides .p8-island-intro::after,
-.p8-heraclito .p8-island-intro::after, .p8-anaximenes .p8-island-intro::after, .p8-recipes .p8-island-intro::after { right: -105px; background-position: -165px -22px; }
+.p8-heraclito .p8-island-intro::after, .p8-anaximenes .p8-island-intro::after, .p8-recipes .p8-island-intro::after { right: -105px; height: 194px; background-position: -165px -2px; }
 @media (max-width: 850px) {
   .p8-tales .p8-island-intro::before, .p8-parmenides .p8-island-intro::before,
   .p8-heraclito .p8-island-intro::before, .p8-anaximenes .p8-island-intro::before, .p8-recipes .p8-island-intro::before,
@@ -477,6 +477,7 @@
 @media (prefers-reduced-motion: reduce) { .post8-page .p8-sailing-boat { left: calc(50% - 52px) !important; animation: none !important; } }
 
 /* Ilha I: a arte contém canais e comportas; a camada do jogo só indica o estado. */
+.p8-tales .p8-puzzle-bar [data-reset-water] { position: relative; z-index: 21; }
 .p8-tales .p8-water-board { box-sizing: border-box; width: 100%; container-type: inline-size; aspect-ratio: 1672 / 941; min-height: 0; max-height: 520px; }
 .p8-tales .p8-river, .p8-tales .p8-channel, .p8-tales .p8-decor { display: none; }
 .p8-scene-flow { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: hidden; }
