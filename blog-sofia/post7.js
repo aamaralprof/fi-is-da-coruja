@@ -102,11 +102,11 @@
     const remaining = Math.max(0, startedAt + (3 * 24 * 60 * 60 * 1000) - Date.now());
     if (remaining === 0) {
       set(keys.owl, 'unlocked');
-      status.textContent = 'A incubação terminou. Sua corujinha nasceu e está esperando você na mesa da sua Sala de Investigação.';
+      status.textContent = 'A incubação terminou. A toca da sua corujinha está na estante da Sala de Investigação. Toque nela para entrar.';
       return;
     }
     const days = Math.ceil(remaining / (24 * 60 * 60 * 1000));
-    status.textContent = `O seu ovo já está na mesa da sua Sala de Investigação, em incubação. ${days === 1 ? 'Falta aproximadamente 1 dia' : `Faltam aproximadamente ${days} dias`} para ele abrir.`;
+    status.textContent = `O seu ovo já está na estante da Sala de Investigação, em incubação. ${days === 1 ? 'Falta aproximadamente 1 dia' : `Faltam aproximadamente ${days} dias`} para a toca aparecer.`;
   }
   /* as animações do despertar só tocam quando o retrato está na tela; antes disso ficam pausadas */
   function watchLumiar() {
