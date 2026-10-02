@@ -6,17 +6,12 @@
   <meta name="description" content="Protótipo isolado do combate do ARCHÉ: Heráclito contra Parmênides.">
   <title>ARCHÉ · Protótipo de combate</title>
   <link rel="stylesheet" href="prototipo-arche.css?v=3">
-  <link rel="stylesheet" href="prototipo-arche-ajustes.css?v=16">
-  <link rel="preload" as="image" href="assets/arco2/post6-prototype/heraclito-neutro.png">
-  <link rel="preload" as="image" href="assets/arco2/post6-prototype/heraclito-movimento.png">
-  <link rel="preload" as="image" href="assets/arco2/post6-prototype/heraclito-ataque.png">
-  <link rel="preload" as="image" href="assets/arco2/post6-prototype/heraclito-defesa.png">
-  <link rel="preload" as="image" href="assets/arco2/post6-prototype/parmenides-neutro-v2.png">
-  <link rel="preload" as="image" href="assets/arco2/post6-prototype/parmenides-movimento-v2.png">
-  <link rel="preload" as="image" href="assets/arco2/post6-prototype/parmenides-ataque-v2.png">
-  <link rel="preload" as="image" href="assets/arco2/post6-prototype/parmenides-defesa-v2.png">
-  <link rel="preload" as="image" href="assets/arco2/post6-prototype/anaximenes-neutro.png">
-  <link rel="preload" as="image" href="assets/arco2/post6-prototype/anaximandro-neutro.png">
+  <link rel="stylesheet" href="prototipo-arche-ajustes.css?v=18">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/arena-base.webp">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/heraclito-neutro.webp">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/parmenides-neutro-v2.webp">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/anaximenes-neutro.webp">
+  <link rel="preload" as="image" href="assets/arco2/post6-prototype/anaximandro-neutro.webp">
   <link rel="icon" href="favicon.ico">
 </head>
 <body>
@@ -51,7 +46,7 @@
       </div>
 
       <div class="arena" id="arena" tabindex="0" aria-label="Arena. Use A e D ou as setas para mover. J ataca, K defende, L usa o ataque de princípio e Espaço ativa o especial." data-arena>
-        <img class="arena-background" src="assets/arco2/post6-prototype/arena-base.png" alt="Ruínas gregas sob um céu azul e lilás, com plataforma circular" width="1672" height="941">
+        <img class="arena-background" src="assets/arco2/post6-prototype/arena-base.webp" alt="Ruínas gregas sob um céu azul e lilás, com plataforma circular" width="1672" height="941">
         <div class="arena-shade" aria-hidden="true"></div>
         <div class="round-callout" data-callout role="status" aria-live="assertive"><strong>PREPARE-SE</strong><span>Toque em COMEÇAR</span></div>
         <div class="impact-layer" aria-hidden="true" data-impact></div>
@@ -86,6 +81,6 @@
       <button type="button" data-restart>Reiniciar confronto</button>
     </section>
   </main>
-  <script src="prototipo-arche.js?v=9" defer></script>
+  <script src="prototipo-arche.js?v=11" defer></script>
 </body>
 </html>

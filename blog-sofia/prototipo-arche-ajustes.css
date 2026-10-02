@@ -59,14 +59,14 @@
   background-position: center bottom;
 }
 
-.fighter--player.state-idle .sprite { background-image: url('assets/arco2/post6-prototype/heraclito-neutro.png'); }
-.fighter--player.state-run .sprite { background-image: url('assets/arco2/post6-prototype/heraclito-movimento.png'); }
-.fighter--player.state-attack .sprite { background-image: url('assets/arco2/post6-prototype/heraclito-ataque.png'); }
-.fighter--player.state-defend .sprite { background-image: url('assets/arco2/post6-prototype/heraclito-defesa.png'); }
-.fighter--enemy.state-idle .sprite { background-image: url('assets/arco2/post6-prototype/parmenides-neutro-v2.png'); }
-.fighter--enemy.state-run .sprite { background-image: url('assets/arco2/post6-prototype/parmenides-movimento-v2.png'); }
-.fighter--enemy.state-attack .sprite { background-image: url('assets/arco2/post6-prototype/parmenides-ataque-v2.png'); }
-.fighter--enemy.state-defend .sprite { background-image: url('assets/arco2/post6-prototype/parmenides-defesa-v2.png'); }
+.fighter--player.state-idle .sprite { background-image: url('assets/arco2/post6-prototype/heraclito-neutro.webp'); }
+.fighter--player.state-run .sprite { background-image: url('assets/arco2/post6-prototype/heraclito-movimento.webp'); }
+.fighter--player.state-attack .sprite { background-image: url('assets/arco2/post6-prototype/heraclito-ataque.webp'); }
+.fighter--player.state-defend .sprite { background-image: url('assets/arco2/post6-prototype/heraclito-defesa.webp'); }
+.fighter--enemy.state-idle .sprite { background-image: url('assets/arco2/post6-prototype/parmenides-neutro-v2.webp'); }
+.fighter--enemy.state-run .sprite { background-image: url('assets/arco2/post6-prototype/parmenides-movimento-v2.webp'); }
+.fighter--enemy.state-attack .sprite { background-image: url('assets/arco2/post6-prototype/parmenides-ataque-v2.webp'); }
+.fighter--enemy.state-defend .sprite { background-image: url('assets/arco2/post6-prototype/parmenides-defesa-v2.webp'); }
 
 .action-name {
   position: absolute;
@@ -137,30 +137,30 @@
 .fighter-card strong { font-size:clamp(.82rem,1.7vw,1.28rem); }
 .fighter-card b { margin:.12rem 0; color:#e1b45f; font:800 clamp(.56rem,1vw,.72rem)/1.2 Arial,sans-serif; letter-spacing:.12em; }
 .fighter-card small { color:#c9c0ac; font:600 clamp(.58rem,.9vw,.72rem)/1.25 Arial,sans-serif; }
-.fighter-card--heraclito .fighter-card__portrait { background-image:url('assets/arco2/post6-prototype/heraclito-neutro.png'); }
-.fighter-card--parmenides .fighter-card__portrait { background-image:url('assets/arco2/post6-prototype/parmenides-neutro-v2.png'); }
-.fighter-card--anaximenes .fighter-card__portrait { background-image:url('assets/arco2/post6-prototype/anaximenes-neutro.png'); }
-.fighter-card--anaximandro .fighter-card__portrait { background-image:url('assets/arco2/post6-prototype/anaximandro-neutro.png'); }
+.fighter-card--heraclito .fighter-card__portrait { background-image:url('assets/arco2/post6-prototype/heraclito-neutro.webp'); }
+.fighter-card--parmenides .fighter-card__portrait { background-image:url('assets/arco2/post6-prototype/parmenides-neutro-v2.webp'); }
+.fighter-card--anaximenes .fighter-card__portrait { background-image:url('assets/arco2/post6-prototype/anaximenes-neutro.webp'); }
+.fighter-card--anaximandro .fighter-card__portrait { background-image:url('assets/arco2/post6-prototype/anaximandro-neutro.webp'); }
 .fighter-card--heraclito { background:linear-gradient(#431d19,#171626); }
 .fighter-card--parmenides { background:linear-gradient(#17334e,#141727); }
 .fighter-card--anaximenes { background:linear-gradient(#173a34,#111d21); }
 .fighter-card--anaximandro { background:linear-gradient(#342052,#171426); }
-.fighter[data-fighter="heraclito"].state-idle .sprite { background-image:url('assets/arco2/post6-prototype/heraclito-neutro.png'); }
-.fighter[data-fighter="heraclito"].state-run .sprite { background-image:url('assets/arco2/post6-prototype/heraclito-movimento.png'); }
-.fighter[data-fighter="heraclito"].state-attack .sprite { background-image:url('assets/arco2/post6-prototype/heraclito-ataque.png'); }
-.fighter[data-fighter="heraclito"].state-defend .sprite { background-image:url('assets/arco2/post6-prototype/heraclito-defesa.png'); }
-.fighter[data-fighter="parmenides"].state-idle .sprite { background-image:url('assets/arco2/post6-prototype/parmenides-neutro-v2.png'); }
-.fighter[data-fighter="parmenides"].state-run .sprite { background-image:url('assets/arco2/post6-prototype/parmenides-movimento-v2.png'); }
-.fighter[data-fighter="parmenides"].state-attack .sprite { background-image:url('assets/arco2/post6-prototype/parmenides-ataque-v2.png'); }
-.fighter[data-fighter="parmenides"].state-defend .sprite { background-image:url('assets/arco2/post6-prototype/parmenides-defesa-v2.png'); }
-.fighter[data-fighter="anaximenes"].state-idle .sprite { background-image:url('assets/arco2/post6-prototype/anaximenes-neutro.png'); }
-.fighter[data-fighter="anaximenes"].state-run .sprite { background-image:url('assets/arco2/post6-prototype/anaximenes-movimento.png'); }
-.fighter[data-fighter="anaximenes"].state-attack .sprite { background-image:url('assets/arco2/post6-prototype/anaximenes-ataque.png'); }
-.fighter[data-fighter="anaximenes"].state-defend .sprite { background-image:url('assets/arco2/post6-prototype/anaximenes-defesa.png'); }
-.fighter[data-fighter="anaximandro"].state-idle .sprite { background-image:url('assets/arco2/post6-prototype/anaximandro-neutro.png'); }
-.fighter[data-fighter="anaximandro"].state-run .sprite { background-image:url('assets/arco2/post6-prototype/anaximandro-movimento.png'); }
-.fighter[data-fighter="anaximandro"].state-attack .sprite { background-image:url('assets/arco2/post6-prototype/anaximandro-ataque.png'); }
-.fighter[data-fighter="anaximandro"].state-defend .sprite { background-image:url('assets/arco2/post6-prototype/anaximandro-defesa.png'); }
+.fighter[data-fighter="heraclito"].state-idle .sprite { background-image:url('assets/arco2/post6-prototype/heraclito-neutro.webp'); }
+.fighter[data-fighter="heraclito"].state-run .sprite { background-image:url('assets/arco2/post6-prototype/heraclito-movimento.webp'); }
+.fighter[data-fighter="heraclito"].state-attack .sprite { background-image:url('assets/arco2/post6-prototype/heraclito-ataque.webp'); }
+.fighter[data-fighter="heraclito"].state-defend .sprite { background-image:url('assets/arco2/post6-prototype/heraclito-defesa.webp'); }
+.fighter[data-fighter="parmenides"].state-idle .sprite { background-image:url('assets/arco2/post6-prototype/parmenides-neutro-v2.webp'); }
+.fighter[data-fighter="parmenides"].state-run .sprite { background-image:url('assets/arco2/post6-prototype/parmenides-movimento-v2.webp'); }
+.fighter[data-fighter="parmenides"].state-attack .sprite { background-image:url('assets/arco2/post6-prototype/parmenides-ataque-v2.webp'); }
+.fighter[data-fighter="parmenides"].state-defend .sprite { background-image:url('assets/arco2/post6-prototype/parmenides-defesa-v2.webp'); }
+.fighter[data-fighter="anaximenes"].state-idle .sprite { background-image:url('assets/arco2/post6-prototype/anaximenes-neutro.webp'); }
+.fighter[data-fighter="anaximenes"].state-run .sprite { background-image:url('assets/arco2/post6-prototype/anaximenes-movimento.webp'); }
+.fighter[data-fighter="anaximenes"].state-attack .sprite { background-image:url('assets/arco2/post6-prototype/anaximenes-ataque.webp'); }
+.fighter[data-fighter="anaximenes"].state-defend .sprite { background-image:url('assets/arco2/post6-prototype/anaximenes-defesa.webp'); }
+.fighter[data-fighter="anaximandro"].state-idle .sprite { background-image:url('assets/arco2/post6-prototype/anaximandro-neutro.webp'); }
+.fighter[data-fighter="anaximandro"].state-run .sprite { background-image:url('assets/arco2/post6-prototype/anaximandro-movimento.webp'); }
+.fighter[data-fighter="anaximandro"].state-attack .sprite { background-image:url('assets/arco2/post6-prototype/anaximandro-ataque.webp'); }
+.fighter[data-fighter="anaximandro"].state-defend .sprite { background-image:url('assets/arco2/post6-prototype/anaximandro-defesa.webp'); }
 .fighter[data-fighter="anaximenes"] { width:clamp(95px,20vw,330px); bottom:7.5%; }
 .fighter[data-fighter="anaximenes"].state-run,
 .fighter[data-fighter="anaximenes"].state-attack,
@@ -175,3 +175,6 @@
 .power-effect.principle-air,.power-effect.special-air { animation:fire-wave .75s ease-out; background:radial-gradient(ellipse,#e8ffffaa 0 8%,#a7e6e477 22%,transparent 68%); border:4px solid #d8ffff88; border-radius:50%; }
 .power-effect.principle-apeiron,.power-effect.special-apeiron { animation:stone-rise .8s ease-out; background:radial-gradient(circle,#0e021b 0 10%,#7b28bccc 30%,#b967ff55 52%,transparent 70%); border-radius:50%; box-shadow:0 0 3rem #a844f0; }
 @media(max-width:700px){.fighter-select{position:fixed;inset:0;overflow:auto}.fighter-grid{grid-template-columns:repeat(2,1fr)}.fighter-card__portrait{height:clamp(8rem,31vw,12rem)}.fighter[data-fighter="anaximenes"]{width:clamp(105px,29vw,190px);bottom:6%}.fighter[data-fighter="anaximenes"].state-run,.fighter[data-fighter="anaximenes"].state-attack,.fighter[data-fighter="anaximenes"].state-defend{width:clamp(210px,52vw,330px);bottom:2.5%}.fighter[data-fighter="anaximandro"].state-idle{width:clamp(88px,25vw,165px);bottom:6.5%}.fighter[data-fighter="anaximandro"].state-run,.fighter[data-fighter="anaximandro"].state-attack,.fighter[data-fighter="anaximandro"].state-defend{width:clamp(185px,46vw,290px);bottom:3%}}
+
+/* golpe recarregando: o botão escurece em vez de parecer travado */
+.combat-controls button.is-cooling { filter: brightness(.6) saturate(.7); }

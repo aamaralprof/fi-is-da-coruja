@@ -12,10 +12,10 @@
   let chatRun = 0;
 
   const speakers = {
-    'Heráclito': { color: '#9b321d', avatar: 'assets/arco2/post6-prototype/heraclito-neutro.png' },
-    'Parmênides': { color: '#15618f', avatar: 'assets/arco2/post6-prototype/parmenides-neutro-v2.png' },
-    'Anaxímenes': { color: '#17623d', avatar: 'assets/arco2/post6-prototype/anaximenes-neutro.png' },
-    'Anaximandro': { color: '#57258b', avatar: 'assets/arco2/post6-prototype/anaximandro-neutro.png' }
+    'Heráclito': { color: '#9b321d', avatar: 'assets/arco2/post6-prototype/heraclito-neutro.webp' },
+    'Parmênides': { color: '#15618f', avatar: 'assets/arco2/post6-prototype/parmenides-neutro-v2.webp' },
+    'Anaxímenes': { color: '#17623d', avatar: 'assets/arco2/post6-prototype/anaximenes-neutro.webp' },
+    'Anaximandro': { color: '#57258b', avatar: 'assets/arco2/post6-prototype/anaximandro-neutro.webp' }
   };
 
   const conversation = [
