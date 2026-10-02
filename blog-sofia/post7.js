@@ -102,18 +102,31 @@
     const remaining = Math.max(0, startedAt + (3 * 24 * 60 * 60 * 1000) - Date.now());
     if (remaining === 0) {
       set(keys.owl, 'unlocked');
-      status.textContent = 'A incubação terminou. Sua corujinha já pode nascer e receber um nome.';
+      status.textContent = 'A incubação terminou. Sua corujinha nasceu e está esperando você na mesa da sua Sala de Investigação.';
       return;
     }
     const days = Math.ceil(remaining / (24 * 60 * 60 * 1000));
-    status.textContent = `O ovo está em incubação. ${days === 1 ? 'Falta aproximadamente 1 dia.' : `Faltam aproximadamente ${days} dias.`}`;
+    status.textContent = `O seu ovo já está na mesa da sua Sala de Investigação, em incubação. ${days === 1 ? 'Falta aproximadamente 1 dia' : `Faltam aproximadamente ${days} dias`} para ele abrir.`;
   }
-  function awakenLumiar() {
+  /* as animações do despertar só tocam quando o retrato está na tela; antes disso ficam pausadas */
+  function watchLumiar() {
+    const reveal = $('[data-lumiar-reveal]');
+    const portrait = $('.p7-lumiar-portrait');
+    if (!reveal || !portrait || !('IntersectionObserver' in window)) { reveal?.classList.add('is-visible'); return; }
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      reveal.classList.add('is-visible');
+      observer.disconnect();
+    }, { threshold: 0.45 });
+    observer.observe(portrait);
+  }
+  function awakenLumiar({ scroll = true } = {}) {
     set(keys.lumiar, 'awake');
     $('[data-egg]').hidden = true;
     $('[data-awaken-lumiar]').hidden = true;
     $('[data-lumiar-reveal]').hidden = false;
-    $('[data-lumiar-reveal]').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+    watchLumiar();
+    if (scroll) $('.p7-lumiar-portrait').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
   }
   function mix() {
     if (mixing || selected.length !== 3) return;
@@ -148,7 +161,7 @@
     if (found(keys.atomist)) discoverRecipe('atomista');
     if (found(keys.pythagorean)) discoverRecipe('pitagorica');
     if (found(keys.complete)) checkCompletion();
-    if (found(keys.lumiar, 'awake')) awakenLumiar();
+    if (found(keys.lumiar, 'awake')) awakenLumiar({ scroll: false });
     renderIncubation();
     if (found(keys.water, 'found')) $('[data-water]').hidden = true;
     if (found(keys.ligeia, 'found')) { $('[data-ligeia]').hidden = false; $('[data-ligeia-ending]').hidden = false; lab?.classList.add('is-aquatic'); }
@@ -161,6 +174,6 @@
   $('[data-clear]')?.addEventListener('click', () => { selected = []; renderSelection(); setResult('PAINEL DE RECEITAS', 'Aguardando ingredientes', 'Selecione três fichas para iniciar o mecanismo.'); });
   $('[data-mix]')?.addEventListener('click', mix);
   $('[data-water]')?.addEventListener('click', discoverWater);
-  $('[data-awaken-lumiar]')?.addEventListener('click', awakenLumiar);
+  $('[data-awaken-lumiar]')?.addEventListener('click', () => awakenLumiar());
   restore();
 })();

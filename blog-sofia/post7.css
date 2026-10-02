@@ -37,3 +37,17 @@ button:focus-visible{outline:3px solid #9b68b2;outline-offset:3px}@keyframes p7-
 @keyframes p7-cup-orbit{from{transform:translate(-12px,6px) rotate(-18deg) scale(.8)}to{transform:translate(15px,-18px) rotate(24deg) scale(1.25)}}
 @media(max-width:520px){.p7-hefesto-reward{flex-direction:column;text-align:center}.p7-hefesto-reward img{width:68px;height:68px}}
 @media(prefers-reduced-motion:reduce){.p7-machine.is-mixing{animation:none!important}.p7-machine.is-mixing::after{opacity:.45!important;scale:1!important}.p7-machine.is-mixing .p7-contents::after{animation:none!important;opacity:.65!important}}
+
+/* Lumiar: o retrato tem o tamanho exato da imagem, para os brilhos caírem sobre os olhos e o núcleo */
+.p7-lumiar-portrait{width:min(100%,677px);margin-inline:auto}
+.p7-owl .p7-lumiar-portrait img{width:100%;height:auto;max-height:none;aspect-ratio:1216/1293;object-fit:fill}
+.p7-eye{top:27%}.p7-eye-left{left:32%}.p7-eye-right{right:29%}
+.p7-heart{top:60%}
+/* o despertar espera o retrato entrar na tela (post7.js marca .is-visible) */
+.p7-lumiar-reveal:not(.is-visible) .p7-lumiar-portrait,.p7-lumiar-reveal:not(.is-visible) .p7-lumiar-energy *{animation-play-state:paused}
+.p7-lumiar-reveal{animation:none}
+.p7-lumiar-reveal .p7-lumiar-portrait{animation:p7-lumiar-awake .9s cubic-bezier(.18,.8,.25,1) both}
+/* onde está o ovo do aluno */
+.p7-companion .p7-egg-link{display:inline-flex;align-items:center;margin:.4rem 0 .5rem;text-decoration:none}
+.p7-companion small{display:block;opacity:.8}
+

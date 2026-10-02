@@ -520,6 +520,13 @@ emblemCollectButton?.addEventListener('click', () => {
 
 renderEmblemCollection();
 
+/* emblema ganho sem recarregar a página (post 7): remonta a coleção para ele aparecer na hora */
+window.addEventListener('sofia:emblem-found', () => {
+  document.querySelectorAll('.emblem-inventory-launcher, .emblem-inventory-backdrop, .emblem-inventory').forEach((node) => node.remove());
+  document.body.classList.remove('emblem-inventory-open');
+  ensureEmblemInventory();
+});
+
 const bookmarkButton = document.querySelector('[data-unlock-bookmark]');
 const bookmarkItem = document.querySelector('[data-bookmark-item]');
 const bookmarkStatus = document.querySelector('[data-bookmark-status]');
