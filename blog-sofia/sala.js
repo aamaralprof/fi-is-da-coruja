@@ -96,10 +96,10 @@ const roomItems=[
 ];
 if(progresso('sofia-room-notebook-unlocked')==='unlocked')roomItems.push({id:'notebook_investigacao',name:'Notebook de Investigação',view:'desk',image:'assets/sala/notebook-laptop.webp',abre:'explorador',x:21.7,y:53.2,w:24.7,ratio:1.78,ov:{x:50.4,y:37.3,w:12.2,ratio:1.03}});
 if(progresso('sofia-room-plant-unlocked')==='unlocked')roomItems.push({id:'planta_investigacao',name:'Pequena planta',view:'desk',image:'assets/sala/planta-broto.png',stateImages:{broto:'assets/sala/planta-broto.png',pequena:'assets/sala/planta-pequena.png',desenvolvida:'assets/sala/planta-desenvolvida.png',florida:'assets/sala/planta-florida.png',sede:'assets/sala/planta-com-sede.png'},states:['broto','pequena','desenvolvida','florida','sede'],action:{broto:'Regar',pequena:'Regar',desenvolvida:'Regar',florida:'Regar',sede:'Regar e recuperar'},x:52,y:52,w:11,ratio:.78,plant:true});
-if(inicioCoruja())roomItems.push({id:'corujinha_aluno',name:'Coruja de Hefesto',view:'desk',image:'assets/sala/coruja-hefesto-ovo.png',owl:true,x:60,y:48,w:10,ratio:1.09,defaultPlaced:true,ov:{x:69.5,y:39,w:5,ratio:1.09}});
+if(inicioCoruja())roomItems.push({id:'corujinha_aluno',name:'Coruja de Hefesto',view:'shelf',image:'assets/sala/coruja-hefesto-ovo-fechado.png',owl:true,x:44,y:34,w:10,ratio:1.09,defaultPlaced:true,ov:{x:12,y:27,w:4.7,ratio:1.09}});
 const itemById=id=>roomItems.find(i=>i.id===id);
 const blueAssets={caderno_sofia:'assets/sala/caderno-sofia-2-transparente.png',livro_filosofia:'assets/sala/livros-sofia-2-transparente.png',livro_historia:'assets/sala/livros-sofia-2-transparente.png',livro_literatura:'assets/sala/livros-sofia-2-transparente.png',caixa_ideias:'assets/sala/caixa-ideias-sofia-2-transparente.png'};
-const assetFor=d=>d.owl?(corujaNasceu()?'assets/sala/coruja-hefesto-isolada.png':'assets/sala/coruja-hefesto-ovo.png'):d.packStateImages?d.packStateImages[state?.appearance?.pack]?.[state?.roomItems?.[d.id]?.state]||d.image:d.stateImages?d.stateImages[state?.roomItems?.[d.id]?.state]||d.image:state?.appearance?.pack==='sofia2'&&blueAssets[d.id]?blueAssets[d.id]:d.image;
+const assetFor=d=>d.owl?(corujaNasceu()?'assets/sala/coruja-hefesto-isolada.png':'assets/sala/coruja-hefesto-ovo-fechado.png'):d.packStateImages?d.packStateImages[state?.appearance?.pack]?.[state?.roomItems?.[d.id]?.state]||d.image:d.stateImages?d.stateImages[state?.roomItems?.[d.id]?.state]||d.image:state?.appearance?.pack==='sofia2'&&blueAssets[d.id]?blueAssets[d.id]:d.image;
 /* A hora tem tres estados, e nem todo cenario tem arte para os tres: por ora
    so a Visao geral em lilas anoitece de verdade. Onde a arte existe, ela
    manda; onde nao existe, fica a cena do fim de tarde e o veu escurece por
@@ -127,6 +127,9 @@ const normalize=s=>{
      estagio em que ela estava — um broto abandonado volta a ser broto, nao
      vira flor por ter passado sede. */
   const o=s.roomItems[d.id];
+  /* O ovo antes vivia na mesa. A migração coloca também os exemplares já salvos
+     na estante uma única vez; depois disso, preserva qualquer movimento do aluno. */
+  if(d.owl&&!o.shelfPlacement){o.x=d.x;o.y=d.y;o.shelfPlacement=true;}
   if(d.plant&&o.lastWatered&&o.state!=='sede'&&Date.now()-o.lastWatered>=ABANDONO){o.stage=o.state;o.state='sede';}
  }
  return s;
