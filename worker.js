@@ -175,6 +175,28 @@ async function gravarPercurso(pedido, env) {
 
   const corpo = await corpoJson(pedido);
   const chaves = (corpo && corpo.chaves) || {};
+  if (Object.prototype.hasOwnProperty.call(chaves, 'sofia-student-owl-life')) {
+    let vida;
+    try { vida = JSON.parse(String(chaves['sofia-student-owl-life'])); } catch (e) { return responder({ erro: 'estado da coruja inválido' }, 400); }
+    const numero = v => Number.isFinite(v) && v >= 0;
+    if (!objeto(vida) || !numero(vida.charge) || vida.charge > 100 || !numero(vida.rest) || vida.rest > 100
+      || !['idle', 'resting', 'exploring'].includes(vida.mode) || !numero(vida.updatedAt) || !numero(vida.bond)
+      || !numero(vida.lastGreeting) || !numero(vida.lastMaintenance) || !Array.isArray(vida.findings)
+      || vida.findings.length > 20 || vida.findings.some(v => !/^[a-z0-9-]{1,60}$/.test(v))
+      || (vida.mode === 'exploring' && (!objeto(vida.exploration) || vida.exploration.status !== 'away'))
+      || (vida.exploration != null && (!objeto(vida.exploration) || !['away','returned'].includes(vida.exploration.status)
+        || !/^[a-z0-9-]{1,80}\.html$/.test(vida.exploration.target) || String(vida.exploration.hint || '').length > 160
+        || !numero(vida.exploration.startedAt) || !numero(vida.exploration.returnsAt) || !/^[a-z0-9-]{1,60}$/.test(vida.exploration.finding)))) {
+      return responder({ erro: 'estado da coruja inválido' }, 400);
+    }
+  }
+  if (Object.prototype.hasOwnProperty.call(chaves, 'sofia-student-owl-name')) {
+    const nome = String(chaves['sofia-student-owl-name']).trim().replace(/\s+/g, ' ');
+    if (!nome || nome.length > 24 || !/^[\p{L}\p{M}0-9 .'-]+$/u.test(nome)) {
+      return responder({ erro: 'nome da coruja inválido' }, 400);
+    }
+    chaves['sofia-student-owl-name'] = nome;
+  }
   const nomes = Object.keys(chaves).filter(function (c) {
     return c.indexOf('sofia-') === 0 && c.length <= 120 && String(chaves[c]).length <= 2000;
   });

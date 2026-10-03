@@ -26,11 +26,14 @@ const status=message=>{$('save-status').textContent=message;};
 const INCUBACAO_CORUJA=3*24*60*60*1000;
 const inicioCoruja=()=>Number(progresso('sofia-student-owl-incubation-start'))||0;
 const corujaNasceu=()=>progresso('sofia-student-owl-unlocked')==='unlocked'||(inicioCoruja()>0&&Date.now()>=inicioCoruja()+INCUBACAO_CORUJA);
+const nomeCoruja=()=>String(progresso('sofia-student-owl-name')||'').trim();
+const corujaIdentificada=()=>progresso('sofia-student-owl-identity')==='registered'&&!!nomeCoruja();
 function sincronizarCoruja(){
  if(!visita&&inicioCoruja()&&corujaNasceu()&&progresso('sofia-student-owl-unlocked')!=='unlocked')localStorage.setItem('sofia-student-owl-unlocked','unlocked');
 }
 function textoCoruja(){
- if(corujaNasceu())return 'Sua corujinha nasceu e está na toca. Abra a casinha para vê-la.';
+ if(corujaIdentificada())return `${nomeCoruja()} está na toca. Abra a casinha para vê-la.`;
+ if(corujaNasceu())return 'A incubação terminou. Toque no ovo para iniciar a ativação.';
  const restante=Math.max(0,inicioCoruja()+INCUBACAO_CORUJA-Date.now());
  const dias=Math.floor(restante/86400000),horas=Math.floor(restante%86400000/3600000),minutos=Math.max(1,Math.ceil(restante%3600000/60000));
  const partes=[];if(dias)partes.push(`${dias} ${dias===1?'dia':'dias'}`);if(horas)partes.push(`${horas} ${horas===1?'hora':'horas'}`);if(!dias&&partes.length<2)partes.push(`${minutos} min`);
@@ -98,10 +101,10 @@ if(progresso('sofia-room-notebook-unlocked')==='unlocked')roomItems.push({id:'no
 if(progresso('sofia-room-plant-unlocked')==='unlocked')roomItems.push({id:'planta_investigacao',name:'Pequena planta',view:'desk',image:'assets/sala/planta-broto.png',stateImages:{broto:'assets/sala/planta-broto.png',pequena:'assets/sala/planta-pequena.png',desenvolvida:'assets/sala/planta-desenvolvida.png',florida:'assets/sala/planta-florida.png',sede:'assets/sala/planta-com-sede.png'},states:['broto','pequena','desenvolvida','florida','sede'],action:{broto:'Regar',pequena:'Regar',desenvolvida:'Regar',florida:'Regar',sede:'Regar e recuperar'},x:52,y:52,w:11,ratio:.78,plant:true});
 if(inicioCoruja())roomItems.push({id:'corujinha_aluno',name:'Coruja de Hefesto',view:'shelf',image:'assets/sala/coruja-hefesto-ovo-fechado.png',owl:true,x:44,y:34,w:10,ratio:1.09,defaultPlaced:true,ov:{x:12,y:27,w:4.7,ratio:1.09}});
 const itemById=id=>roomItems.find(i=>i.id===id);
-const nomeItem=d=>d.owl?(corujaNasceu()?'Toca da Coruja de Hefesto':'Ovo da Coruja de Hefesto'):d.name;
-const larguraItem=d=>d.owl&&corujaNasceu()?13:d.w;
+const nomeItem=d=>d.owl?(corujaIdentificada()?`Toca de ${nomeCoruja()}`:'Ovo da Coruja de Hefesto'):d.name;
+const larguraItem=d=>d.owl&&corujaIdentificada()?13:d.w;
 const blueAssets={caderno_sofia:'assets/sala/caderno-sofia-2-transparente.png',livro_filosofia:'assets/sala/livros-sofia-2-transparente.png',livro_historia:'assets/sala/livros-sofia-2-transparente.png',livro_literatura:'assets/sala/livros-sofia-2-transparente.png',caixa_ideias:'assets/sala/caixa-ideias-sofia-2-transparente.png'};
-const assetFor=d=>d.owl?(corujaNasceu()?'assets/sala/toca-coruja-fechada.png':'assets/sala/coruja-hefesto-ovo-fechado.png'):d.packStateImages?d.packStateImages[state?.appearance?.pack]?.[state?.roomItems?.[d.id]?.state]||d.image:d.stateImages?d.stateImages[state?.roomItems?.[d.id]?.state]||d.image:state?.appearance?.pack==='sofia2'&&blueAssets[d.id]?blueAssets[d.id]:d.image;
+const assetFor=d=>d.owl?(corujaIdentificada()?'assets/sala/toca-coruja-fechada.png':'assets/sala/coruja-hefesto-ovo-fechado.png'):d.packStateImages?d.packStateImages[state?.appearance?.pack]?.[state?.roomItems?.[d.id]?.state]||d.image:d.stateImages?d.stateImages[state?.roomItems?.[d.id]?.state]||d.image:state?.appearance?.pack==='sofia2'&&blueAssets[d.id]?blueAssets[d.id]:d.image;
 /* A hora tem tres estados, e nem todo cenario tem arte para os tres: por ora
    so a Visao geral em lilas anoitece de verdade. Onde a arte existe, ela
    manda; onde nao existe, fica a cena do fim de tarde e o veu escurece por
@@ -143,6 +146,94 @@ if(!visita){
  }
 }
 const owner=visita?ctx.codigo:Percurso.codigo(),draftKey='sala-rascunho:'+owner;
+/* Cada passaporte recebe sempre a mesma coruja. A escolha nasce do proprio
+   codigo, em vez de Math.random(): assim ela nao troca de cor ao mudar de
+   aparelho e a professora enxerga a mesma variante na Sala do aluno. */
+const CORES_CORUJA=[
+ {id:'violeta',nome:'violeta',pose:'atenta'},
+ {id:'azul',nome:'azul',pose:'curiosa'},
+ {id:'turquesa',nome:'turquesa',pose:'acenando'},
+ {id:'verde',nome:'verde',pose:'pensativa'},
+ {id:'ambar',nome:'âmbar',pose:'orgulhosa'},
+ {id:'rubi',nome:'rubi',pose:'acolhedora'}
+];
+const indiceCoruja=Array.from(owner||'sala-geral').reduce((total,letra)=>((total*31)+letra.codePointAt(0))>>>0,0)%CORES_CORUJA.length;
+const corujaDeOculos=owner==='CORUJA-62XA';
+const corCoruja=corujaDeOculos?CORES_CORUJA.find(c=>c.id==='azul'):CORES_CORUJA[indiceCoruja];
+const vidaCoruja=window.CorujaHefesto.create({read:progresso,write:visita?null:(chave,valor)=>localStorage.setItem(chave,valor),items:D.itens,available:item=>D.disponivel(item)});
+const tocaCoruja=$('toca-coruja'),moradoraCoruja=tocaCoruja?.querySelector('.toca-coruja-moradora');
+if(tocaCoruja){
+ tocaCoruja.dataset.owlColor=corCoruja.id;
+ if(corujaDeOculos)tocaCoruja.dataset.owlSpecial='oculos';
+}
+if(moradoraCoruja){
+ moradoraCoruja.dataset.src=corujaDeOculos?'assets/sala/coruja-hefesto-oculos.png':`assets/sala/coruja-hefesto-pose-${corCoruja.id}.png`;
+ moradoraCoruja.alt=`A Coruja de Hefesto${corujaDeOculos?', usando óculos':''}, de luz ${corCoruja.nome}, em pose ${corCoruja.pose}, dentro da sua casinha.`;
+ moradoraCoruja.tabIndex=0;
+ moradoraCoruja.setAttribute('role','button');
+ moradoraCoruja.setAttribute('aria-label',moradoraCoruja.alt+' Toque para cumprimentá-la.');
+ const reagir=()=>{
+  moradoraCoruja.classList.remove('toca-coruja-moradora--reagindo');
+  void moradoraCoruja.offsetWidth;
+  moradoraCoruja.classList.add('toca-coruja-moradora--reagindo');
+  if(!visita)vidaCoruja.act('greet');
+  status(corujaDeOculos?'A coruja azul ajeitou os óculos e piscou para você.':`A coruja ${corCoruja.nome} respondeu ao seu cumprimento.`);
+ };
+ moradoraCoruja.addEventListener('click',reagir);
+ moradoraCoruja.addEventListener('animationend',e=>{if(e.animationName==='coruja-cumprimenta')moradoraCoruja.classList.remove('toca-coruja-moradora--reagindo');});
+ moradoraCoruja.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();reagir();}});
+}
+const atualizarTituloToca=()=>{if($('toca-coruja-titulo'))$('toca-coruja-titulo').textContent=nomeCoruja()?`A casinha de ${nomeCoruja()}`:`A casinha da coruja ${corCoruja.nome}`;};
+atualizarTituloToca();
+function renderVidaCoruja(mensagem){
+ const vida=vidaCoruja.snapshot();$('owl-charge').value=vida.charge;$('owl-rest').value=vida.rest;
+ const grau=vida.curiosity>=75?'radiante':vida.curiosity>=45?'muito curiosa':vida.curiosity>=20?'curiosa':'observadora';$('owl-curiosity').textContent=`${grau} (${vida.curiosity})`;
+ tocaCoruja.dataset.owlMode=vida.mode;tocaCoruja.dataset.owlBond=vida.bondStage;
+ if(moradoraCoruja)moradoraCoruja.hidden=vida.mode==='exploring';
+ const explorar=$('owl-explore');if(explorar){explorar.disabled=vida.mode==='exploring';explorar.textContent=vida.mode==='exploring'?'Exploração em andamento':'Enviar para explorar';}
+ const estadoPadrao=vida.mode==='resting'?`${nomeCoruja()} está descansando. O descanso continua mesmo com a Sala fechada.`:vida.mode==='exploring'?`${nomeCoruja()} não está aqui. Atividade externa detectada: procure ${vida.exploration?.hint||'em outra página do blog'}. Se você não procurar, ela voltará sozinha.`:vida.exploration?.status==='returned'?`${nomeCoruja()} voltou de uma exploração e deixou um novo achado na prateleira.`:`${nomeCoruja()} observa a toca e acompanha suas descobertas.`;
+ $('owl-life-message').textContent=mensagem||estadoPadrao;
+ const lista=$('owl-findings');lista.replaceChildren();
+ if(!vida.findings.length)lista.append(el('p',`${nomeCoruja()} ainda não trouxe nenhum achado. Investigações despertam sua curiosidade.`));
+ for(const achado of vida.findings){const artigo=el('article');artigo.append(el('strong',achado.name),el('p',achado.text),el('small',`Encontrado por ${nomeCoruja()}.`));lista.append(artigo);}
+}
+tocaCoruja?.querySelectorAll('[data-owl-action]').forEach(botao=>botao.addEventListener('click',()=>{
+ const acao=botao.dataset.owlAction;if(acao==='findings'){$('owl-findings').hidden=!$('owl-findings').hidden;renderVidaCoruja($('owl-findings').hidden?'A prateleira foi fechada.':'A prateleira mostra o que a curiosidade encontrou.');return;}
+ if(visita)return;
+ const resultado=vidaCoruja.act(acao);const mensagens={rest:`${nomeCoruja()} se acomodou no ninho. A disposição volta aos poucos.`,charge:`O núcleo de ${nomeCoruja()} recebeu uma recarga rápida.`,maintain:`As engrenagens de ${nomeCoruja()} foram ajustadas com cuidado.`,explore:`${nomeCoruja()} partiu para explorar. Pista: procure ${resultado.exploration?.hint||'em outra página do blog'}.`};
+ renderVidaCoruja(resultado.ok?mensagens[acao]:resultado.message);
+}));
+tocaCoruja?.addEventListener('close',()=>{if(!visita&&corujaIdentificada())vidaCoruja.save();});
+const nascimento=$('nascimento-coruja'),imagemNascimento=$('nascimento-coruja-imagem'),textoNascimento=$('nascimento-coruja-texto'),formNome=$('nomear-coruja'),campoNome=$('nome-coruja'),erroNome=$('erro-nome-coruja'),botaoAtivar=$('ativar-coruja');
+const pausaNascimento=matchMedia('(prefers-reduced-motion: reduce)').matches?80:900;
+function abrirNascimento(){
+ nascimento.dataset.birthState='egg';imagemNascimento.src='assets/sala/coruja-hefesto-ovo-fechado.png';
+ textoNascimento.innerHTML='<strong>PROTOCOLO DE ATIVAÇÃO</strong><span>Origem: Oficina de Hefesto</span>';
+ botaoAtivar.hidden=false;botaoAtivar.disabled=false;formNome.hidden=true;erroNome.textContent='';campoNome.value='';nascimento.showModal();botaoAtivar.focus();
+}
+function interagirCoruja(id){
+ if(corujaIdentificada())return abrirTela('toca-coruja');
+ const recado=textoCoruja();
+ if(leitura||!corujaNasceu()){status(recado);return recadoNoObjeto(id,recado);}
+ abrirNascimento();
+}
+botaoAtivar?.addEventListener('click',async()=>{
+ botaoAtivar.disabled=true;nascimento.dataset.birthState='activating';textoNascimento.innerHTML='<strong>ATIVAÇÃO EM CURSO</strong><span>O núcleo violeta respondeu.</span>';
+ await new Promise(r=>setTimeout(r,pausaNascimento));
+ nascimento.dataset.birthState='transforming';imagemNascimento.src='assets/sala/coruja-hefesto-ovo.png';textoNascimento.innerHTML='<strong>REORGANIZANDO PLACAS</strong><span>Uma nova forma está despertando.</span>';
+ await new Promise(r=>setTimeout(r,pausaNascimento));
+ nascimento.dataset.birthState='naming';imagemNascimento.src=corujaDeOculos?'assets/sala/coruja-hefesto-oculos.png':`assets/sala/coruja-hefesto-pose-${corCoruja.id}.png`;textoNascimento.innerHTML='<strong>IDENTIFICAÇÃO NECESSÁRIA</strong><span>A unidade aguarda um nome.</span>';botaoAtivar.hidden=true;formNome.hidden=false;campoNome.focus();
+});
+formNome?.addEventListener('submit',async e=>{
+ e.preventDefault();const nome=campoNome.value.trim().replace(/\s+/g,' ');
+ if(!nome||nome.length>24||!/^[\p{L}\p{M}0-9 .'-]+$/u.test(nome)){erroNome.textContent='Use de 1 a 24 caracteres: letras, números, espaços, ponto, hífen ou apóstrofo.';campoNome.focus();return;}
+ const botao=formNome.querySelector('button');botao.disabled=true;botao.textContent='Vinculando ao Passaporte…';erroNome.textContent='';
+ try{
+  await Percurso.requisitar('percurso',{method:'POST',body:JSON.stringify({chaves:{'sofia-student-owl-name':nome,'sofia-student-owl-identity':'registered','sofia-student-owl-unlocked':'unlocked'}})});
+  localStorage.setItem('sofia-student-owl-name',nome);localStorage.setItem('sofia-student-owl-identity','registered');localStorage.setItem('sofia-student-owl-unlocked','unlocked');vidaCoruja.save();
+  nascimento.dataset.birthState='registered';textoNascimento.innerHTML=`<strong>IDENTIDADE REGISTRADA</strong><span></span>`;textoNascimento.querySelector('span').textContent=`${nome} agora está vinculada ao seu Passaporte.`;formNome.hidden=true;atualizarTituloToca();renderRoom();renderTray();status(`${nome} nasceu e sua toca apareceu na estante.`);await new Promise(r=>setTimeout(r,pausaNascimento));nascimento.close();
+ }catch(erro){erroNome.textContent='Não foi possível salvar o nome agora. Confira a conexão e tente novamente.';botao.disabled=false;botao.textContent='Confirmar nome';}
+});
 /* Quem visita não precisa ter desbloqueado a própria Sala para ver a de outro. */
 if(!visita&&!progresso('sofia-room-unlocked')){
  $('room-gate').replaceChildren(el('p','Sua Sala aparece quando você encontra as primeiras pistas de Heliópolis.'));const a=el('a','Ir para Heliópolis →');a.href=D.casos.heliopolis.post;$('room-gate').append(a);status('Uma descoberta está esperando.');return;
@@ -273,12 +364,12 @@ function recadoNoObjeto(id,texto){const n=document.querySelector('.room-item[dat
  clearTimeout(recadoNoObjeto.t);clearTimeout(recadoNoObjeto.t2);
  recadoNoObjeto.t=setTimeout(()=>{b.classList.remove('aparece');
   recadoNoObjeto.t2=setTimeout(()=>{b.hidden=true;},260);},2600);}
-function renderRoom(){sincronizarCoruja();const host=$('placed-items'),rug=$('rug');host.replaceChildren();$('room-stage').dataset.pack=state.appearance.pack;$('room-stage').dataset.wall=state.appearance.wall;$('scene').src=sceneFor(viewData[view]);rug.style.setProperty('--rug-image',`url('${state.appearance.pack==='sofia2'?'assets/sala/tapete-sofia-2.png':'assets/sala/tapete-retangular.png'}')`);rug.style.setProperty('--rug-x',state.appearance.rugX+'%');rug.style.setProperty('--rug-y',state.appearance.rugY+'%');const palco=$('room-stage'),persiana=$('blind'),janela=viewData[view].blind;palco.dataset.blind=state.appearance.blind;palco.dataset.time=state.appearance.time;if(arteDaHora(viewData[view]))delete palco.dataset.veu;else palco.dataset.veu='sim';palco.dataset.roomLight=state.appearance.roomLight;persiana.style.setProperty('--blind-x',janela.x+'%');persiana.style.setProperty('--blind-y',janela.y+'%');persiana.style.setProperty('--blind-w',janela.w+'%');persiana.style.setProperty('--blind-h',janela.h+'%');rug.hidden=!state.appearance.rug;rug.tabIndex=leitura?-1:0;rug.setAttribute('aria-label','Tapete.'+(leitura?'':' Arraste ou use as setas para mover.'));$('lights').dataset.state=state.appearance.lights;for(const d of roomItems.filter(i=>i.view===view)){const s=state.roomItems[d.id];if(!s.placed)continue;const n=el('button');n.type='button';n.className='room-item';n.dataset.id=d.id;n.dataset.state=s.state;n.dataset.recolored=String(!!blueAssets[d.id]);if(d.sprite)n.dataset.sprite=d.sprite;if(d.owl)n.dataset.owl=corujaNasceu()?'hatched':'egg';n.style.setProperty('--item-image',`url('${assetFor(d)}')`);n.style.setProperty('--item-w',larguraItem(d)+'%');n.style.setProperty('--item-ratio',d.owl&&corujaNasceu()?1.5:d.ratio);/* Na leitura o rotulo nao promete acao: o objeto esta ali para ser visto. */
-  n.setAttribute('aria-label',leitura?nomeItem(d)+'. '+(d.owl?textoCoruja():'Somente leitura.'):nomeItem(d)+(d.owl?'. '+textoCoruja():'')+(d.states?'. '+d.action[s.state]+'.':'')+(d.abre?'. Abrir a tela.':'')+' Arraste ou use as setas para mover.');n.setAttribute('aria-pressed',String(d.id===selectedRoom));roomPosition(n,s);host.append(n);if(leitura){n.tabIndex=d.owl&&corujaNasceu()?0:-1;n.onclick=()=>{if(d.owl&&corujaNasceu())return abrirTela('toca-coruja');const r=d.owl?textoCoruja():'Esta Sala é de um aluno. Aqui você só observa.';status(r);recadoNoObjeto(d.id,r);};continue;}let drag=null,moved=false;n.onpointerdown=e=>{if(e.button!==0)return;selectRoom(d.id);drag={clientX:e.clientX,clientY:e.clientY,x:s.x,y:s.y,id:e.pointerId};moved=false;n.setPointerCapture(e.pointerId);};n.onpointermove=e=>{if(!drag)return;const px=e.clientX-drag.clientX,py=e.clientY-drag.clientY;if(!moved&&Math.hypot(px,py)<=ARRASTO_MINIMO)return;moved=true;const rect=$('room-stage').getBoundingClientRect(),dx=px/rect.width*100,dy=py/rect.height*100;s.x=Math.max(0,Math.min(100-larguraItem(d),drag.x+dx));s.y=Math.max(0,Math.min(88,drag.y+dy));roomPosition(n,s);};n.onpointerup=n.onpointercancel=e=>{if(!drag)return;n.releasePointerCapture?.(drag.id);drag=null;if(e.type==='pointercancel')return;if(moved)change();else if(d.owl){if(corujaNasceu())abrirTela('toca-coruja');else{const r=textoCoruja();status(r);recadoNoObjeto(d.id,r);}}else if(d.states)toggleState(d.id);else if(d.abre)abrirTela(d.abre);};n.onkeydown=e=>{if(d.owl&&(e.key==='Enter'||e.key===' ')){e.preventDefault();if(corujaNasceu())return abrirTela('toca-coruja');const r=textoCoruja();status(r);return recadoNoObjeto(d.id,r);}if(d.abre&&(e.key==='Enter'||e.key===' ')){e.preventDefault();return abrirTela(d.abre);}const step={ArrowLeft:[-2,0],ArrowRight:[2,0],ArrowUp:[0,-2],ArrowDown:[0,2]}[e.key];if(!step)return;e.preventDefault();selectRoom(d.id);s.x=Math.max(0,Math.min(100-larguraItem(d),s.x+step[0]));s.y=Math.max(0,Math.min(88,s.y+step[1]));roomPosition(n,s);change();};}
+function renderRoom(){sincronizarCoruja();const host=$('placed-items'),rug=$('rug');host.replaceChildren();$('room-stage').dataset.pack=state.appearance.pack;$('room-stage').dataset.wall=state.appearance.wall;$('scene').src=sceneFor(viewData[view]);rug.style.setProperty('--rug-image',`url('${state.appearance.pack==='sofia2'?'assets/sala/tapete-sofia-2.png':'assets/sala/tapete-retangular.png'}')`);rug.style.setProperty('--rug-x',state.appearance.rugX+'%');rug.style.setProperty('--rug-y',state.appearance.rugY+'%');const palco=$('room-stage'),persiana=$('blind'),janela=viewData[view].blind;palco.dataset.blind=state.appearance.blind;palco.dataset.time=state.appearance.time;if(arteDaHora(viewData[view]))delete palco.dataset.veu;else palco.dataset.veu='sim';palco.dataset.roomLight=state.appearance.roomLight;persiana.style.setProperty('--blind-x',janela.x+'%');persiana.style.setProperty('--blind-y',janela.y+'%');persiana.style.setProperty('--blind-w',janela.w+'%');persiana.style.setProperty('--blind-h',janela.h+'%');rug.hidden=!state.appearance.rug;rug.tabIndex=leitura?-1:0;rug.setAttribute('aria-label','Tapete.'+(leitura?'':' Arraste ou use as setas para mover.'));$('lights').dataset.state=state.appearance.lights;for(const d of roomItems.filter(i=>i.view===view)){const s=state.roomItems[d.id];if(!s.placed)continue;const n=el('button');n.type='button';n.className='room-item';n.dataset.id=d.id;n.dataset.state=s.state;n.dataset.recolored=String(!!blueAssets[d.id]);if(d.sprite)n.dataset.sprite=d.sprite;if(d.owl)n.dataset.owl=corujaIdentificada()?'hatched':'egg';n.style.setProperty('--item-image',`url('${assetFor(d)}')`);n.style.setProperty('--item-w',larguraItem(d)+'%');n.style.setProperty('--item-ratio',d.owl&&corujaIdentificada()?1.5:d.ratio);/* Na leitura o rotulo nao promete acao: o objeto esta ali para ser visto. */
+  n.setAttribute('aria-label',leitura?nomeItem(d)+'. '+(d.owl?textoCoruja():'Somente leitura.'):nomeItem(d)+(d.owl?'. '+textoCoruja():'')+(d.states?'. '+d.action[s.state]+'.':'')+(d.abre?'. Abrir a tela.':'')+' Arraste ou use as setas para mover.');n.setAttribute('aria-pressed',String(d.id===selectedRoom));roomPosition(n,s);host.append(n);if(leitura){n.tabIndex=d.owl&&corujaIdentificada()?0:-1;n.onclick=()=>d.owl?interagirCoruja(d.id):undefined;continue;}let drag=null,moved=false;n.onpointerdown=e=>{if(e.button!==0)return;selectRoom(d.id);drag={clientX:e.clientX,clientY:e.clientY,x:s.x,y:s.y,id:e.pointerId};moved=false;n.setPointerCapture(e.pointerId);};n.onpointermove=e=>{if(!drag)return;const px=e.clientX-drag.clientX,py=e.clientY-drag.clientY;if(!moved&&Math.hypot(px,py)<=ARRASTO_MINIMO)return;moved=true;const rect=$('room-stage').getBoundingClientRect(),dx=px/rect.width*100,dy=py/rect.height*100;s.x=Math.max(0,Math.min(100-larguraItem(d),drag.x+dx));s.y=Math.max(0,Math.min(88,drag.y+dy));roomPosition(n,s);};n.onpointerup=n.onpointercancel=e=>{if(!drag)return;n.releasePointerCapture?.(drag.id);drag=null;if(e.type==='pointercancel')return;if(moved)change();else if(d.owl)interagirCoruja(d.id);else if(d.states)toggleState(d.id);else if(d.abre)abrirTela(d.abre);};n.onkeydown=e=>{if(d.owl&&(e.key==='Enter'||e.key===' ')){e.preventDefault();return interagirCoruja(d.id);}if(d.abre&&(e.key==='Enter'||e.key===' ')){e.preventDefault();return abrirTela(d.abre);}const step={ArrowLeft:[-2,0],ArrowRight:[2,0],ArrowUp:[0,-2],ArrowDown:[0,2]}[e.key];if(!step)return;e.preventDefault();selectRoom(d.id);s.x=Math.max(0,Math.min(100-larguraItem(d),s.x+step[0]));s.y=Math.max(0,Math.min(88,s.y+step[1]));roomPosition(n,s);change();};}
  /* Eco da visão geral: mesmos objetos, outra posição (d.ov), sem
     interação nenhuma — quem edita é a mesa/estante, a visão geral só
     mostra o que já foi colocado lá, pra não parecer sempre vazia. */
- if(view==='overview')for(const d of roomItems.filter(i=>i.ov)){const s=state.roomItems[d.id];if(!s.placed)continue;const n=el('div');n.className='room-item room-item--echo';n.dataset.id=d.id;n.dataset.state=s.state;n.dataset.recolored=String(!!blueAssets[d.id]);if(d.sprite)n.dataset.sprite=d.sprite;if(d.owl)n.dataset.owl=corujaNasceu()?'hatched':'egg';n.style.setProperty('--item-image',`url('${assetFor(d)}')`);n.style.setProperty('--item-w',(d.owl&&corujaNasceu()?5.5:d.ov.w)+'%');n.style.setProperty('--item-ratio',d.owl&&corujaNasceu()?1.5:d.ov.ratio);n.style.left=d.ov.x+'%';n.style.top=d.ov.y+'%';n.setAttribute('aria-hidden','true');host.append(n);}}
+ if(view==='overview')for(const d of roomItems.filter(i=>i.ov)){const s=state.roomItems[d.id];if(!s.placed)continue;const n=el('div');n.className='room-item room-item--echo';n.dataset.id=d.id;n.dataset.state=s.state;n.dataset.recolored=String(!!blueAssets[d.id]);if(d.sprite)n.dataset.sprite=d.sprite;if(d.owl)n.dataset.owl=corujaIdentificada()?'hatched':'egg';n.style.setProperty('--item-image',`url('${assetFor(d)}')`);n.style.setProperty('--item-w',(d.owl&&corujaIdentificada()?5.5:d.ov.w)+'%');n.style.setProperty('--item-ratio',d.owl&&corujaIdentificada()?1.5:d.ov.ratio);n.style.left=d.ov.x+'%';n.style.top=d.ov.y+'%';n.setAttribute('aria-hidden','true');host.append(n);}}
 function trayButton(text,thumb,pressed,onclick){const b=el('button',text);b.type='button';b.className='tray-item';b.style.setProperty('--thumb',/^(url|linear|radial|repeating)/.test(thumb)?thumb:`url('${thumb}')`);b.setAttribute('aria-pressed',String(pressed));b.onclick=onclick;return b;}
 function renderTray(){const tray=$('item-tray');tray.replaceChildren();$('selected-controls').hidden=true;if(leitura)return;if(view==='overview'){/* O tapete saiu da bandeja (retirado, nao apagado): quem ja tinha um
     continua vendo e podendo arrastar; so ninguem adiciona um novo. */const lights=trayButton('Cordão de luzes','assets/sala/cordao-luzes.png',state.appearance.lights==='on',()=>{state.appearance.lights=state.appearance.lights==='on'?'off':'on';renderRoom();renderTray();change();});const trocar=(campo,ligado,desligado)=>{state.appearance[campo]=state.appearance[campo]===ligado?desligado:ligado;renderRoom();renderTray();change();};const persiana=trayButton(state.appearance.blind==='closed'?'Persiana fechada':'Persiana aberta',"repeating-linear-gradient(180deg,#7a6047 0 16%,#584431 16% 21%)",state.appearance.blind==='closed',()=>trocar('blind','closed','open'));const luz=trayButton('Luz da sala',"radial-gradient(circle at 50% 36%,#ffe9bd,#7a5f33)",state.appearance.roomLight==='on',()=>trocar('roomLight','on','off'));const horas=['day','night','rain'];
@@ -391,6 +482,7 @@ zoomDialog?.addEventListener('close',zReset);
    endereco fora do src e o que realmente adia. */
 function abrirTela(id){const d=$(id);if(!d)return;
  d.querySelectorAll('img[data-src]').forEach(i=>{i.src=i.dataset.src;delete i.dataset.src;});
+ if(id==='toca-coruja')renderVidaCoruja();
  if(!d.open)d.showModal();}
 
 /* O gatinho nao e do aluno. Chega e vai embora sozinho enquanto a Sala

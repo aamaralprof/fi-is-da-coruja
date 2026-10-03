@@ -108,4 +108,18 @@
   window.addEventListener('percurso-atualizado',abrirPortas);
   window.addEventListener('storage',abrirPortas);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',abrirPortas);
+
+  /* Uma unica entrada para a presença global da coruja. O componente só
+     nasce depois do sincronismo e somente para alunos que já a nomearam. */
+  let mascoteCarregada=false;
+  const carregarMascote=()=>{
+    if(mascoteCarregada||!session()||window.Percurso.papel()!=='aluno')return;
+    const pagina=location.pathname.split('/').pop()||'index.html';
+    if(['entrar.html','passaporte.html','professor.html','sala-investigacao.html','sistema-do-destino.html','poseidon-lines.html'].includes(pagina))return;
+    if(localStorage.getItem('sofia-student-owl-identity')!=='registered'||!localStorage.getItem('sofia-student-owl-name'))return;
+    mascoteCarregada=true;
+    const script=document.createElement('script');script.src='coruja-mascote.js?v=3';script.defer=true;document.head.append(script);
+  };
+  window.Percurso.pronto.then(carregarMascote,carregarMascote);
+  window.addEventListener('percurso-atualizado',carregarMascote);
 })();
