@@ -1,0 +1,35 @@
+(()=>{
+  const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+  const root='assets/arco3/post1/Arco3_Post1_Pacote_Imagens/';
+  const puzzles=['gods','principles','physis','contradictions'];
+  const keys=Object.fromEntries(puzzles.map(x=>[x,`sofia-arco3-post1-${x}`])); keys.final='sofia-arco3-post1-complete';
+  const get=k=>{try{return localStorage.getItem(k)}catch{return null}},set=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
+  const boot=$('[data-boot]'),game=$('[data-game]'),live=$('[data-live]'); let remaining=1800,timerId=0,sound=false,currentReport='';
+  const say=t=>{live.textContent=t;clearTimeout(say.t);say.t=setTimeout(()=>live.textContent='',3500)};
+  const tone=(f=420,d=.09)=>{if(!sound)return;try{const c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.frequency.value=f;g.gain.setValueAtTime(.05,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.connect(g).connect(c.destination);o.start();o.stop(c.currentTime+d)}catch{}};
+  setTimeout(()=>{boot.classList.add('is-dark');$('.a3-fake-post').hidden=true;$('.a3-dark-message').hidden=false},700);
+  $('[data-enter]').addEventListener('click',()=>{boot.hidden=true;game.hidden=false;startTimer();setTimeout(()=> $('[data-intro-dialog]').showModal(),250)});
+  function startTimer(){const out=$('[data-timer]');const draw=()=>{const m=Math.floor(remaining/60),s=remaining%60;out.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;out.setAttribute('datetime',`PT${m}M${s}S`)};draw();timerId=setInterval(()=>{if(remaining>0){remaining--;draw()}else{clearInterval(timerId);tone(100,.8);say('Você estava contando o tempo. A Biblioteca estava contando as perguntas.')}},1000)}
+  $$('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
+  $$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));
+  $$('[data-open]').forEach(b=>b.addEventListener('click',()=>{const d=$(`[data-dialog="${b.dataset.open}"]`);if(d)d.showModal()}));
+  $('[data-sound]').addEventListener('click',e=>{sound=!sound;e.currentTarget.setAttribute('aria-pressed',sound);e.currentTarget.textContent=`Som: ${sound?'sim':'não'}`;tone()});
+  $('[data-hint]').addEventListener('click',e=>{const target=puzzles.find(x=>get(keys[x])!=='complete')||'final';const b=$(`[data-open="${target}"]`);b?.classList.add('is-hint');setTimeout(()=>b?.classList.remove('is-hint'),2600);say('Um objeto relevante reagiu à sua procura.');e.currentTarget.setAttribute('aria-pressed','true');setTimeout(()=>e.currentTarget.setAttribute('aria-pressed','false'),2600)});
+  $('[data-easter]').addEventListener('click',()=>say('Você já viu este objeto antes. Só não aqui.'));
+  const gods=['Zeus','Poseidon','Deméter e Perséfone','Hélio'],answers=['Tempestade','Mar e terremotos','Estações','Movimento do Sol'];
+  $('[data-god-matches]').innerHTML=gods.map((g,i)=>`<label>${g}<select data-god="${i}"><option value="">Escolha…</option>${answers.map(a=>`<option>${a}</option>`).join('')}</select></label>`).join('');
+  $$('[data-god]').forEach(s=>s.addEventListener('change',()=>{const correct=$$('[data-god]').every((x,i)=>x.value===answers[i]);if(correct)$('[data-gods-question]').hidden=false}));
+  const bookNames=['Água','Ápeiron','Fogo','Número','Átomos'],clues=['Tudo tem uma origem.','Por trás da diversidade pode existir algo comum.','Aquilo que vemos talvez não seja a explicação final.','A ordem pode estar nas relações.','O invisível também pode constituir o real.'];
+  $('[data-books]').innerHTML=bookNames.map((n,i)=>`<button type="button" data-book="${i}" aria-pressed="false">${n}</button>`).join('');
+  const readBooks=new Set();$$('[data-book]').forEach(b=>b.addEventListener('click',()=>{readBooks.add(b.dataset.book);b.classList.add('is-read');b.setAttribute('aria-pressed','true');b.textContent=clues[+b.dataset.book];tone(330);if(readBooks.size===5)$('[data-principles-question]').hidden=false}));
+  function complete(name){if(get(keys[name])==='complete')return;set(keys[name],'complete');tone(680,.18);openReport(name);render()}
+  $$('[data-dialog] [data-answer]').forEach(b=>b.addEventListener('click',()=>{const d=b.closest('[data-dialog]'),name=d.dataset.dialog,feedback=$('[data-feedback]',d);if(b.dataset.answer==='wrong'){feedback.textContent='A Biblioteca não aceita essa conclusão. Observe novamente as pistas.';tone(170);return}if(name==='principles')$('[data-arche]').hidden=false;if(name==='physis')$('[data-physis-reveal]').hidden=false;feedback.textContent='Acesso liberado.';setTimeout(()=>{d.close();complete(name)},650)}));
+  let tried=0;$$('[data-pairs] button').forEach(b=>b.addEventListener('click',()=>{b.classList.add('is-tried');tried++;$('[data-insufficient]').textContent=tried<3?'RESPOSTA INSUFICIENTE':'Talvez você esteja tentando resolver o enigma errado.';tone(190);if(tried>=3)$('[data-problem-question]').hidden=false}));
+  const reportData={gods:['ARQUIVO RECUPERADO 01 — AS EXPLICAÇÕES','relatorios/relatorio-01-as-explicacoes.png'],principles:['ARQUIVO RECUPERADO 02 — OS PRINCÍPIOS','relatorios/relatorio-02-os-principios.png'],physis:['ARQUIVO RECUPERADO 03 — A NATUREZA','relatorios/relatorio-03-a-natureza.png'],contradictions:['ARQUIVO RECUPERADO 04 — O PROBLEMA','relatorios/relatorio-04-o-problema.png']};
+  function openReport(name){currentReport=name;const [title,img]=reportData[name];$('[data-report-title]').textContent=title;const el=$('[data-report-image]');el.src=root+img;el.alt=title.toLowerCase();$('[data-report-dialog]').showModal()}
+  $('[data-store-report]').addEventListener('click',()=>{$('[data-report-dialog]').close();say(`${reportData[currentReport][0]} catalogado.`)});
+  function render(){const done=puzzles.filter(x=>get(keys[x])==='complete');$('[data-file-count]').textContent=puzzles.map(x=>get(keys[x])==='complete'?'●':'○').join(' ');puzzles.forEach(x=>$(`[data-open="${x}"]`)?.classList.toggle('is-complete',done.includes(x)));const final=$('[data-open="final"]');final.hidden=done.length<4;if(done.length===4)say('Os quatro arquivos reagem ao mosaico central.')}
+  $('[data-check-final]').addEventListener('click',()=>{const vals=$$('[data-slot]').map(s=>s.value);const ok=vals.join('|')==='EXPLICAR|REALIDADE|PRINCÍPIOS';$('[data-final-feedback]').textContent=ok?'A Biblioteca reconheceu a pergunta que os une.':'A frase ainda não expressa o problema comum aos quatro arquivos.';if(ok){$('[data-name-form]').hidden=false;tone(620,.2)}});
+  $('[data-name-form]').addEventListener('submit',e=>{e.preventDefault();const v=$('#thinker-name').value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'');if(v.includes('presocratic')){set(keys.final,'complete');clearInterval(timerId);$('[data-dialog="final"]').close();game.hidden=true;$('[data-ending]').hidden=false;$('[data-ending]').focus();tone(880,.5)}else{$('[data-final-feedback]').textContent='Esse nome não abre a porta. Procure o nome dado aos pensadores anteriores a Sócrates.'}});
+  render();if(get(keys.final)==='complete'){boot.hidden=true;game.hidden=true;$('[data-ending]').hidden=false}
+})();

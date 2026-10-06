@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Escape room filosófica na Biblioteca Fora do Tempo.">
+  <title>A Biblioteca Fora do Tempo | Coisas que não fazem sentido</title>
+  <link rel="stylesheet" href="post-arco3-01.css?v=1"><link rel="icon" href="favicon.ico">
+  <link rel="preload" as="image" href="assets/arco3/post1/Arco3_Post1_Pacote_Imagens/cenario/biblioteca-base.png">
+</head>
+<body class="a3-body">
+  <a class="skip-link" href="#biblioteca">Pular para a biblioteca</a>
+  <main>
+    <section class="a3-boot" data-boot aria-live="polite">
+      <div class="a3-fake-post"><span>arquivo da sofia</span><strong>carregando anotação…</strong></div>
+      <div class="a3-dark-message" hidden><p class="a3-boot-time">30:00</p><h1>A saída existe.</h1><p>Mas vocês ainda não sabem o que estão procurando.</p><button type="button" data-enter>Entrar na biblioteca</button></div>
+    </section>
+
+    <section class="a3-game" id="biblioteca" data-game hidden aria-label="Escape room A Biblioteca Fora do Tempo">
+      <header class="a3-hud">
+        <a href="arquivo-biblioteca.html" aria-label="Sair e voltar ao Arquivo 03">← sair</a>
+        <div class="a3-files"><span>arquivos recuperados</span><output data-file-count>○ ○ ○ ○</output></div>
+        <time data-timer datetime="PT30M">30:00</time>
+        <button type="button" data-hint aria-pressed="false">Ajuda</button>
+        <button type="button" data-sound aria-pressed="false">Som: não</button>
+      </header>
+
+      <div class="a3-scene" data-scene>
+        <img src="assets/arco3/post1/Arco3_Post1_Pacote_Imagens/cenario/biblioteca-base.png" alt="Grande biblioteca noturna com estantes, mesa, bustos, colunas gregas e uma porta fechada ao fundo" width="1672" height="941">
+        <button class="a3-hotspot a3-hotspot--gods" type="button" data-open="gods" aria-label="Investigar as fichas ilustradas sobre a mesa"><span>Arquivo dos Deuses</span></button>
+        <button class="a3-hotspot a3-hotspot--principles" type="button" data-open="principles" aria-label="Investigar os cinco livros na estante esquerda"><span>Estante dos Princípios</span></button>
+        <button class="a3-hotspot a3-hotspot--physis" type="button" data-open="physis" aria-label="Investigar o livro incomum na estante direita"><span>Livro ΦΥΣΙΣ</span></button>
+        <button class="a3-hotspot a3-hotspot--contradictions" type="button" data-open="contradictions" aria-label="Investigar a mesa das contradições"><span>Mesa das Contradições</span></button>
+        <button class="a3-hotspot a3-hotspot--final" type="button" data-open="final" aria-label="Investigar o mosaico central" hidden><span>O arquivo central</span></button>
+        <button class="a3-easter" type="button" data-easter aria-label="Examinar objeto fora de época">?</button>
+      </div>
+      <p class="a3-live" data-live role="status" aria-live="polite"></p>
+    </section>
+
+    <dialog class="a3-dialog a3-document" data-intro-dialog aria-labelledby="intro-title"><div class="a3-paper"><button class="a3-close" type="button" data-close aria-label="Fechar documento">×</button><p class="a3-kicker">procedência: ◇ · setor: não identificado · linha: ______</p><h2 id="intro-title">ARQUIVO INCOMPLETO</h2><p>A Biblioteca preserva fragmentos de um antigo sistema de explicações sobre o mundo.</p><p>Quatro arquivos foram separados. Cada um contém uma parte da investigação.</p><p><strong>Resolva os enigmas. Reúna os arquivos. Descubra o que eles revelam em conjunto.</strong></p></div></dialog>
+
+    <dialog class="a3-dialog" data-dialog="gods" aria-labelledby="gods-title"><div class="a3-panel"><button class="a3-close" type="button" data-close aria-label="Fechar enigma">×</button><p class="a3-kicker">enigma 01</p><h2 id="gods-title">Arquivo dos Deuses</h2><img class="a3-wide-art" src="assets/arco3/post1/Arco3_Post1_Pacote_Imagens/enigmas/enigma-01-deuses.png" alt="Quatro fichas ilustradas: Zeus, Poseidon, Deméter e Perséfone, e Hélio" width="1942" height="809"><p>Associe cada fenômeno à narrativa correspondente.</p><div class="a3-match" data-god-matches></div><fieldset class="a3-question" data-gods-question hidden><legend>O que essas explicações têm em comum?</legend><button data-answer="wrong">Procuram descobrir de qual elemento todas as coisas são feitas.</button><button data-answer="correct">Procuram explicar acontecimentos da natureza por ações, relações ou vontades divinas.</button><button data-answer="wrong">Foram criadas pelos primeiros filósofos.</button></fieldset><p class="a3-feedback" data-feedback aria-live="polite"></p></div></dialog>
+
+    <dialog class="a3-dialog" data-dialog="principles" aria-labelledby="principles-title"><div class="a3-panel"><button class="a3-close" type="button" data-close aria-label="Fechar enigma">×</button><p class="a3-kicker">enigma 02</p><h2 id="principles-title">A Estante dos Princípios</h2><img class="a3-wide-art" src="assets/arco3/post1/Arco3_Post1_Pacote_Imagens/enigmas/enigma-02-livros-principios.png" alt="Cinco livros antigos: Água, Ápeiron, Fogo, Número e Átomos" width="1672" height="941"><p>Abra os cinco livros. Cada um guarda uma pista.</p><div class="a3-books" data-books></div><fieldset class="a3-question" data-principles-question hidden><legend>Cinco respostas diferentes. Qual é a pergunta escondida entre elas?</legend><button data-answer="wrong">Qual deus criou cada elemento?</button><button data-answer="correct">O que pode explicar a origem, a constituição ou a ordem da realidade?</button><button data-answer="wrong">Qual deles é mais importante para os seres humanos?</button></fieldset><div class="a3-reveal" data-arche hidden><strong>ἀρχή — ARCHÉ</strong><span>Princípio · origem · fundamento.</span></div><p class="a3-feedback" data-feedback aria-live="polite"></p></div></dialog>
+
+    <dialog class="a3-dialog" data-dialog="physis" aria-labelledby="physis-title"><div class="a3-panel a3-physis"><button class="a3-close" type="button" data-close aria-label="Fechar enigma">×</button><div><p class="a3-kicker">enigma 03</p><h2 id="physis-title">ΦΥΣΙΣ</h2><p>O livro se abre em três páginas: <strong>nasce</strong>, <strong>cresce</strong>, <strong>transforma-se</strong>.</p><fieldset class="a3-question"><legend>O que pode ser observado em todos esses processos?</legend><button data-answer="wrong">Destino</button><button data-answer="correct">Natureza</button><button data-answer="wrong">Imobilidade</button></fieldset><div class="a3-reveal" data-physis-reveal hidden><strong>ΦΥΣΙΣ — PHYSIS</strong><span>Natureza — aquilo que nasce, cresce, transforma-se e possui seus próprios processos.</span></div><p class="a3-feedback" data-feedback aria-live="polite"></p></div><img src="assets/arco3/post1/Arco3_Post1_Pacote_Imagens/enigmas/enigma-03-physis-livro-em-pe.png" alt="Livro azul antigo marcado com a palavra grega Physis" width="1024" height="1536"></div></dialog>
+
+    <dialog class="a3-dialog" data-dialog="contradictions" aria-labelledby="contradictions-title"><div class="a3-panel"><button class="a3-close" type="button" data-close aria-label="Fechar enigma">×</button><p class="a3-kicker">enigma 04</p><h2 id="contradictions-title">A Mesa das Contradições</h2><p>Escolha um lado de cada confronto.</p><div class="a3-pairs" data-pairs><div><button>Tudo muda</button><span>↔</span><button>Algo permanece</button></div><div><button>A realidade é una</button><span>↔</span><button>A realidade é múltipla</button></div><div><button>Há um princípio</button><span>↔</span><button>O princípio pode não ser evidente aos sentidos</button></div></div><p class="a3-insufficient" data-insufficient aria-live="polite">Nenhuma hipótese examinada.</p><fieldset class="a3-question" data-problem-question hidden><legend>O que você encontrou?</legend><button data-answer="wrong">Uma única explicação correta.</button><button data-answer="correct">Respostas diferentes para problemas semelhantes.</button><button data-answer="wrong">Uma disputa que não pode ser investigada.</button></fieldset><p class="a3-feedback" data-feedback aria-live="polite"></p></div></dialog>
+
+    <dialog class="a3-dialog a3-report" data-report-dialog aria-labelledby="report-title"><div class="a3-panel"><button class="a3-close" type="button" data-close aria-label="Guardar relatório">×</button><p class="a3-kicker">acesso liberado · linha: ______</p><h2 id="report-title" data-report-title>Arquivo recuperado</h2><img data-report-image src="" alt=""><button type="button" class="a3-primary" data-store-report>Guardar arquivo</button></div></dialog>
+
+    <dialog class="a3-dialog" data-dialog="final" aria-labelledby="final-title"><div class="a3-panel a3-final-panel"><button class="a3-close" type="button" data-close aria-label="Fechar arquivo central">×</button><p class="a3-kicker">arquivos recuperados: ● ● ● ●</p><h2 id="final-title">Eles discordavam sobre quase tudo.</h2><p>Água. Fogo. Ápeiron. Número. Átomos. Mudança. Permanência.</p><p><strong>Então por que estão todos neste arquivo?</strong></p><div class="a3-slots"><label>Procuravam <select data-slot="0"><option value="">—</option><option>EXPLICAR</option><option>DEUSES</option><option>SÓCRATES</option></select></label><label>a <select data-slot="1"><option value="">—</option><option>REALIDADE</option><option>ORIGEM</option><option>NATUREZA</option></select></label><label>investigando seus <select data-slot="2"><option value="">—</option><option>PRINCÍPIOS</option><option>DEUSES</option><option>SENTIDOS</option></select></label></div><button type="button" class="a3-primary" data-check-final>Verificar arquivo</button><p data-final-feedback aria-live="polite"></p><form class="a3-name" data-name-form hidden><p>Você descobriu o que procuravam. Agora dê um nome a quem procurava.</p><label for="thinker-name">Quem eram?</label><input id="thinker-name" autocomplete="off" placeholder="Digite o nome"><button class="a3-primary">Abrir a porta</button></form></div></dialog>
+
+    <section class="a3-ending" data-ending hidden tabindex="-1"><div><p class="a3-kicker">arquivo identificado</p><h2>PRÉ-SOCRÁTICOS</h2><p>Chamamos de pré-socráticos diferentes pensadores gregos que, apesar de suas muitas divergências, investigaram problemas relacionados à natureza, à origem, à constituição, à ordem e às transformações da realidade.</p><p>Eles não procuraram uma única resposta. Suas propostas ajudaram a inaugurar novas maneiras de investigar e argumentar sobre o mundo.</p><hr><p class="a3-sofia">…<br><strong>Gente.</strong><br>Onde vocês estavam?</p><a href="arquivo-biblioteca.html">voltar ao Blog da Sofia →</a></div></section>
+  </main>
+  <script src="percurso.js?v=5"></script><script src="post-arco3-01.js?v=1"></script>
+</body></html>

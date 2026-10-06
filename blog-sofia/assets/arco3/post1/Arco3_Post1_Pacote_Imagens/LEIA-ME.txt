@@ -1,0 +1,23 @@
+FIÉIS DA CORUJA — ARCO 3 / POST 1
+Pacote de imagens da Escape Room — Biblioteca
+
+CENÁRIO
+- biblioteca-base.png
+
+RELATÓRIOS
+- relatorio-01-as-explicacoes.png
+- relatorio-02-os-principios.png
+- relatorio-03-a-natureza.png
+- relatorio-04-o-problema.png
+
+ENIGMAS
+- enigma-01-deuses.png
+- enigma-02-livros-principios.png
+- enigma-03-physis-livro-em-pe.png
+
+REFERÊNCIA
+- concept-sheet-physis-arquivo-compartimento.png
+  Folha de conceito com o livro aberto, Arquivo Incompleto e estados do compartimento.
+  Deve ser usada como referência visual, não diretamente como interface final.
+
+Observação: os nomes foram normalizados para facilitar a implementação no repositório.
