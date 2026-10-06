@@ -145,17 +145,15 @@
 .toca-coruja-cena>img:first-child{display:block;width:100%;height:100%;object-fit:cover}
 .toca-hotspot{position:absolute!important;z-index:2;min-height:44px!important;padding:7px 10px!important;border-color:#d8b97a88!important;background:#25172bd9!important;color:#fff2d8!important;font-size:clamp(.62rem,1.1vw,.82rem)!important;opacity:0;transition:opacity .2s}.toca-coruja-cena:hover .toca-hotspot,.toca-hotspot:focus{opacity:.9}.toca-hotspot small{display:block;color:#cfbfd4;font-size:.68em}.toca-hotspot-ninho{left:8%;bottom:10%}.toca-hotspot-nucleo{left:42%;top:42%}.toca-hotspot-bancada{right:8%;bottom:23%}.toca-hotspot-prateleira{right:8%;top:18%}
 .toca-coruja-painel{display:grid;grid-template-columns:minmax(230px,1fr) 1fr;gap:10px 24px;padding:16px clamp(16px,3vw,28px) 22px;border-top:1px solid #6c4d70;background:#1b111f}.toca-coruja-painel label{display:grid;grid-template-columns:130px 1fr;align-items:center;gap:10px;margin:6px 0}.toca-coruja-painel meter{width:100%;height:16px;accent-color:#a86cce}.toca-coruja-painel p{margin:5px 0}.toca-coruja-painel #owl-life-message{color:#e8d7ef}.owl-findings{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:5px}.owl-findings article,.owl-findings>p{margin:0;padding:12px;border:1px solid #806389;border-radius:10px;background:#2b1b31}.owl-findings article p{margin:6px 0;font-size:.86rem}.owl-findings small{color:#cbb8d1}.toca-coruja[data-owl-mode=resting] .toca-coruja-moradora{animation:coruja-dorme 4.5s ease-in-out infinite;filter:brightness(.72) saturate(.75) drop-shadow(0 7px 8px #120a20a3)}.toca-coruja[data-owl-bond=confiança] .toca-coruja-moradora,.toca-coruja[data-owl-bond=companheirismo] .toca-coruja-moradora{width:29%}.toca-coruja[data-owl-bond=companheirismo] .toca-coruja-moradora{filter:drop-shadow(0 8px 10px #120a20a3) drop-shadow(0 0 11px #d69cff99)}@keyframes coruja-dorme{0%,100%{transform:translateY(3%) rotate(-2deg) scale(.98)}50%{transform:translateY(4%) rotate(-2deg) scale(.965)}}
-.toca-coruja-moradora{position:absolute;left:15%;top:29%;width:27%;height:auto;filter:drop-shadow(0 8px 10px #120a20a3);cursor:pointer;transform-origin:50% 88%;animation:coruja-respira 3.8s ease-in-out infinite}
+.toca-coruja-moradora{position:absolute;left:12%;top:25%;width:33%;aspect-ratio:1;padding:0;border:0;background:transparent;filter:drop-shadow(0 8px 10px #120a20a3);cursor:pointer;transform-origin:50% 88%;animation:coruja-respira 3.8s ease-in-out infinite}
 .toca-coruja-moradora[hidden]{display:none}.toca-coruja[data-owl-mode=exploring] .toca-coruja-cena::after{content:'ATIVIDADE EXTERNA';position:absolute;left:12%;top:38%;padding:7px 10px;border:1px solid #c3a6cd;border-radius:7px;background:#1a1022d9;color:#eadcf0;font-size:.72rem;letter-spacing:.12em}
 .toca-coruja-moradora:focus-visible{outline:3px solid #ffe7a8;outline-offset:5px;border-radius:42%}
-/* A carcaça de bronze permanece reconhecível; a rotação de matiz muda
-   sobretudo os olhos e a luz interna. O codigo do passaporte escolhe uma
-   destas variantes em sala.js, portanto a cor acompanha o aluno. */
-.toca-coruja[data-owl-color=azul] .toca-coruja-moradora{filter:hue-rotate(38deg) saturate(1.2) drop-shadow(0 8px 10px #08152ba3)}
-.toca-coruja[data-owl-color=turquesa] .toca-coruja-moradora{filter:hue-rotate(72deg) saturate(1.3) drop-shadow(0 8px 10px #082926a3)}
-.toca-coruja[data-owl-color=verde] .toca-coruja-moradora{filter:hue-rotate(112deg) saturate(1.2) drop-shadow(0 8px 10px #102b13a3)}
-.toca-coruja[data-owl-color=ambar] .toca-coruja-moradora{filter:hue-rotate(-112deg) saturate(1.12) brightness(1.06) drop-shadow(0 8px 10px #33200aa3)}
-.toca-coruja[data-owl-color=rubi] .toca-coruja-moradora{filter:hue-rotate(-68deg) saturate(1.3) drop-shadow(0 8px 10px #2c0a0aa3)}
+/* Cada cor usa sua arte própria do pacote; não há recoloração por filtro. */
+.toca-coruja[data-owl-color=azul] .toca-coruja-moradora{filter:drop-shadow(0 8px 10px #08152ba3)}
+.toca-coruja[data-owl-color=turquesa] .toca-coruja-moradora{filter:drop-shadow(0 8px 10px #082926a3)}
+.toca-coruja[data-owl-color=verde] .toca-coruja-moradora{filter:drop-shadow(0 8px 10px #102b13a3)}
+.toca-coruja[data-owl-color=ambar] .toca-coruja-moradora{filter:drop-shadow(0 8px 10px #33200aa3)}
+.toca-coruja[data-owl-color=rubi] .toca-coruja-moradora{filter:drop-shadow(0 8px 10px #2c0a0aa3)}
 .toca-coruja[data-owl-special=oculos] .toca-coruja-moradora{filter:drop-shadow(0 8px 10px #071a2fa3)}
 .toca-coruja[data-owl-color=azul] .toca-coruja-moradora{animation-name:coruja-curiosa}
 .toca-coruja[data-owl-color=turquesa] .toca-coruja-moradora{animation-name:coruja-acena}

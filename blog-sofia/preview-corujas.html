@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Prévia — Corujas dos alunos</title>
+  <script src="coruja-som.js?v=7" defer></script><script src="coruja-visual.js?v=9" defer></script>
+  <style>
+    :root{color-scheme:dark;--ouro:#edcb7a;--vinho:#28182d;--painel:#211526;--borda:#795d7f;--texto:#fff5e7}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -20%,#664675 0,transparent 42%),linear-gradient(150deg,#100a14,#26162c 65%,#15101d);color:var(--texto);font:16px/1.5 system-ui,sans-serif}
+    header{max-width:1180px;margin:auto;padding:clamp(28px,5vw,64px) 20px 22px;text-align:center}header p{max-width:720px;margin:10px auto;color:#d9c9dc}h1{margin:0;color:var(--ouro);font:clamp(2rem,5vw,3.6rem)/1.05 Georgia,serif}
+    main{max-width:1180px;margin:auto;padding:0 20px 60px}.controls{position:sticky;top:10px;z-index:10;display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:0 auto 28px;padding:12px;border:1px solid #9d7aa766;border-radius:16px;background:#160e1bdd;backdrop-filter:blur(12px)}
+    button{min-height:44px;padding:9px 16px;border:1px solid #b99ac3;border-radius:999px;background:#f4e5c9;color:#302038;font:700 .9rem system-ui;cursor:pointer}button:hover{background:#fff4df}button:focus-visible{outline:3px solid #ffe191;outline-offset:3px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:18px}.card{display:grid;justify-items:center;padding:18px;border:1px solid var(--borda);border-radius:22px;background:linear-gradient(180deg,#35223bdd,#1a111eee);box-shadow:0 18px 45px #05020766}.card[data-special=true]{border-color:#d8b668;box-shadow:0 18px 45px #05020766,0 0 24px #d9aa4460}.owl-stage{width:min(100%,310px);aspect-ratio:1;cursor:pointer;border-radius:42%}.owl-stage:focus-visible{outline:3px solid #ffe191;outline-offset:3px}.card h2{margin:4px 0 0;color:#f0d99d;font:1.4rem Georgia,serif}.card p{min-height:3em;margin:5px 0 12px;text-align:center;color:#d7cadb;font-size:.9rem}.card-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.card-actions button{min-height:40px;padding:7px 12px;font-size:.82rem}.badge{display:inline-block;margin-bottom:3px;padding:3px 8px;border-radius:999px;background:#d7b762;color:#241720;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+    @media(max-width:540px){main{padding-inline:12px}.grid{grid-template-columns:1fr}.controls{top:4px}.card{padding:14px}}
+  </style>
+</head>
+<body>
+  <header><h1>Corujas dos alunos</h1><p>Mova o ponteiro sobre uma coruja para ela acompanhar você. Cinco cliques rápidos provocam raiva; após 15 segundos sem atenção, ela vira de costas e retorna triste ao primeiro clique. Os botões permanecem como bancada de testes.</p></header>
+  <main>
+    <nav class="controls" aria-label="Animações de todas as corujas"><button id="sound-toggle" aria-pressed="true">Som ligado</button><button data-all="blink">Piscar todas</button><button data-all="gaze">Mover os olhos</button><button data-all="happy">Carinho</button><button data-all="sad">Tristeza</button><button data-all="anger">Raiva</button><button data-all="tilt">Inclinar todas</button><button data-all="puff">Arrepiar todas</button><button data-all="light">Iluminar todas</button><button data-all="profile">Olhar de lado</button><button data-all="back">Virar de costas</button><button data-all="inspect">Inspecionar</button><button data-all="sleep">Dormir</button></nav>
+    <section class="grid" aria-label="Variantes das corujas"></section>
+  </main>
+  <script>
+    addEventListener('DOMContentLoaded',()=>{
+      const variants=[
+        ['violeta','Violeta','atenta'],['azul','Azul','curiosa'],['turquesa','Turquesa','acenando'],
+        ['verde','Verde','pensativa'],['ambar','Âmbar','orgulhosa'],['rubi','Rubi','acolhedora'],
+        ['oculos','Coruja do Davi','variante exclusiva com óculos',true]
+      ];
+      const grid=document.querySelector('.grid');
+      for(const [id,name,pose,special=false] of variants){
+        const card=document.createElement('article');card.className='card';card.dataset.special=special;
+        const stage=document.createElement('div');stage.className='owl-stage';stage.tabIndex=0;stage.setAttribute('role','button');stage.setAttribute('aria-label',`Interagir com ${name}`);
+        const owl=CorujaVisual.create({color:id,special});stage.append(owl);
+        const title=document.createElement('h2');title.textContent=name;
+        const desc=document.createElement('p');desc.textContent=pose;
+        const actions=document.createElement('div');actions.className='card-actions';
+        for(const [motion,label] of [['blink','Piscar'],['gaze','Olhos'],['happy','Carinho'],['sad','Tristeza'],['anger','Raiva'],['tilt','Inclinar'],['puff','Arrepiar'],['light','Iluminar'],['profile','Perfil'],['back','Costas'],['inspect','Inspecionar'],['sleep','Dormir']]){const button=document.createElement('button');button.type='button';button.textContent=label;button.addEventListener('click',()=>{CorujaVisual.motion(owl,motion);CorujaSom.play(motion==='light'?'charge':motion==='inspect'?'inspect':motion==='profile'||motion==='back'?'turn':motion==='sleep'?'rest':motion,{special})});actions.append(button)}
+        const behavior=CorujaVisual.bind(owl,stage,{idleMs:15000,onState:state=>{if(state==='back')desc.textContent='esperando sua atenção';else if(state==='sad')desc.textContent='sentiu sua falta';else if(state==='anger')desc.textContent='não gostou de tantos cliques';else if(state==='alive')desc.textContent=pose;}});stage.addEventListener('click',()=>behavior.click());stage.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();behavior.click()}});
+        if(special){const badge=document.createElement('span');badge.className='badge';badge.textContent='Exclusiva';card.append(badge)}
+        card.append(stage,title,desc,actions);grid.append(card);
+      }
+      document.querySelectorAll('[data-all]').forEach(button=>button.addEventListener('click',()=>{const motion=button.dataset.all;CorujaSom.play(motion==='light'?'charge':motion==='inspect'?'inspect':motion==='profile'||motion==='back'?'turn':motion==='sleep'?'rest':motion);document.querySelectorAll('.hefesto-owl').forEach((owl,index)=>setTimeout(()=>CorujaVisual.motion(owl,motion),index*70))}));
+      const sound=document.querySelector('#sound-toggle');const renderSound=()=>{const on=CorujaSom.enabled();sound.textContent=on?'Som ligado':'Som desligado';sound.setAttribute('aria-pressed',String(on))};sound.addEventListener('click',()=>{const on=CorujaSom.toggle();renderSound();if(on)CorujaSom.play('chirp')});renderSound();
+    });
+  </script>
+</body>
+</html>
