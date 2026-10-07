@@ -38,7 +38,11 @@ const missionRecords = [
   { key: 'sofia-mission-fragmento-desconhecido', title: 'Fragmento desconhecido', note: 'Apareceu no caderno de Sofia durante a aula de Ciências.', image: 'assets/arco2/fragmento-desconhecido.png' },
   { key: 'sofia-mission-convite-fieis', title: 'Convite dos Fiéis da Coruja', note: 'Um chamado para atravessar as fronteiras do tempo e do pensamento.', image: 'assets/arco2/convite-fieis-original.jpeg' },
   { key: 'sofia-mission-registro-sisifo', title: 'Registro celeste de Sísifo', note: 'Recompensa da perseguição Quase × Vírgula.', image: 'assets/arco2/post5/registro-celeste-sisifo.png' },
-  { key: 'sofia-mission-ligeia-photo', title: 'Fotografia de Ligeia', note: 'Arquivo residual associado a um ingrediente não catalogado.', image: 'assets/arco2/post7/ligeia.png' }
+  { key: 'sofia-mission-ligeia-photo', title: 'Fotografia de Ligeia', note: 'Arquivo residual associado a um ingrediente não catalogado.', image: 'assets/arco2/post7/ligeia.png' },
+  { key: 'sofia-mission-athens-obol', title: 'Óbolo ateniense', note: 'Uma moeda encontrada na Ágora.', image: 'assets/arco3/post2/02_agora/obolo.png' },
+  { key: 'sofia-mission-athens-note', title: 'Anotação de Sísifo', note: 'Todos dizem que Sócrates ensina. Ninguém sabe dizer exatamente o quê.', image: 'assets/arco3/post2/02_agora/bilhete_sisifo.png' },
+  { key: 'sofia-mission-athens-token', title: 'Peça de bronze', note: 'Coruja em uma face; um sinal do Eclipse escondido na borda.', image: 'assets/arco3/post2/02_agora/token_bronze_sheet.png' },
+  { key: 'sofia-mission-athens-tablet', title: 'Tabuinha de cera', note: 'O primeiro elo de uma cadeia de favores no Mercado.', image: 'assets/arco3/post2/03_mercado/props_mercado_sheet.png' }
 ];
 
 function missionFound(key) { try { return localStorage.getItem(key) === 'found'; } catch { return false; } }
@@ -91,8 +95,8 @@ const journalList = document.querySelector('.journal-list');
    caderno em páginas do arco 2: em páginas do arco 1 elas eram acrescentadas
    sempre, inclusive na anotação 01, entregando pistas de capítulos (e até do
    arco 2) que a leitora ainda não tinha alcançado. */
-const isArco2Page = document.body.classList.contains('arco2-page') || document.body.classList.contains('post4-page');
-const laterClues = isArco2Page ? [
+const isLaterArcPage = document.body.classList.contains('arco2-page') || document.body.classList.contains('post4-page') || document.body.classList.contains('a32-page');
+const laterClues = isLaterArcPage ? [
   ['07','impossible-bookmark','o marcador impossível','Ele estava dentro de um livro que Sofia ainda não tinha aberto.'],
   ['08','linked-uniforms','dois uniformes, uma costura','O uniforme de Sofia e o do menino mudam como versões da mesma coisa.'],
   ['09','test-recognized-sofia','o teste reconheceu Sofia','Por um instante, o resultado deixou de ser um Caminho.'],
@@ -100,7 +104,11 @@ const laterClues = isArco2Page ? [
   ['11','mileto-post2','Mileto','O fragmento parece ligado a um pensador da antiga cidade. A presença recorrente da água pode ser importante.'],
   ['12','anotacoes-organizadas','Minhas anotações (finalmente organizadas)','Linha do tempo, mapa, nomes, símbolos, hipóteses e perguntas reunidos por Sofia. Não confundir pistas com respostas.'],
   ['13','arche-principles','O princípio','O ARCHÉ reuniu quatro explicações incompatíveis para a mesma realidade. Nenhuma delas encerrou o confronto.'],
-  ['14','cosmic-recipes','Duas receitas, um cosmos','O que cada receita considera fundamental para explicar a realidade?']
+  ['14','cosmic-recipes','Duas receitas, um cosmos','O que cada receita considera fundamental para explicar a realidade?'],
+  ['15','socrates-questions','O homem que pergunta','Sócrates testa aquilo que as pessoas afirmam saber e interroga suas certezas.'],
+  ['16','socrates-wise','O sábio que não sabe','Sua sabedoria começa pelo reconhecimento dos limites do próprio saber.'],
+  ['17','know-thyself','Conhece-te a ti mesmo','A inscrição do Oráculo liga autoconhecimento, limites e sabedoria.'],
+  ['18','socrates-danger','Por que as perguntas incomodam','Questionar certezas expõe contradições e incomoda quem detém autoridade.']
 ] : [];
 laterClues.forEach(([number,key,title,description]) => {
   if (journalList && !journalList.querySelector(`[data-clue-entry="${key}"]`)) {
@@ -227,6 +235,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 renderClueState();
+window.addEventListener('sofia:clue-found', renderClueState);
 
 const visionToggle = document.querySelector('[data-vision-toggle]');
 const visionStage = document.querySelector('[data-vision-stage]');
@@ -461,8 +470,10 @@ function ensureEmblemInventory() {
   try { eclipseIsCollected = localStorage.getItem('sofia-emblem-ordem-do-eclipse') === 'collected'; } catch {}
   try { officeIsCollected = localStorage.getItem('sofia-emblem-escritorio-do-destino') === 'collected'; } catch {}
   try { hefestoIsCollected = localStorage.getItem('sofia-emblem-loja-de-hefesto') === 'collected'; } catch {}
+  let mnemosyneIsCollected = false;
+  try { mnemosyneIsCollected = localStorage.getItem('sofia-emblem-agencia-mnemosyne') === 'collected'; } catch {}
   const fieisIsCollected = emblemWasCollected();
-  const emblemTotal = Number(fieisIsCollected) + Number(eclipseIsCollected) + Number(officeIsCollected) + Number(hefestoIsCollected);
+  const emblemTotal = Number(fieisIsCollected) + Number(eclipseIsCollected) + Number(officeIsCollected) + Number(hefestoIsCollected) + Number(mnemosyneIsCollected);
   if (!emblemTotal || document.querySelector('.emblem-inventory-launcher')) return;
   document.body.insertAdjacentHTML('beforeend', `
     <button class="emblem-inventory-launcher" type="button" aria-expanded="false" aria-controls="emblem-inventory">
@@ -475,6 +486,7 @@ function ensureEmblemInventory() {
       ${eclipseIsCollected ? '<div class="emblem-inventory-card" data-eclipse-inventory-card><img src="assets/ordem-do-eclipse-inventario.png" alt="Emblema da Ordem do Eclipse"><h3>Ordem do Eclipse</h3><p>Encontrado numa perspectiva que Sofia não viu.</p></div>' : ''}
       ${officeIsCollected ? '<div class="emblem-inventory-card"><img src="assets/escritorio-do-destino-inventario.png" alt="Emblema do Escritório do Destino"><h3>Escritório do Destino</h3><p>Encontrado junto ao fragmento de Heliópolis.</p></div>' : ''}
       ${hefestoIsCollected ? '<div class="emblem-inventory-card"><img src="assets/arco2/post7/emblema-hefesto.png" alt="Emblema da Oficina Submersível de Hefesto"><h3>Loja de Hefesto</h3><p>Artefatos, mecanismos e soluções improváveis.</p></div>' : ''}
+      ${mnemosyneIsCollected ? '<div class="emblem-inventory-card"><img src="assets/emblemas/agencia-mnemosyne-inventario.png" alt="Emblema da Agência Mnemosyne"><h3>Agência Mnemosyne</h3><p>Memórias, rastros e ecos que insistem em permanecer.</p></div>' : ''}
     </aside>`);
 
   const launcher = document.querySelector('.emblem-inventory-launcher');

@@ -19,6 +19,7 @@ window.Investigacao = {
     {id:'fieis-da-coruja',titulo:'Fiéis da Coruja',tipo:'emblema',chave:'sofia-emblem-fieis-da-coruja',imagem:'assets/fieis-da-coruja-inventario.png',texto:'Origem ainda não identificada.'},
     {id:'ordem-do-eclipse',titulo:'Ordem do Eclipse',tipo:'emblema',chave:'sofia-emblem-ordem-do-eclipse',imagem:'assets/ordem-do-eclipse-inventario.png',texto:'Encontrado numa perspectiva que Sofia não viu.'},
     {id:'loja-de-hefesto',titulo:'Loja de Hefesto',tipo:'emblema',chave:'sofia-emblem-loja-de-hefesto',imagem:'assets/arco2/post7/emblema-hefesto.png',texto:'Artefatos, mecanismos e soluções improváveis.'},
+    {id:'agencia-mnemosyne',titulo:'Agência Mnemosyne',tipo:'emblema',chave:'sofia-emblem-agencia-mnemosyne',imagem:'assets/emblemas/agencia-mnemosyne-inventario.png',texto:'Memórias, rastros e ecos que insistem em permanecer.'},
     {id:'mission-system',titulo:'Consulta interrompida',tipo:'objeto',chave:'sofia-mission-system',imagem:'assets/escritorio-do-destino-inventario.png',texto:'Origem: Sistema do Destino.'},
     {id:'mission-poseidon',titulo:'Reserva sem destino',tipo:'objeto',chave:'sofia-mission-poseidon',imagem:'assets/poseidon-lines-inventario.png',texto:'Operadora: Poseidon Lines.'},
     {id:'mission-passport',titulo:'Passaporte de percurso',tipo:'objeto',chave:'sofia-mission-passport',imagem:'assets/passaporte-frente.png',texto:'Titular reconhecida: Sofia.'},
@@ -31,6 +32,10 @@ window.Investigacao = {
     {id:'mileto-post2',titulo:'Mileto',tipo:'pista',chave:'sofia-clue-mileto-post2',caso:'tales',texto:'O fragmento parece estar ligado a um pensador da antiga cidade de Mileto. A presença recorrente da água pode ser importante.'},
     {id:'convite-fieis',titulo:'Convite dos Fiéis da Coruja',tipo:'documento',chave:'sofia-document-convite-fieis',caso:'tales',imagem:'assets/arco2/convite-fieis-original.jpeg',texto:'Convite formal para um círculo reservado daqueles que ousam atravessar as fronteiras do tempo e do pensamento.'},
     {id:'cosmic-recipes',titulo:'Duas receitas, um cosmos',tipo:'pista',chave:'sofia-clue-cosmic-recipes',caso:'universo',texto:'O que cada receita considera fundamental para explicar a realidade?',fonte:'Liquidificador Cósmico · anotação 07'},
+    {id:'socrates-questions',titulo:'O homem que pergunta',tipo:'pista',chave:'sofia-clue-socrates-questions',caso:'atenas',texto:'Sócrates testa aquilo que as pessoas afirmam saber e interroga suas certezas.',fonte:'Ágora de Atenas · rastro 01'},
+    {id:'socrates-wise',titulo:'O sábio que não sabe',tipo:'pista',chave:'sofia-clue-socrates-wise',caso:'atenas',texto:'Sua sabedoria começa pelo reconhecimento dos limites do próprio saber.',fonte:'Mercado de Atenas · rastro 02'},
+    {id:'know-thyself',titulo:'Conhece-te a ti mesmo',tipo:'pista',chave:'sofia-clue-know-thyself',caso:'atenas',texto:'A inscrição do Oráculo liga autoconhecimento, limites e sabedoria.',fonte:'Oráculo · rastro 03'},
+    {id:'socrates-danger',titulo:'Por que as perguntas incomodam',tipo:'pista',chave:'sofia-clue-socrates-danger',caso:'atenas',texto:'Questionar certezas expõe contradições e incomoda quem detém autoridade.',fonte:'Simpósio · rastro 04'},
     {id:'ligeia-photo',titulo:'Fotografia de Ligeia',tipo:'objeto',chave:'sofia-mission-ligeia-photo',caso:'universo',imagem:'assets/arco2/post7/ligeia.png',texto:'Arquivo residual associado a um ingrediente não catalogado.'},
     /* registros: mesmos seis textos de research[].record em post4.js. O
        examinador mostra só os que o próprio aluno liberou (ver D.ler em
