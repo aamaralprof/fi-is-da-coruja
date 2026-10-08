@@ -59,8 +59,10 @@
       <section class="a32-scene" data-scene="market" hidden aria-labelledby="market-title">
         <img class="a32-scene-base" src="assets/arco3/post2/03_mercado/mercado_base.png" alt="Mercado de Atenas entre bancas, tecidos e ânforas" width="1536" height="1024">
         <div class="a32-rastro"><p>RASTRO 02 — MERCADO</p><h2 id="market-title">Descubra por que o desconhecido mandou Sofia para cá.</h2></div>
-        <button class="a32-market-npcs" data-talk="seller"><img src="assets/arco3/post2/03_mercado/npcs_mercado_sheet.png" alt="Três homens no mercado ateniense"><span>Conversar com o vendedor</span></button>
-        <button class="a32-object market-tablet" data-find="tablet"><img src="assets/arco3/post2/03_mercado/props_mercado_sheet.png" alt="Objetos do mercado, incluindo uma tabuinha e uma entrega"><span>Tabuinha perdida</span></button>
+        <button class="a32-market-person market-seller" data-talk="seller"><img src="assets/arco3/post2/03_mercado/npcs_mercado_sheet.png" alt="Vendedor do mercado"><span>Vendedor</span></button>
+        <button class="a32-market-person market-witness" data-talk="witness"><img src="assets/arco3/post2/03_mercado/npcs_mercado_sheet.png" alt="Testemunha no mercado"><span>Testemunha</span></button>
+        <button class="a32-market-person market-citizen" data-talk="citizen-market"><img src="assets/arco3/post2/03_mercado/npcs_mercado_sheet.png" alt="Cidadão ateniense no mercado"><span>Cidadão</span></button>
+        <button class="a32-object market-tablet" data-find="tablet"><img src="assets/arco3/post2/03_mercado/props_mercado_sheet.png" alt="Tabuinha perdida entre os objetos do mercado"><span>Tabuinha perdida</span></button>
         <button class="a32-character market-hood" data-talk="hood2" hidden><img src="assets/arco3/post2/05_simposio/capuz_reference.png" alt="Capuz aguarda entre as colunas"><span>???</span></button>
       </section>
 
@@ -69,13 +71,13 @@
         <div class="a32-rastro"><p>RASTRO 03 — ORÁCULO</p><h2 id="oracle-title">O que significa saber que não se sabe?</h2></div>
         <button class="a32-inscription" data-inscription><span lang="grc">ΓΝΩΘΙ ΣΑΥΤΟΝ</span></button>
         <button class="a32-receptacle" data-activate-oracle>Ativar o receptáculo</button>
-        <img class="a32-pythia" data-pythia src="assets/arco3/post2/04_oraculo/pitonisa.png" alt="Pitonisa atrás do receptáculo" hidden>
+        <div class="a32-pythia" data-pythia hidden><img src="assets/arco3/post2/04_oraculo/pitonisa.png" alt="Pitonisa sentada em um assento de pedra diante do receptáculo"></div>
       </section>
 
       <section class="a32-scene" data-scene="symposium" hidden aria-labelledby="symposium-title">
-        <img class="a32-scene-base" src="assets/arco3/post2/05_simposio/simposio_com_npcs.png" alt="Simpósio ateniense noturno com três cidadãos conversando" width="1536" height="1024">
+        <img class="a32-scene-base" src="assets/arco3/post2/05_simposio/simposio_base.png" alt="Simpósio ateniense noturno preparado para receber os convidados" width="1536" height="1024">
         <div class="a32-rastro"><p>RASTRO 04 — SIMPÓSIO</p><h2 id="symposium-title">Por que as perguntas de Sócrates incomodam?</h2></div>
-        <button class="a32-testimony testimony-host" data-testimony="host">Anfitrião</button><button class="a32-testimony testimony-youth" data-testimony="admirer">Jovem</button><button class="a32-testimony testimony-citizen" data-testimony="citizen">Cidadão</button>
+        <button class="a32-testimony testimony-host" data-testimony="host"><img src="assets/arco3/post2/02_agora/jovem_02.png" alt="Anfitrião do simpósio"><span>Anfitrião</span></button><button class="a32-testimony testimony-youth" data-testimony="admirer"><img src="assets/arco3/post2/02_agora/jovem_01.png" alt="Jovem admirador no simpósio"><span>Jovem</span></button><button class="a32-testimony testimony-citizen" data-testimony="citizen"><img src="assets/arco3/post2/02_agora/jovem_03.png" alt="Cidadão no simpósio"><span>Cidadão</span></button>
         <button class="a32-character symposium-hood" data-talk="hood3" hidden><img src="assets/arco3/post2/05_simposio/capuz_reference.png" alt="Capuz observa perto da saída"><span>Capuz</span></button>
       </section>
 
