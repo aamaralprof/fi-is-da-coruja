@@ -159,12 +159,20 @@ async function lerPercurso(pedido, env) {
   const dono = await quemEsta(pedido, env);
   if (!dono) return responder({ erro: 'passaporte fechado' }, 401);
 
-  const consulta = await env.DB
-    .prepare('SELECT chave, valor FROM percurso WHERE codigo = ?')
-    .bind(dono.codigo).all();
+  const [consulta, salaSalva] = await env.DB.batch([
+    env.DB.prepare('SELECT chave, valor FROM percurso WHERE codigo = ?').bind(dono.codigo),
+    env.DB.prepare('SELECT 1 AS existe FROM salas WHERE codigo = ? LIMIT 1').bind(dono.codigo)
+  ]);
 
   const chaves = {};
   (consulta.results || []).forEach(function (r) { chaves[r.chave] = r.valor; });
+  /* As primeiras Salas foram salvas antes de o desbloqueio virar uma chave
+     sincronizada do percurso. A Sala existente e a prova mais forte de que
+     aquela porta ja foi aberta; devolvemos a chave derivada para que alunos
+     antigos recuperem o link sem alterar ou recriar o estado da Sala. */
+  if (salaSalva.results && salaSalva.results.length && !chaves['sofia-room-unlocked']) {
+    chaves['sofia-room-unlocked'] = 'unlocked';
+  }
   return responder({ codigo: dono.codigo, chaves: chaves });
 }
 
