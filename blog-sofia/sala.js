@@ -181,9 +181,11 @@ if(moradoraCoruja){
   if(!visita)vidaCoruja.act('greet');
   status(corujaDeOculos?'A coruja de óculos ajeitou a armação e piscou para você.':`A coruja ${corCoruja.nome} respondeu ao seu cumprimento.`);
  };
+ const fazerCarinho=()=>{comportamentoCoruja?.activity();window.CorujaVisual.motion(visualCoruja,'happy');window.CorujaSom?.play('happy',{special:corujaDeOculos});if(!visita)vidaCoruja.act('greet');const recado=`${nomeCoruja()||'A coruja'} fechou os olhos e se inclinou para receber o carinho.`;status(recado);if($('owl-life-message'))$('owl-life-message').textContent=recado;};
+ tocaCoruja?.querySelector('[data-owl-care=pet]')?.addEventListener('click',()=>{if(moradoraCoruja.hidden){$('owl-life-message').textContent=`${nomeCoruja()||'A coruja'} não está na toca agora.`;return;}fazerCarinho();});
  let temporizadorCarinho=0,carinhoAtivado=false;
  const cancelarCarinho=()=>{if(temporizadorCarinho){clearTimeout(temporizadorCarinho);temporizadorCarinho=0;}};
- moradoraCoruja.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;carinhoAtivado=false;cancelarCarinho();temporizadorCarinho=setTimeout(()=>{temporizadorCarinho=0;carinhoAtivado=true;comportamentoCoruja?.activity();window.CorujaVisual.motion(visualCoruja,'happy');window.CorujaSom?.play('happy',{special:corujaDeOculos});if(!visita)vidaCoruja.act('greet');status(`${nomeCoruja()||'A coruja'} fechou os olhos e se inclinou para receber o carinho.`);},480);});
+ moradoraCoruja.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;carinhoAtivado=false;cancelarCarinho();temporizadorCarinho=setTimeout(()=>{temporizadorCarinho=0;carinhoAtivado=true;fazerCarinho();},480);});
  moradoraCoruja.addEventListener('pointerup',cancelarCarinho);moradoraCoruja.addEventListener('pointercancel',cancelarCarinho);moradoraCoruja.addEventListener('pointerleave',cancelarCarinho);
  moradoraCoruja.addEventListener('click',e=>{if(carinhoAtivado){e.preventDefault();carinhoAtivado=false;return;}const resposta=comportamentoCoruja?.click();if(resposta==='anger'){window.CorujaSom?.play('anger',{special:corujaDeOculos});status(`${nomeCoruja()||'A coruja'} se irritou com tantos cliques seguidos.`);return}if(resposta==='sad'){window.CorujaSom?.play('sad',{special:corujaDeOculos});status(`${nomeCoruja()||'A coruja'} voltou a olhar para você, mas sentiu sua falta.`);return}reagir();});
  moradoraCoruja.addEventListener('animationend',e=>{if(e.animationName==='coruja-cumprimenta')moradoraCoruja.classList.remove('toca-coruja-moradora--reagindo');});
