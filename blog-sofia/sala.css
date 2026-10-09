@@ -219,3 +219,6 @@
 .room-item-zoom-viewport img.is-snapping{transition:transform .22s ease-out}
 .room-item-zoom-hint{margin:8px 2px 0;color:#c9bcd4;font-size:.82rem;text-align:center}
 @media(prefers-reduced-motion:reduce){.room-item-zoom-viewport img.is-snapping{transition:none}}
+
+/* A coruja da toca é um botão: tira o fundo e a borda de .sala-page button. */
+.sala-page .toca-coruja-cena .toca-coruja-moradora,.sala-page .toca-coruja-cena .toca-coruja-moradora:hover{min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
