@@ -119,7 +119,7 @@
     if(localStorage.getItem('sofia-student-owl-identity')!=='registered'||!localStorage.getItem('sofia-student-owl-name'))return;
     mascoteCarregada=true;
     /* async=false: baixa os tres em paralelo, mas executa na ordem. */
-    ['coruja-som.js?v=7','coruja-visual.js?v=9','coruja-mascote.js?v=8'].forEach(src=>{const script=document.createElement('script');script.src=src;script.async=false;document.head.append(script);});
+    ['coruja-som.js?v=7','coruja-visual.js?v=9','coruja-mascote.js?v=9'].forEach(src=>{const script=document.createElement('script');script.src=src;script.async=false;document.head.append(script);});
   };
   window.Percurso.pronto.then(carregarMascote,carregarMascote);
   window.addEventListener('percurso-atualizado',carregarMascote);
