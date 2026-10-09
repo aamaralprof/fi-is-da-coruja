@@ -228,3 +228,10 @@
 .sala-page .toca-coruja-cuidados button{flex:1 1 120px;border-color:#d8b97a;background:#f8ead4;color:#392640;font-weight:700}
 /* Sem mouse não existe hover: os pontos da cena ficam sempre visíveis. */
 @media(hover:none){.toca-hotspot{opacity:.85}}
+/* Arrastar a coruja pela toca. */
+.sala-page .toca-coruja-cena .toca-coruja-moradora{touch-action:none;cursor:grab}
+.sala-page .toca-coruja-cena .toca-coruja-moradora.is-arrastando{cursor:grabbing;animation:none}
+/* Dormindo: pose de sono fixa, mais escura, vencendo as animações por cor. */
+.toca-coruja[data-owl-mode=resting][data-owl-color] .toca-coruja-moradora{animation:coruja-dorme 4.5s ease-in-out infinite;filter:brightness(.78) saturate(.8) drop-shadow(0 7px 8px #120a20a3)}
+.toca-coruja[data-owl-mode=resting] .toca-coruja-moradora .hefesto-owl__pose--sleep{opacity:1;animation:none}
+.toca-coruja[data-owl-mode=resting] .toca-coruja-moradora :is(.hefesto-owl__body,.hefesto-owl__head-wrap,.hefesto-owl__gaze,.hefesto-owl__pose--profile,.hefesto-owl__pose--back){opacity:0!important;animation:none}

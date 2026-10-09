@@ -24,6 +24,7 @@ function create(options){
  function act(kind){update();const now=Date.now();
   if(state.mode==='exploring'&&kind!=='explore')return {ok:false,message:'A coruja ainda está fora da toca.',...snapshot()};
   if(kind==='rest'){state.mode='resting';state.bond+=2;}
+  if(kind==='wake'){state.mode='idle';}
   if(kind==='charge'){state.charge=clamp(state.charge+35);state.mode='idle';state.bond+=1;}
   if(kind==='maintain'){if(now-state.lastMaintenance<6*3600000)return {ok:false,message:'As engrenagens ainda estão perfeitamente ajustadas.'};state.lastMaintenance=now;state.bond+=2;state.charge=clamp(state.charge+5);}
   if(kind==='greet'&&now-state.lastGreeting>=20*3600000){state.lastGreeting=now;state.bond+=1;state.charge=clamp(state.charge-1);}
