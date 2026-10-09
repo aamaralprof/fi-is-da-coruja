@@ -119,7 +119,7 @@
     if(localStorage.getItem('sofia-student-owl-identity')!=='registered'||!localStorage.getItem('sofia-student-owl-name'))return;
     mascoteCarregada=true;
     const sound=document.createElement('script');sound.src='coruja-som.js?v=7';sound.defer=true;
-    sound.addEventListener('load',()=>{const visual=document.createElement('script');visual.src='coruja-visual.js?v=9';visual.defer=true;visual.addEventListener('load',()=>{const script=document.createElement('script');script.src='coruja-mascote.js?v=5';script.defer=true;document.head.append(script);});document.head.append(visual);});
+    sound.addEventListener('load',()=>{const visual=document.createElement('script');visual.src='coruja-visual.js?v=9';visual.defer=true;visual.addEventListener('load',()=>{const script=document.createElement('script');script.src='coruja-mascote.js?v=6';script.defer=true;document.head.append(script);});document.head.append(visual);});
     document.head.append(sound);
   };
   window.Percurso.pronto.then(carregarMascote,carregarMascote);
