@@ -110,17 +110,16 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',abrirPortas);
 
   /* Uma unica entrada para a presença global da coruja. O componente só
-     nasce depois do sincronismo e somente para alunos que já a nomearam. */
+     nasce depois do sincronismo e somente para quem já a nomeou na Sala. */
   let mascoteCarregada=false;
   const carregarMascote=()=>{
-    if(mascoteCarregada||!session()||window.Percurso.papel()!=='aluno')return;
+    if(mascoteCarregada||!session())return;
     const pagina=(location.pathname.split('/').pop()||'index').replace(/\.html$/,'')+'.html';
     if(['entrar.html','passaporte.html','professor.html','sala-investigacao.html','sistema-do-destino.html','poseidon-lines.html'].includes(pagina))return;
     if(localStorage.getItem('sofia-student-owl-identity')!=='registered'||!localStorage.getItem('sofia-student-owl-name'))return;
     mascoteCarregada=true;
-    const sound=document.createElement('script');sound.src='coruja-som.js?v=7';sound.defer=true;
-    sound.addEventListener('load',()=>{const visual=document.createElement('script');visual.src='coruja-visual.js?v=9';visual.defer=true;visual.addEventListener('load',()=>{const script=document.createElement('script');script.src='coruja-mascote.js?v=7';script.defer=true;document.head.append(script);});document.head.append(visual);});
-    document.head.append(sound);
+    /* async=false: baixa os tres em paralelo, mas executa na ordem. */
+    ['coruja-som.js?v=7','coruja-visual.js?v=9','coruja-mascote.js?v=8'].forEach(src=>{const script=document.createElement('script');script.src=src;script.async=false;document.head.append(script);});
   };
   window.Percurso.pronto.then(carregarMascote,carregarMascote);
   window.addEventListener('percurso-atualizado',carregarMascote);
