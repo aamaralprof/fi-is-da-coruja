@@ -235,3 +235,6 @@
 .toca-coruja[data-owl-mode=resting][data-owl-color] .toca-coruja-moradora{animation:coruja-dorme 4.5s ease-in-out infinite;filter:brightness(.78) saturate(.8) drop-shadow(0 7px 8px #120a20a3)}
 .toca-coruja[data-owl-mode=resting] .toca-coruja-moradora .hefesto-owl__pose--sleep{opacity:1;animation:none}
 .toca-coruja[data-owl-mode=resting] .toca-coruja-moradora :is(.hefesto-owl__body,.hefesto-owl__head-wrap,.hefesto-owl__gaze,.hefesto-owl__pose--profile,.hefesto-owl__pose--back){opacity:0!important;animation:none}
+/* Recado dos pontos da cena, por cima da toca. */
+.toca-coruja-aviso{position:absolute;z-index:4;left:50%;top:4%;transform:translateX(-50%);width:max-content;max-width:min(88%,460px);margin:0;padding:9px 14px;border:1px solid #d8b97a;border-radius:10px;background:#1a1022eb;color:#fff1dc;font-size:clamp(.78rem,1.6vw,.95rem);line-height:1.35;text-align:center;box-shadow:0 8px 22px #0007;pointer-events:none}
+.toca-coruja-aviso[hidden]{display:none}

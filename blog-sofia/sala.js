@@ -166,8 +166,10 @@ if(tocaCoruja){
  tocaCoruja.dataset.owlColor=corCoruja.id;
  if(corujaDeOculos)tocaCoruja.dataset.owlSpecial='oculos';
 }
+/* Fora do bloco: os pontos da cena também animam a coruja. */
+let visualCoruja=null,voltarAoNinho=()=>{};
 if(moradoraCoruja){
- const visualCoruja=window.CorujaVisual.create({color:corCoruja.id,special:corujaDeOculos});
+ visualCoruja=window.CorujaVisual.create({color:corCoruja.id,special:corujaDeOculos});
  moradoraCoruja.replaceChildren(visualCoruja);
  const comportamentoCoruja=window.CorujaVisual.bind(visualCoruja,moradoraCoruja,{idleMs:120000,trackSurface:document,onState:estado=>{if(estado==='back')status(`${nomeCoruja()||'A coruja'} virou de costas depois de esperar por atenção.`);}});
  const descricao=`A Coruja de Hefesto${corujaDeOculos?', a variante exclusiva com óculos':''}, de luz ${corCoruja.nome}, em pose ${corCoruja.pose}, dentro da sua casinha.`;
@@ -181,14 +183,15 @@ if(moradoraCoruja){
   if(!visita)vidaCoruja.act('greet');
   status(corujaDeOculos?'A coruja de óculos ajeitou a armação e piscou para você.':`A coruja ${corCoruja.nome} respondeu ao seu cumprimento.`);
  };
- const fazerCarinho=()=>{comportamentoCoruja?.activity();window.CorujaVisual.motion(visualCoruja,'happy');window.CorujaSom?.play('happy',{special:corujaDeOculos});if(!visita)vidaCoruja.act('greet');const recado=`${nomeCoruja()||'A coruja'} fechou os olhos e se inclinou para receber o carinho.`;status(recado);if($('owl-life-message'))$('owl-life-message').textContent=recado;};
- tocaCoruja?.querySelector('[data-owl-care=pet]')?.addEventListener('click',()=>{if(moradoraCoruja.hidden){$('owl-life-message').textContent=`${nomeCoruja()||'A coruja'} não está na toca agora.`;return;}if(tocaCoruja.dataset.owlMode==='resting'){$('owl-life-message').textContent=`${nomeCoruja()||'A coruja'} está dormindo. Toque em Acordar para fazer carinho.`;return;}fazerCarinho();});
+ const fazerCarinho=()=>{comportamentoCoruja?.activity();window.CorujaVisual.motion(visualCoruja,'happy');window.CorujaSom?.play('happy',{special:corujaDeOculos});if(!visita)vidaCoruja.act('greet');const recado=`${nomeCoruja()||'A coruja'} fechou os olhos e se inclinou para receber o carinho.`;status(recado);if($('owl-life-message'))$('owl-life-message').textContent=recado;avisarNaToca(recado);};
+ tocaCoruja?.querySelector('[data-owl-care=pet]')?.addEventListener('click',()=>{if(moradoraCoruja.hidden){$('owl-life-message').textContent=`${nomeCoruja()||'A coruja'} não está na toca agora.`;return;}if(tocaCoruja.dataset.owlMode==='resting'){avisarNaToca(`${nomeCoruja()||'A coruja'} está dormindo. Toque em Acordar para fazer carinho.`);return;}fazerCarinho();});
  let temporizadorCarinho=0,carinhoAtivado=false;
  const cancelarCarinho=()=>{if(temporizadorCarinho){clearTimeout(temporizadorCarinho);temporizadorCarinho=0;}};
  /* Arrastar a coruja pela toca. A posição fica só neste aparelho. */
  const chavePosicaoToca='coruja-toca-posicao:'+owner;let arrasto=null,arrastou=false;
  const posicionarNaToca=(x,y)=>{const cx=Math.max(0,Math.min(100-parseFloat(getComputedStyle(moradoraCoruja).width)/moradoraCoruja.parentElement.clientWidth*100,x)),cy=Math.max(0,Math.min(80,y));moradoraCoruja.style.left=cx+'%';moradoraCoruja.style.top=cy+'%';return {x:cx,y:cy};};
  try{const salva=JSON.parse(localStorage.getItem(chavePosicaoToca)||'null');if(salva&&Number.isFinite(salva.x)&&Number.isFinite(salva.y)){moradoraCoruja.style.left=salva.x+'%';moradoraCoruja.style.top=salva.y+'%';}}catch{}
+ voltarAoNinho=()=>{moradoraCoruja.style.left='';moradoraCoruja.style.top='';try{localStorage.removeItem(chavePosicaoToca);}catch{}};
  moradoraCoruja.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;const cena=moradoraCoruja.parentElement.getBoundingClientRect(),r=moradoraCoruja.getBoundingClientRect();arrasto={id:e.pointerId,x:e.clientX,y:e.clientY,left:(r.left-cena.left)/cena.width*100,top:(r.top-cena.top)/cena.height*100,w:cena.width,h:cena.height};arrastou=false;moradoraCoruja.setPointerCapture?.(e.pointerId);});
  moradoraCoruja.addEventListener('pointermove',e=>{if(!arrasto||e.pointerId!==arrasto.id)return;const dx=e.clientX-arrasto.x,dy=e.clientY-arrasto.y;if(!arrastou&&Math.hypot(dx,dy)<8)return;if(!arrastou){arrastou=true;cancelarCarinho();moradoraCoruja.classList.add('is-arrastando');}posicionarNaToca(arrasto.left+dx/arrasto.w*100,arrasto.top+dy/arrasto.h*100);});
  const soltar=e=>{if(!arrasto||e.pointerId!==arrasto.id)return;const fim=arrasto;arrasto=null;if(arrastou){if(e.type==='pointerup')posicionarNaToca(fim.left+(e.clientX-fim.x)/fim.w*100,fim.top+(e.clientY-fim.y)/fim.h*100);moradoraCoruja.classList.remove('is-arrastando');try{localStorage.setItem(chavePosicaoToca,JSON.stringify({x:parseFloat(moradoraCoruja.style.left),y:parseFloat(moradoraCoruja.style.top)}));}catch{}}};
@@ -204,6 +207,9 @@ const botaoSomCoruja=$('owl-sound');
 const renderSomCoruja=()=>{if(!botaoSomCoruja)return;const ligado=window.CorujaSom?.enabled()!==false;botaoSomCoruja.textContent=`Som da coruja: ${ligado?'ligado':'desligado'}`;botaoSomCoruja.setAttribute('aria-pressed',String(ligado));};
 botaoSomCoruja?.addEventListener('click',()=>{const ligado=window.CorujaSom.toggle();renderSomCoruja();if(ligado)window.CorujaSom.play('chirp',{special:corujaDeOculos});});
 renderSomCoruja();
+/* Recado curto sobre a cena, para quem está olhando a toca e não o painel. */
+let avisoTocaTimer=0;
+function avisarNaToca(texto){const cena=tocaCoruja?.querySelector('.toca-coruja-cena');if(!cena)return;let aviso=cena.querySelector('.toca-coruja-aviso');if(!aviso){aviso=document.createElement('p');aviso.className='toca-coruja-aviso';aviso.setAttribute('role','status');cena.append(aviso);}aviso.textContent=texto;aviso.hidden=false;clearTimeout(avisoTocaTimer);avisoTocaTimer=setTimeout(()=>{aviso.hidden=true;},4200);}
 function renderVidaCoruja(mensagem){
  const vida=vidaCoruja.snapshot();$('owl-charge').value=vida.charge;$('owl-rest').value=vida.rest;
  const grau=vida.curiosity>=75?'radiante':vida.curiosity>=45?'muito curiosa':vida.curiosity>=20?'curiosa':'observadora';$('owl-curiosity').textContent=`${grau} (${vida.curiosity})`;
@@ -213,14 +219,15 @@ function renderVidaCoruja(mensagem){
  const explorar=$('owl-explore');if(explorar){explorar.disabled=vida.mode==='exploring';explorar.textContent=vida.mode==='exploring'?'Exploração em andamento':'Enviar para explorar';}
  const estadoPadrao=vida.mode==='resting'?`${nomeCoruja()} está descansando. O descanso continua mesmo com a Sala fechada.`:vida.mode==='exploring'?`${nomeCoruja()} não está aqui. Atividade externa detectada: procure ${vida.exploration?.hint||'em outra página do blog'}. Se você não procurar, ela voltará sozinha.`:vida.exploration?.status==='returned'?`${nomeCoruja()} voltou de uma exploração e deixou um novo achado na prateleira.`:`${nomeCoruja()} observa a toca e acompanha suas descobertas.`;
  $('owl-life-message').textContent=mensagem||estadoPadrao;
+ if(mensagem)avisarNaToca(mensagem);
  const lista=$('owl-findings');lista.replaceChildren();
  if(!vida.findings.length)lista.append(el('p',`${nomeCoruja()} ainda não trouxe nenhum achado. Investigações despertam sua curiosidade.`));
  for(const achado of vida.findings){const artigo=el('article');artigo.append(el('strong',achado.name),el('p',achado.text),el('small',`Encontrado por ${nomeCoruja()}.`));lista.append(artigo);}
 }
 tocaCoruja?.querySelectorAll('[data-owl-action]').forEach(botao=>botao.addEventListener('click',()=>{
- const acao=botao.dataset.owlAction;if(acao==='findings'){$('owl-findings').hidden=!$('owl-findings').hidden;renderVidaCoruja($('owl-findings').hidden?'A prateleira foi fechada.':'A prateleira mostra o que a curiosidade encontrou.');return;}
+ const acao=botao.dataset.owlAction;if(acao==='findings'){$('owl-findings').hidden=!$('owl-findings').hidden;renderVidaCoruja($('owl-findings').hidden?'A prateleira foi fechada.':'A prateleira mostra o que a curiosidade encontrou.');if(visualCoruja)window.CorujaVisual.motion(visualCoruja,'inspect');if(!$('owl-findings').hidden)$('owl-findings').scrollIntoView({behavior:'smooth',block:'nearest'});return;}
  if(visita)return;
- const resultado=vidaCoruja.act(acao);if(resultado.ok){window.CorujaSom?.play(({rest:'rest',wake:'chirp',charge:'charge',maintain:'maintain',explore:'chirp'})[acao]||'chirp',{special:corujaDeOculos});if(acao==='charge')window.CorujaVisual.motion(visualCoruja,'light');if(acao==='maintain')window.CorujaVisual.motion(visualCoruja,'puff');}const mensagens={rest:`${nomeCoruja()} se acomodou no ninho. A disposição volta aos poucos.`,wake:`${nomeCoruja()} abriu os olhos e se espreguiçou.`,charge:`O núcleo de ${nomeCoruja()} recebeu uma recarga rápida.`,maintain:`As engrenagens de ${nomeCoruja()} foram ajustadas com cuidado.`,explore:`${nomeCoruja()} partiu para explorar. Pista: procure ${resultado.exploration?.hint||'em outra página do blog'}.`};
+ const resultado=vidaCoruja.act(acao);if(resultado.ok){window.CorujaSom?.play(({rest:'rest',wake:'chirp',charge:'charge',maintain:'maintain',explore:'chirp'})[acao]||'chirp',{special:corujaDeOculos});if(acao==='rest')voltarAoNinho();if(visualCoruja&&acao==='charge')window.CorujaVisual.motion(visualCoruja,'light');if(visualCoruja&&acao==='maintain')window.CorujaVisual.motion(visualCoruja,'puff');}const mensagens={rest:`${nomeCoruja()} se acomodou no ninho. A disposição volta aos poucos.`,wake:`${nomeCoruja()} abriu os olhos e se espreguiçou.`,charge:`O núcleo de ${nomeCoruja()} recebeu uma recarga rápida.`,maintain:`As engrenagens de ${nomeCoruja()} foram ajustadas com cuidado.`,explore:`${nomeCoruja()} partiu para explorar. Pista: procure ${resultado.exploration?.hint||'em outra página do blog'}.`};
  renderVidaCoruja(resultado.ok?mensagens[acao]:resultado.message);
 }));
 tocaCoruja?.addEventListener('close',()=>{if(!visita&&corujaIdentificada())vidaCoruja.save();});
