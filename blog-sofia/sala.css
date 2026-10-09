@@ -223,7 +223,7 @@
 /* A coruja da toca é um botão: tira o fundo e a borda de .sala-page button. */
 .sala-page .toca-coruja-cena .toca-coruja-moradora,.sala-page .toca-coruja-cena .toca-coruja-moradora:hover{min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
 /* A coruja senta na cama (a cena corta ~7,8% de cada lado da imagem). */
-.sala-page .toca-coruja .toca-coruja-cena .toca-coruja-moradora{left:7%;top:21%;width:20%}
+.sala-page .toca-coruja .toca-coruja-cena .toca-coruja-moradora{left:7%;top:24%;width:20%}
 .toca-coruja-cuidados{display:flex;flex-wrap:wrap;gap:8px}
 .sala-page .toca-coruja-cuidados button{flex:1 1 120px;border-color:#d8b97a;background:#f8ead4;color:#392640;font-weight:700}
 /* Sem mouse não existe hover: os pontos da cena ficam sempre visíveis. */
