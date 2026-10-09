@@ -114,12 +114,12 @@
   let mascoteCarregada=false;
   const carregarMascote=()=>{
     if(mascoteCarregada||!session()||window.Percurso.papel()!=='aluno')return;
-    const pagina=location.pathname.split('/').pop()||'index.html';
+    const pagina=(location.pathname.split('/').pop()||'index').replace(/\.html$/,'')+'.html';
     if(['entrar.html','passaporte.html','professor.html','sala-investigacao.html','sistema-do-destino.html','poseidon-lines.html'].includes(pagina))return;
     if(localStorage.getItem('sofia-student-owl-identity')!=='registered'||!localStorage.getItem('sofia-student-owl-name'))return;
     mascoteCarregada=true;
     const sound=document.createElement('script');sound.src='coruja-som.js?v=7';sound.defer=true;
-    sound.addEventListener('load',()=>{const visual=document.createElement('script');visual.src='coruja-visual.js?v=9';visual.defer=true;visual.addEventListener('load',()=>{const script=document.createElement('script');script.src='coruja-mascote.js?v=6';script.defer=true;document.head.append(script);});document.head.append(visual);});
+    sound.addEventListener('load',()=>{const visual=document.createElement('script');visual.src='coruja-visual.js?v=9';visual.defer=true;visual.addEventListener('load',()=>{const script=document.createElement('script');script.src='coruja-mascote.js?v=7';script.defer=true;document.head.append(script);});document.head.append(visual);});
     document.head.append(sound);
   };
   window.Percurso.pronto.then(carregarMascote,carregarMascote);

@@ -22,7 +22,7 @@ const bondStage=bond>=18?'companheirismo':bond>=9?'confiança':bond>=3?'reconhec
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let root,figure,bubble,text,timer,hideTimer,idleTimer,owl,behavior,shown=false,readingShown=false;
 
-const page=location.pathname.split('/').pop()||'index.html';
+const page=(location.pathname.split('/').pop()||'index').replace(/\.html$/,'')+'.html';
 const pageLines={
  'post-choveu-no-meu-caderno.html':'Há alguma coisa diferente no som desta chuva.',
  'post-o-liquidificador-cosmico.html':'Esses ingredientes não parecem ter sido escolhidos ao acaso.',
@@ -69,10 +69,10 @@ function hide(){if(!root)return;root.dataset.state='hidden';root.hidden=true;bub
 function show(state='visitor',message,force=false){
  if(!root||document.hidden||(!force&&Date.now()<Number(localStorage.getItem(QUIET_KEY)||0))||(exploration&&exploration.target!==page))return false;
  clearTimeout(timer);clearTimeout(hideTimer);shown=true;root.dataset.state=state;root.hidden=false;text.textContent=message||pageLines[page]||defaultLine;bubble.hidden=false;figure.setAttribute('aria-expanded','true');localStorage.setItem(LAST_KEY,String(Date.now()));
- hideTimer=setTimeout(hide,state==='narrative-event'?14000:11000);return true;
+ if(!(exploration&&exploration.target===page))hideTimer=setTimeout(hide,state==='narrative-event'?14000:11000);return true;
 }
 function schedule(){
- if(exploration){if(exploration.target===page)timer=setTimeout(()=>show('narrative-event',`${name} está escondida aqui. Toque nela para encerrar a exploração.`,true),reduceMotion?1200:7000);return;}
+ if(exploration){if(exploration.target===page)timer=setTimeout(()=>show('narrative-event',`${name} está escondida aqui. Toque nela para encerrar a exploração.`,true),reduceMotion?1200:3000);return;}
  if(shown||Date.now()<Number(localStorage.getItem(QUIET_KEY)||0))return;
  const last=Number(localStorage.getItem(LAST_KEY)||0),minimum=(bondStage==='companheirismo'?18:bondStage==='confiança'?24:30)*60000;
  if(Date.now()-last<minimum)return;
