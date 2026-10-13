@@ -238,3 +238,8 @@
 /* Recado dos pontos da cena, por cima da toca. */
 .toca-coruja-aviso{position:absolute;z-index:4;left:50%;top:4%;transform:translateX(-50%);width:max-content;max-width:min(88%,460px);margin:0;padding:9px 14px;border:1px solid #d8b97a;border-radius:10px;background:#1a1022eb;color:#fff1dc;font-size:clamp(.78rem,1.6vw,.95rem);line-height:1.35;text-align:center;box-shadow:0 8px 22px #0007;pointer-events:none}
 .toca-coruja-aviso[hidden]{display:none}
+/* Pontos da toca sobre os objetos da imagem (a cena corta ~7,8% de cada lado). */
+.toca-coruja-cena .toca-hotspot-ninho{left:16%;top:62%;right:auto;bottom:auto}
+.toca-coruja-cena .toca-hotspot-nucleo{left:62%;top:30%;right:auto;bottom:auto}
+.toca-coruja-cena .toca-hotspot-bancada{left:73%;top:52%;right:auto;bottom:auto}
+.toca-coruja-cena .toca-hotspot-prateleira{left:27%;top:22%;right:auto;bottom:auto}
