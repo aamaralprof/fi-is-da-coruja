@@ -4,9 +4,26 @@
 'use strict';
 if(window.CorujaSom)return;
 const KEY='sofia-student-owl-sound';
+const VOLUME_KEY='sofia-student-owl-volume';
+const FILE_ROOT='assets/sala/corujas-sons/';
+const SOUND_REGISTRY=Object.freeze({
+ irritacao:{src:FILE_ROOT+'irritacao.wav',group:'emocao',motion:'anger',priority:1,cooldown:900},
+ duvida:{src:FILE_ROOT+'duvida.wav',group:'emocao',motion:'doubt',priority:1,cooldown:700},
+ empolgacao:{src:FILE_ROOT+'empolgacao.wav',group:'emocao',motion:'excitement',priority:1,cooldown:1100},
+ tristeza:{src:FILE_ROOT+'tristeza.wav',group:'emocao',motion:'sad',priority:1,cooldown:1100},
+ carinho:{src:FILE_ROOT+'carinho.wav',group:'emocao',motion:'happy',priority:1,cooldown:650},
+ quero_contar:{src:FILE_ROOT+'quero_contar.wav',group:'intencao',motion:'attention',priority:2,cooldown:1500},
+ olhe_aqui:{src:FILE_ROOT+'olhe_aqui.wav',group:'intencao',motion:'attention',priority:2,cooldown:900},
+ encontrei_algo:{src:FILE_ROOT+'encontrei_algo.wav',group:'intencao',motion:'light',priority:2,cooldown:1200},
+ preciso_ajuda:{src:FILE_ROOT+'preciso_ajuda.wav',group:'intencao',motion:'attention',priority:2,cooldown:1200},
+ espirro:{src:FILE_ROOT+'espirro.wav',group:'gesto',motion:'sneeze',priority:2,cooldown:1200}
+});
 const MASTER_VOLUME=2.4;
 let context;
+let currentFile=null,currentKey='',lastPlayed=new Map();
+const fileCache=new Map();
 const enabled=()=>localStorage.getItem(KEY)!=='off';
+const volume=()=>Math.max(0,Math.min(1,Number(localStorage.getItem(VOLUME_KEY)||.72)));
 const audio=()=>context||(context=new (window.AudioContext||window.webkitAudioContext)());
 function tone(ctx,{at=0,freq=440,to=freq,duration=.1,type='sine',gain=.05}){
  const level=Math.min(.16,gain*MASTER_VOLUME),osc=ctx.createOscillator(),amp=ctx.createGain();osc.type=type;osc.frequency.setValueAtTime(freq,ctx.currentTime+at);osc.frequency.exponentialRampToValueAtTime(Math.max(20,to),ctx.currentTime+at+duration);amp.gain.setValueAtTime(.0001,ctx.currentTime+at);amp.gain.exponentialRampToValueAtTime(level,ctx.currentTime+at+.012);amp.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+at+duration);osc.connect(amp).connect(ctx.destination);osc.start(ctx.currentTime+at);osc.stop(ctx.currentTime+at+duration+.02);
@@ -35,5 +52,23 @@ function play(kind='chirp',options={}){
  return true;
 }
 function setEnabled(value){localStorage.setItem(KEY,value?'on':'off');return value;}
-window.CorujaSom={play,enabled,toggle(){return setEnabled(!enabled())},setEnabled};
+function getFile(key){
+ const entry=SOUND_REGISTRY[key];if(!entry)return null;
+ if(!fileCache.has(key)){const element=new Audio(entry.src);element.preload='metadata';fileCache.set(key,element);}
+ return fileCache.get(key);
+}
+function preload(keys=[]){for(const key of keys)getFile(key);}
+function stopFile(){if(!currentFile)return;currentFile.pause();currentFile.currentTime=0;currentFile=null;currentKey='';}
+function playOwlSound(key,{force=false}={}){
+ const entry=SOUND_REGISTRY[key];if(!entry||!enabled())return Promise.resolve(false);
+ const now=Date.now(),last=lastPlayed.get(key)||0;if(!force&&now-last<entry.cooldown)return Promise.resolve(false);
+ if(currentFile){const active=SOUND_REGISTRY[currentKey];if(!force&&active&&active.priority>entry.priority)return Promise.resolve(false);stopFile();}
+ const element=getFile(key);element.volume=volume();element.currentTime=0;currentFile=element;currentKey=key;lastPlayed.set(key,now);
+ window.dispatchEvent(new CustomEvent('coruja:som-inicio',{detail:{key,...entry}}));
+ const finish=()=>{if(currentFile===element){currentFile=null;currentKey='';window.dispatchEvent(new CustomEvent('coruja:som-fim',{detail:{key,...entry}}));}};
+ element.onended=finish;element.onerror=finish;
+ return element.play().then(()=>true).catch(()=>{finish();return false;});
+}
+function setVolume(value){const next=Math.max(0,Math.min(1,Number(value)));localStorage.setItem(VOLUME_KEY,String(next));if(currentFile)currentFile.volume=next;return next;}
+window.CorujaSom={play,playOwlSound,stop:stopFile,preload,registry:SOUND_REGISTRY,enabled,volume,setVolume,toggle(){return setEnabled(!enabled())},setEnabled};
 })();

@@ -188,10 +188,16 @@ async function gravarPercurso(pedido, env) {
     try { vida = JSON.parse(String(chaves['sofia-student-owl-life'])); } catch (e) { return responder({ erro: 'estado da coruja inválido' }, 400); }
     const numero = v => Number.isFinite(v) && v >= 0;
     if (!objeto(vida) || !numero(vida.charge) || vida.charge > 100 || !numero(vida.rest) || vida.rest > 100
-      || !['idle', 'resting', 'exploring'].includes(vida.mode) || !numero(vida.updatedAt) || !numero(vida.bond)
+      || !['idle', 'resting', 'exploring', 'charging', 'maintaining', 'polishing'].includes(vida.mode) || !numero(vida.updatedAt) || !numero(vida.bond)
       || !numero(vida.lastGreeting) || !numero(vida.lastMaintenance) || !Array.isArray(vida.findings)
+      || (vida.lastAdjustment != null && !numero(vida.lastAdjustment)) || (vida.lastPolish != null && !numero(vida.lastPolish))
       || vida.findings.length > 20 || vida.findings.some(v => !/^[a-z0-9-]{1,60}$/.test(v))
       || (vida.mode === 'exploring' && (!objeto(vida.exploration) || vida.exploration.status !== 'away'))
+      || (['charging','maintaining','polishing'].includes(vida.mode) && (!objeto(vida.care) || vida.care.status !== 'active'))
+      || (vida.care != null && (!objeto(vida.care) || !['nest','charger','bench'].includes(vida.care.station)
+        || !['sleep','charge','adjust','polish'].includes(vida.care.action) || !['active','complete'].includes(vida.care.status)
+        || !numero(vida.care.startedAt) || !numero(vida.care.endsAt)
+        || (vida.care.progress != null && (!numero(vida.care.progress) || vida.care.progress > 100))))
       || (vida.exploration != null && (!objeto(vida.exploration) || !['away','returned'].includes(vida.exploration.status)
         || !/^[a-z0-9-]{1,80}\.html$/.test(vida.exploration.target) || String(vida.exploration.hint || '').length > 160
         || !numero(vida.exploration.startedAt) || !numero(vida.exploration.returnsAt) || !/^[a-z0-9-]{1,60}$/.test(vida.exploration.finding)))) {

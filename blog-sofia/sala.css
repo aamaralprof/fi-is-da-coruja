@@ -231,6 +231,29 @@
 /* Arrastar a coruja pela toca. */
 .sala-page .toca-coruja-cena .toca-coruja-moradora{touch-action:none;cursor:grab}
 .sala-page .toca-coruja-cena .toca-coruja-moradora.is-arrastando{cursor:grabbing;animation:none}
+.sala-page .toca-coruja-cena .toca-coruja-moradora.is-cuidando{cursor:not-allowed}
+.toca-hotspot[data-owl-station].is-drop-target{opacity:1;outline:3px solid #ffe4a0;outline-offset:4px;box-shadow:0 0 22px #d99bffcc}
+/* Carregador: pulsos sobem pelo corpo enquanto o núcleo recebe energia. */
+.toca-coruja[data-owl-mode=charging] .toca-coruja-moradora{animation:coruja-carregando 1.35s ease-in-out infinite;filter:drop-shadow(0 0 7px #f7d77a) drop-shadow(0 0 18px #a862e8)}
+.toca-coruja[data-owl-mode=charging] .toca-hotspot-nucleo{opacity:1;box-shadow:0 0 18px #c78dff,inset 0 0 12px #f3d77a66}
+@keyframes coruja-carregando{0%,100%{transform:translateY(0) scale(1);filter:brightness(.92) drop-shadow(0 0 5px #b76ee8)}48%{transform:translateY(-2%) scale(1.025);filter:brightness(1.28) drop-shadow(0 0 18px #f2cf6e)}}
+/* Bancada: ajuste mecânico e polimento têm ritmos distintos. */
+.toca-coruja[data-owl-mode=maintaining] .toca-coruja-moradora{animation:coruja-ajuste .62s steps(2,end) infinite}
+.toca-coruja[data-owl-mode=polishing] .toca-coruja-moradora{animation:coruja-polimento 1.15s ease-in-out infinite;filter:brightness(1.14) saturate(1.08) drop-shadow(0 0 12px #fff0bd)}
+.toca-coruja[data-owl-mode=maintaining] .toca-hotspot-bancada,.toca-coruja[data-owl-mode=polishing] .toca-hotspot-bancada{opacity:1;box-shadow:0 0 18px #e7b76aaa}
+@keyframes coruja-ajuste{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-1.2%) rotate(-.8deg)}75%{transform:translateX(1.2%) rotate(.8deg)}}
+@keyframes coruja-polimento{0%,100%{transform:rotate(-1deg) scale(.99);filter:brightness(.96)}50%{transform:rotate(1deg) scale(1.025);filter:brightness(1.3) drop-shadow(0 0 18px #fff0bd)}}
+/* Pouca disposição: o corpo perde altura e a cabeça cochila, sem esconder a personagem. */
+.toca-coruja[data-owl-energy=low][data-owl-mode=idle] .toca-coruja-moradora{animation:coruja-cansada 4.8s ease-in-out infinite;filter:brightness(.82) saturate(.78) drop-shadow(0 7px 8px #120a20a3)}
+.toca-coruja[data-owl-energy=low][data-owl-mode=idle] .hefesto-owl__head-wrap{animation:coruja-cabeca-cansada 4.8s ease-in-out infinite}
+@keyframes coruja-cansada{0%,100%{transform:translateY(3%) scale(.98,1)}46%,62%{transform:translateY(6%) scale(1.01,.96)}}
+@keyframes coruja-cabeca-cansada{0%,35%,100%{transform:rotate(0)}48%,72%{transform:rotate(8deg) translateY(4%)}}
+.toca-bancada-menu{position:absolute;z-index:6;right:4%;bottom:7%;display:grid;gap:7px;width:min(240px,44%);padding:12px;border:1px solid #d8b97a;border-radius:12px;background:#1a1022f2;box-shadow:0 12px 28px #0009}.toca-bancada-menu[hidden]{display:none}.toca-bancada-menu strong{color:#ffe8b1;font-size:.83rem}.sala-page .toca-bancada-menu button{min-height:44px;padding:8px 10px;background:#f8ead4;color:#392640;font-size:.78rem}.sala-page .toca-bancada-menu [data-owl-bench-close]{background:#35253c;color:#eadcf0}
+.toca-carga-progresso{position:absolute;z-index:5;left:50%;bottom:4%;transform:translateX(-50%);width:min(360px,70%);padding:10px 12px;border:1px solid #d8b97a;border-radius:11px;background:#160e1bed;color:#fff1dc;text-align:center;box-shadow:0 10px 28px #0008}.toca-carga-progresso[hidden]{display:none}.toca-carga-progresso span{display:block;height:7px;margin-bottom:7px;border-radius:99px;background:linear-gradient(90deg,#f0ce75 var(--owl-care-progress,0%),#4d3658 var(--owl-care-progress,0%));box-shadow:0 0 10px #ba79ed88}.toca-carga-progresso strong{font-size:.8rem;letter-spacing:.04em}
+.toca-ferramenta{position:absolute;z-index:7;right:4%;top:8%;display:grid;grid-template-columns:68px minmax(130px,1fr);align-items:center;gap:8px;width:min(330px,48%);padding:10px;border:1px solid #d8b97a;border-radius:12px;background:#1a1022ed;color:#fff1dc;box-shadow:0 12px 28px #0009}.toca-ferramenta[hidden]{display:none}.toca-ferramenta p{grid-column:1/-1;margin:0;font-size:clamp(.7rem,1.3vw,.86rem);line-height:1.35}.sala-page .toca-ferramenta-objeto{position:relative;width:64px;height:64px;min-height:64px;padding:0;border:1px solid #efd79b;border-radius:12px;background:#35233e;touch-action:none;cursor:grab;transition:box-shadow .16s,filter .16s}.sala-page .toca-ferramenta-objeto.is-usando{z-index:9;cursor:grabbing;box-shadow:0 0 20px #e6bd70;transition:none}.toca-ferramenta-objeto svg{display:block;width:58px;height:58px;margin:auto;overflow:visible;filter:drop-shadow(0 3px 3px #0007)}.toca-ferramenta-objeto svg path{fill:#d99b45;stroke:#fff0b0;stroke-width:2;stroke-linejoin:round}.toca-ferramenta[data-tool=cloth] .toca-ferramenta-objeto>span{display:block;width:48px;height:42px;margin:auto;border-radius:42% 52% 38% 48%;background:repeating-linear-gradient(135deg,#cab1e8 0 5px,#b493d7 5px 10px);box-shadow:inset -7px -6px 0 #76559055,0 4px 5px #0006;transform:rotate(-8deg)}.sala-page .toca-ferramenta-passo{min-height:44px;padding:8px 10px;background:#f8ead4;color:#392640;font-size:.76rem;font-weight:700}.toca-coruja[data-owl-mode=polishing] .toca-ferramenta-objeto.is-usando>span{animation:pano-esfrega .32s ease-in-out infinite alternate}.toca-coruja[data-owl-mode=maintaining] .toca-ferramenta-objeto.is-usando svg{animation:chave-aperta .38s ease-in-out infinite alternate}@keyframes pano-esfrega{to{transform:rotate(7deg) scale(.96)}}@keyframes chave-aperta{to{transform:rotate(12deg)}}
+.toca-ferramenta[data-tool=cloth] .toca-ferramenta-objeto{border-color:transparent;background:transparent;box-shadow:none}.toca-ferramenta[data-tool=cloth] .toca-ferramenta-objeto:hover{border-color:transparent;background:#d9b7ef1c}.toca-ferramenta[data-tool=cloth] .toca-ferramenta-objeto:focus-visible{outline:3px solid #ffe7a8;outline-offset:2px}
+@media(max-width:560px){.toca-bancada-menu{right:3%;bottom:3%;width:58%}.toca-carga-progresso{bottom:2%;width:78%}}
+@media(max-width:560px){.toca-ferramenta{right:2%;top:3%;grid-template-columns:56px 1fr;width:62%;padding:8px}.sala-page .toca-ferramenta-objeto{width:54px;height:54px;min-height:54px}.toca-ferramenta-objeto svg{width:49px;height:49px}.toca-ferramenta[data-tool=cloth] .toca-ferramenta-objeto>span{width:42px;height:36px}.toca-ferramenta p{font-size:.68rem}}
 /* Dormindo: pose de sono fixa, mais escura, vencendo as animações por cor. */
 .toca-coruja[data-owl-mode=resting][data-owl-color] .toca-coruja-moradora{animation:coruja-dorme 4.5s ease-in-out infinite;filter:brightness(.78) saturate(.8) drop-shadow(0 7px 8px #120a20a3)}
 .toca-coruja[data-owl-mode=resting] .toca-coruja-moradora .hefesto-owl__pose--sleep{opacity:1;animation:none}
@@ -239,7 +262,7 @@
 .toca-coruja-aviso{position:absolute;z-index:4;left:50%;top:4%;transform:translateX(-50%);width:max-content;max-width:min(88%,460px);margin:0;padding:9px 14px;border:1px solid #d8b97a;border-radius:10px;background:#1a1022eb;color:#fff1dc;font-size:clamp(.78rem,1.6vw,.95rem);line-height:1.35;text-align:center;box-shadow:0 8px 22px #0007;pointer-events:none}
 .toca-coruja-aviso[hidden]{display:none}
 /* Pontos da toca sobre os objetos da imagem (a cena corta ~7,8% de cada lado). */
-.toca-coruja-cena .toca-hotspot-ninho{left:16%;top:62%;right:auto;bottom:auto}
+.toca-coruja-cena .toca-hotspot-ninho{left:15%;top:52%;right:auto;bottom:auto;transform:translate(-50%,-50%)}
 .toca-coruja-cena .toca-hotspot-nucleo{left:62%;top:30%;right:auto;bottom:auto}
 .toca-coruja-cena .toca-hotspot-bancada{left:73%;top:52%;right:auto;bottom:auto}
 .toca-coruja-cena .toca-hotspot-prateleira{left:27%;top:22%;right:auto;bottom:auto}

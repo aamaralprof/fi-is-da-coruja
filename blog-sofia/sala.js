@@ -14,7 +14,9 @@ const $=id=>document.getElementById(id), D=window.Investigacao;
 
    O que os dois têm em comum é não gravar. Visitar nunca escreve — nem no
    servidor, nem no rascunho local. A bancada volta ao padrão ao recarregar. */
-const ctx=await (window.SalaContexto||null);
+const previewToca=new URLSearchParams(location.search).get('preview')==='toca';
+const chavesPreview=previewToca?{'sofia-room-unlocked':'unlocked','sofia-student-owl-incubation-start':String(Date.now()-4*86400000),'sofia-student-owl-unlocked':'unlocked','sofia-student-owl-identity':'registered','sofia-student-owl-name':'Faísca'}:null;
+const ctx=await (previewToca?{modo:'bancada',codigo:'CORUJA-PREVIA',estado:null,revisao:0,chaves:chavesPreview,rotulo:'Prévia local da toca'}:(window.SalaContexto||null));
 const visita=!!ctx, leitura=visita&&ctx.modo==='leitura', bancada=visita&&ctx.modo==='bancada';
 /* De onde vêm os desbloqueios. Visitando, do contexto injetado; no uso normal,
    do localStorage de quem está com o passaporte aberto. */
@@ -160,14 +162,28 @@ const CORES_CORUJA=[
 const indiceCoruja=Array.from(owner||'sala-geral').reduce((total,letra)=>((total*31)+letra.codePointAt(0))>>>0,0)%CORES_CORUJA.length;
 const corujaDeOculos=owner==='CORUJA-62XA';
 const corCoruja=corujaDeOculos?CORES_CORUJA.find(c=>c.id==='azul'):CORES_CORUJA[indiceCoruja];
-const vidaCoruja=window.CorujaHefesto.create({read:progresso,write:visita?null:(chave,valor)=>localStorage.setItem(chave,valor),items:D.itens,available:item=>D.disponivel(item)});
+const vidaCoruja=window.CorujaHefesto.create({read:progresso,write:previewToca?(chave,valor)=>{chavesPreview[chave]=valor;}:visita?null:(chave,valor)=>localStorage.setItem(chave,valor),items:D.itens,available:item=>D.disponivel(item)});
 const tocaCoruja=$('toca-coruja'),moradoraCoruja=tocaCoruja?.querySelector('.toca-coruja-moradora');
+const cenaToca=tocaCoruja?.querySelector('.toca-coruja-cena');
+const estacoesToca={nest:tocaCoruja?.querySelector('.toca-hotspot-ninho'),charger:tocaCoruja?.querySelector('.toca-hotspot-nucleo'),bench:tocaCoruja?.querySelector('.toca-hotspot-bancada')};
+if(estacoesToca.nest){estacoesToca.nest.dataset.owlStation='nest';estacoesToca.nest.querySelector('small').textContent='arraste para dormir';}
+if(estacoesToca.charger){estacoesToca.charger.dataset.owlStation='charger';estacoesToca.charger.firstChild.textContent='Carregador ';estacoesToca.charger.querySelector('small').textContent='3 minutos';}
+if(estacoesToca.bench){estacoesToca.bench.dataset.owlStation='bench';estacoesToca.bench.dataset.owlAction='bench';estacoesToca.bench.querySelector('small').textContent='ajustar ou polir';}
+const menuBancada=document.createElement('div');menuBancada.className='toca-bancada-menu';menuBancada.dataset.owlBenchMenu='';menuBancada.hidden=true;menuBancada.setAttribute('role','group');menuBancada.setAttribute('aria-label','Cuidados na bancada');menuBancada.innerHTML='<strong>O que vamos fazer?</strong><button type="button" data-owl-action="maintain">Ajustar engrenagens</button><button type="button" data-owl-action="polish">Polir placas</button><button type="button" data-owl-bench-close>Agora não</button>';
+const progressoCuidado=document.createElement('div');progressoCuidado.className='toca-carga-progresso';progressoCuidado.dataset.owlCareProgress='';progressoCuidado.hidden=true;progressoCuidado.innerHTML='<span aria-hidden="true"></span><strong data-owl-care-label></strong>';
+const ferramentaBancada=document.createElement('div');ferramentaBancada.className='toca-ferramenta';ferramentaBancada.hidden=true;ferramentaBancada.innerHTML='<p data-owl-tool-instruction></p><button class="toca-ferramenta-objeto" type="button" data-owl-tool aria-label="Ferramenta da bancada"></button><button class="toca-ferramenta-passo" type="button" data-owl-tool-step></button>';
+cenaToca?.append(menuBancada,progressoCuidado,ferramentaBancada);menuBancada.querySelector('[data-owl-bench-close]')?.addEventListener('click',()=>{menuBancada.hidden=true;moradoraCoruja?.focus();});
 if(tocaCoruja){
  tocaCoruja.dataset.owlColor=corCoruja.id;
  if(corujaDeOculos)tocaCoruja.dataset.owlSpecial='oculos';
 }
 /* Fora do bloco: os pontos da cena também animam a coruja. */
-let visualCoruja=null,voltarAoNinho=()=>{};
+let visualCoruja=null,voltarAoNinho=()=>{},encaixarNaEstacao=()=>{};
+function tocarSomCoruja(chave,efeito='chirp',opcoes={}){
+ const sons=window.CorujaSom;if(!sons)return;
+ if(typeof sons.playOwlSound!=='function'){sons.play?.(efeito,opcoes);return;}
+ sons.playOwlSound(chave,opcoes).then(tocou=>{if(!tocou)sons.play?.(efeito,opcoes);});
+}
 if(moradoraCoruja){
  visualCoruja=window.CorujaVisual.create({color:corCoruja.id,special:corujaDeOculos});
  moradoraCoruja.replaceChildren(visualCoruja);
@@ -179,57 +195,81 @@ if(moradoraCoruja){
   void moradoraCoruja.offsetWidth;
   moradoraCoruja.classList.add('toca-coruja-moradora--reagindo');
   window.CorujaVisual.motion(visualCoruja,corujaDeOculos?'blink':'tilt');
-  window.CorujaSom?.play(corujaDeOculos?'blink':'chirp',{special:corujaDeOculos});
+  tocarSomCoruja('olhe_aqui',corujaDeOculos?'blink':'chirp',{special:corujaDeOculos});
   if(!visita)vidaCoruja.act('greet');
   status(corujaDeOculos?'A coruja de óculos ajeitou a armação e piscou para você.':`A coruja ${corCoruja.nome} respondeu ao seu cumprimento.`);
  };
- const fazerCarinho=()=>{comportamentoCoruja?.activity();window.CorujaVisual.motion(visualCoruja,'happy');window.CorujaSom?.play('happy',{special:corujaDeOculos});if(!visita)vidaCoruja.act('greet');const recado=`${nomeCoruja()||'A coruja'} fechou os olhos e se inclinou para receber o carinho.`;status(recado);if($('owl-life-message'))$('owl-life-message').textContent=recado;avisarNaToca(recado);};
+ const fazerCarinho=()=>{comportamentoCoruja?.activity();window.CorujaVisual.motion(visualCoruja,'happy');tocarSomCoruja('carinho','happy',{special:corujaDeOculos});if(!visita)vidaCoruja.act('greet');const recado=`${nomeCoruja()||'A coruja'} fechou os olhos e se inclinou para receber o carinho.`;status(recado);if($('owl-life-message'))$('owl-life-message').textContent=recado;avisarNaToca(recado);};
  tocaCoruja?.querySelector('[data-owl-care=pet]')?.addEventListener('click',()=>{if(moradoraCoruja.hidden){$('owl-life-message').textContent=`${nomeCoruja()||'A coruja'} não está na toca agora.`;return;}if(tocaCoruja.dataset.owlMode==='resting'){avisarNaToca(`${nomeCoruja()||'A coruja'} está dormindo. Toque em Acordar para fazer carinho.`);return;}fazerCarinho();});
  let temporizadorCarinho=0,carinhoAtivado=false;
  const cancelarCarinho=()=>{if(temporizadorCarinho){clearTimeout(temporizadorCarinho);temporizadorCarinho=0;}};
  /* Arrastar a coruja pela toca. A posição fica só neste aparelho. */
  const chavePosicaoToca='coruja-toca-posicao:'+owner;let arrasto=null,arrastou=false;
  const posicionarNaToca=(x,y)=>{const cx=Math.max(0,Math.min(100-parseFloat(getComputedStyle(moradoraCoruja).width)/moradoraCoruja.parentElement.clientWidth*100,x)),cy=Math.max(0,Math.min(80,y));moradoraCoruja.style.left=cx+'%';moradoraCoruja.style.top=cy+'%';return {x:cx,y:cy};};
+ const posicoesEstacao={nest:{x:8,y:45},charger:{x:53,y:23},bench:{x:66,y:38}};
+ encaixarNaEstacao=estacao=>{const pos=posicoesEstacao[estacao];if(!pos)return;posicionarNaToca(pos.x,pos.y);moradoraCoruja.dataset.owlStation=estacao;try{localStorage.removeItem(chavePosicaoToca);}catch{}};
  try{const salva=JSON.parse(localStorage.getItem(chavePosicaoToca)||'null');if(salva&&Number.isFinite(salva.x)&&Number.isFinite(salva.y)){moradoraCoruja.style.left=salva.x+'%';moradoraCoruja.style.top=salva.y+'%';}}catch{}
- voltarAoNinho=()=>{moradoraCoruja.style.left='';moradoraCoruja.style.top='';try{localStorage.removeItem(chavePosicaoToca);}catch{}};
- moradoraCoruja.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;const cena=moradoraCoruja.parentElement.getBoundingClientRect(),r=moradoraCoruja.getBoundingClientRect();arrasto={id:e.pointerId,x:e.clientX,y:e.clientY,left:(r.left-cena.left)/cena.width*100,top:(r.top-cena.top)/cena.height*100,w:cena.width,h:cena.height};arrastou=false;moradoraCoruja.setPointerCapture?.(e.pointerId);});
- moradoraCoruja.addEventListener('pointermove',e=>{if(!arrasto||e.pointerId!==arrasto.id)return;const dx=e.clientX-arrasto.x,dy=e.clientY-arrasto.y;if(!arrastou&&Math.hypot(dx,dy)<8)return;if(!arrastou){arrastou=true;cancelarCarinho();moradoraCoruja.classList.add('is-arrastando');}posicionarNaToca(arrasto.left+dx/arrasto.w*100,arrasto.top+dy/arrasto.h*100);});
- const soltar=e=>{if(!arrasto||e.pointerId!==arrasto.id)return;const fim=arrasto;arrasto=null;if(arrastou){if(e.type==='pointerup')posicionarNaToca(fim.left+(e.clientX-fim.x)/fim.w*100,fim.top+(e.clientY-fim.y)/fim.h*100);moradoraCoruja.classList.remove('is-arrastando');try{localStorage.setItem(chavePosicaoToca,JSON.stringify({x:parseFloat(moradoraCoruja.style.left),y:parseFloat(moradoraCoruja.style.top)}));}catch{}}};
+ voltarAoNinho=()=>{encaixarNaEstacao('nest');};
+ moradoraCoruja.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;if(['charging','maintaining','polishing','resting'].includes(vidaCoruja.snapshot().mode)){avisarNaToca('Este cuidado precisa terminar antes de mover a coruja.');return;}delete moradoraCoruja.dataset.owlStation;const cena=moradoraCoruja.parentElement.getBoundingClientRect(),r=moradoraCoruja.getBoundingClientRect();arrasto={id:e.pointerId,x:e.clientX,y:e.clientY,left:(r.left-cena.left)/cena.width*100,top:(r.top-cena.top)/cena.height*100,w:cena.width,h:cena.height};arrastou=false;moradoraCoruja.setPointerCapture?.(e.pointerId);});
+ moradoraCoruja.addEventListener('pointermove',e=>{if(!arrasto||e.pointerId!==arrasto.id)return;const dx=e.clientX-arrasto.x,dy=e.clientY-arrasto.y;if(!arrastou&&Math.hypot(dx,dy)<8)return;if(!arrastou){arrastou=true;cancelarCarinho();moradoraCoruja.classList.add('is-arrastando');}posicionarNaToca(arrasto.left+dx/arrasto.w*100,arrasto.top+dy/arrasto.h*100);for(const botao of Object.values(estacoesToca)){if(!botao)continue;const r=botao.getBoundingClientRect(),m=28;botao.classList.toggle('is-drop-target',e.clientX>=r.left-m&&e.clientX<=r.right+m&&e.clientY>=r.top-m&&e.clientY<=r.bottom+m);}});
+ const soltar=e=>{if(!arrasto||e.pointerId!==arrasto.id)return;const fim=arrasto;arrasto=null;for(const botao of Object.values(estacoesToca))botao?.classList.remove('is-drop-target');if(arrastou){if(e.type==='pointerup')posicionarNaToca(fim.left+(e.clientX-fim.x)/fim.w*100,fim.top+(e.clientY-fim.y)/fim.h*100);moradoraCoruja.classList.remove('is-arrastando');const alvo=Object.entries(estacoesToca).find(([,botao])=>{if(!botao)return false;const r=botao.getBoundingClientRect(),m=28;return e.clientX>=r.left-m&&e.clientX<=r.right+m&&e.clientY>=r.top-m&&e.clientY<=r.bottom+m;});if(alvo){encaixarNaEstacao(alvo[0]);executarAcao(alvo[0]==='nest'?'rest':alvo[0]==='charger'?'charge':'bench');}else try{localStorage.setItem(chavePosicaoToca,JSON.stringify({x:parseFloat(moradoraCoruja.style.left),y:parseFloat(moradoraCoruja.style.top)}));}catch{}}};
  moradoraCoruja.addEventListener('pointerup',soltar);moradoraCoruja.addEventListener('pointercancel',soltar);
- moradoraCoruja.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;carinhoAtivado=false;cancelarCarinho();temporizadorCarinho=setTimeout(()=>{temporizadorCarinho=0;carinhoAtivado=true;fazerCarinho();},480);});
+ moradoraCoruja.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;if(['charging','maintaining','polishing','resting'].includes(vidaCoruja.snapshot().mode))return;carinhoAtivado=false;cancelarCarinho();temporizadorCarinho=setTimeout(()=>{temporizadorCarinho=0;carinhoAtivado=true;fazerCarinho();},480);});
  moradoraCoruja.addEventListener('pointerup',cancelarCarinho);moradoraCoruja.addEventListener('pointercancel',cancelarCarinho);moradoraCoruja.addEventListener('pointerleave',cancelarCarinho);
- moradoraCoruja.addEventListener('click',e=>{if(arrastou){arrastou=false;e.preventDefault();return;}if(carinhoAtivado){e.preventDefault();carinhoAtivado=false;return;}const resposta=comportamentoCoruja?.click();if(resposta==='anger'){window.CorujaSom?.play('anger',{special:corujaDeOculos});status(`${nomeCoruja()||'A coruja'} se irritou com tantos cliques seguidos.`);return}if(resposta==='sad'){window.CorujaSom?.play('sad',{special:corujaDeOculos});status(`${nomeCoruja()||'A coruja'} voltou a olhar para você, mas sentiu sua falta.`);return}reagir();});
+ moradoraCoruja.addEventListener('click',e=>{if(['charging','maintaining','polishing','resting'].includes(vidaCoruja.snapshot().mode)){e.preventDefault();e.stopImmediatePropagation();}},true);
+ moradoraCoruja.addEventListener('click',e=>{if(arrastou){arrastou=false;e.preventDefault();return;}if(carinhoAtivado){e.preventDefault();carinhoAtivado=false;return;}const resposta=comportamentoCoruja?.click();if(resposta==='anger'){tocarSomCoruja('irritacao','anger',{special:corujaDeOculos});status(`${nomeCoruja()||'A coruja'} se irritou com tantos cliques seguidos.`);return}if(resposta==='sad'){tocarSomCoruja('tristeza','sad',{special:corujaDeOculos});status(`${nomeCoruja()||'A coruja'} voltou a olhar para você, mas sentiu sua falta.`);return}reagir();});
  moradoraCoruja.addEventListener('animationend',e=>{if(e.animationName==='coruja-cumprimenta')moradoraCoruja.classList.remove('toca-coruja-moradora--reagindo');});
 }
 const atualizarTituloToca=()=>{if($('toca-coruja-titulo'))$('toca-coruja-titulo').textContent=nomeCoruja()?`A casinha de ${nomeCoruja()}`:`A casinha da coruja ${corCoruja.nome}`;};
 atualizarTituloToca();
 const botaoSomCoruja=$('owl-sound');
 const renderSomCoruja=()=>{if(!botaoSomCoruja)return;const ligado=window.CorujaSom?.enabled()!==false;botaoSomCoruja.textContent=`Som da coruja: ${ligado?'ligado':'desligado'}`;botaoSomCoruja.setAttribute('aria-pressed',String(ligado));};
-botaoSomCoruja?.addEventListener('click',()=>{const ligado=window.CorujaSom.toggle();renderSomCoruja();if(ligado)window.CorujaSom.play('chirp',{special:corujaDeOculos});});
+botaoSomCoruja?.addEventListener('click',()=>{const ligado=window.CorujaSom.toggle();renderSomCoruja();if(ligado)tocarSomCoruja('olhe_aqui','chirp',{force:true,special:corujaDeOculos});});
 renderSomCoruja();
+window.CorujaSom?.preload?.(['olhe_aqui','carinho','irritacao','tristeza','empolgacao','duvida','quero_contar']);
 /* Recado curto sobre a cena, para quem está olhando a toca e não o painel. */
 let avisoTocaTimer=0;
 function avisarNaToca(texto){const cena=tocaCoruja?.querySelector('.toca-coruja-cena');if(!cena)return;let aviso=cena.querySelector('.toca-coruja-aviso');if(!aviso){aviso=document.createElement('p');aviso.className='toca-coruja-aviso';aviso.setAttribute('role','status');cena.append(aviso);}aviso.textContent=texto;aviso.hidden=false;clearTimeout(avisoTocaTimer);avisoTocaTimer=setTimeout(()=>{aviso.hidden=true;},4200);}
+let temporizadorCuidado=0;
 function renderVidaCoruja(mensagem){
+ clearTimeout(temporizadorCuidado);
  const vida=vidaCoruja.snapshot();$('owl-charge').value=vida.charge;$('owl-rest').value=vida.rest;
  const grau=vida.curiosity>=75?'radiante':vida.curiosity>=45?'muito curiosa':vida.curiosity>=20?'curiosa':'observadora';$('owl-curiosity').textContent=`${grau} (${vida.curiosity})`;
- tocaCoruja.dataset.owlMode=vida.mode;tocaCoruja.dataset.owlBond=vida.bondStage;
+ tocaCoruja.dataset.owlMode=vida.mode;tocaCoruja.dataset.owlBond=vida.bondStage;tocaCoruja.dataset.owlEnergy=vida.rest<=25?'low':vida.rest<=50?'medium':'good';
  if(moradoraCoruja)moradoraCoruja.hidden=vida.mode==='exploring';
+ const cuidadoAtivo=['charging','maintaining','polishing'].includes(vida.mode),imovel=cuidadoAtivo||vida.mode==='resting';
+ if(moradoraCoruja){moradoraCoruja.classList.toggle('is-cuidando',imovel);moradoraCoruja.setAttribute('aria-disabled',String(imovel));}
+ if(vida.mode==='resting')encaixarNaEstacao('nest');else if(vida.mode==='charging')encaixarNaEstacao('charger');else if(['maintaining','polishing'].includes(vida.mode))encaixarNaEstacao('bench');
+ progressoCuidado.hidden=!cuidadoAtivo;
+ const naBancada=['maintaining','polishing'].includes(vida.mode);ferramentaBancada.hidden=!naBancada;
+ if(cuidadoAtivo&&vida.care){let percentual;if(vida.mode==='charging'){const restante=Math.max(0,vida.care.endsAt-Date.now()),segundos=Math.ceil(restante/1000);percentual=Math.max(0,Math.min(100,(1-restante/180000)*100));progressoCuidado.querySelector('[data-owl-care-label]').textContent=`Carregando · ${Math.floor(segundos/60)}:${String(segundos%60).padStart(2,'0')}`;temporizadorCuidado=setTimeout(()=>renderVidaCoruja(),Math.min(1000,restante+30));}else{percentual=Number(vida.care.progress)||0;progressoCuidado.querySelector('[data-owl-care-label]').textContent=vida.mode==='maintaining'?`Engrenagens ajustadas · ${percentual}%`:`Placas polidas · ${percentual}%`;const ferramenta=ferramentaBancada.querySelector('[data-owl-tool]'),instrucao=ferramentaBancada.querySelector('[data-owl-tool-instruction]'),passo=ferramentaBancada.querySelector('[data-owl-tool-step]'),ajuste=vida.mode==='maintaining';ferramentaBancada.dataset.tool=ajuste?'wrench':'cloth';instrucao.textContent=ajuste?'Passe a chave pelos pontos mecânicos da coruja.':'Esfregue o paninho sobre as placas da coruja.';passo.textContent=ajuste?'Apertar uma engrenagem':'Dar uma passada';ferramenta.setAttribute('aria-label',ajuste?'Chave de aperto. Arraste sobre a coruja.':'Paninho de polimento. Arraste sobre a coruja.');if(ferramenta.dataset.kind!==(ajuste?'wrench':'cloth')){ferramenta.dataset.kind=ajuste?'wrench':'cloth';ferramenta.innerHTML=ajuste?'<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M39 7a17 17 0 0 0-8 22L9 51a6 6 0 0 0 8 8l22-22a17 17 0 0 0 20-21L48 27l-10-2-2-10L47 4A17 17 0 0 0 39 7Z"/></svg>':'<span aria-hidden="true"></span>';}}progressoCuidado.style.setProperty('--owl-care-progress',percentual+'%');}
  const dormir=tocaCoruja.querySelector('[data-owl-sleep-toggle]');if(dormir){dormir.dataset.owlAction=vida.mode==='resting'?'wake':'rest';dormir.textContent=vida.mode==='resting'?'Acordar':'Dormir';}
- const explorar=$('owl-explore');if(explorar){explorar.disabled=vida.mode==='exploring';explorar.textContent=vida.mode==='exploring'?'Exploração em andamento':'Enviar para explorar';}
- const estadoPadrao=vida.mode==='resting'?`${nomeCoruja()} está descansando. O descanso continua mesmo com a Sala fechada.`:vida.mode==='exploring'?`${nomeCoruja()} não está aqui. Atividade externa detectada: procure ${vida.exploration?.hint||'em outra página do blog'}. Se você não procurar, ela voltará sozinha.`:vida.exploration?.status==='returned'?`${nomeCoruja()} voltou de uma exploração e deixou um novo achado na prateleira.`:`${nomeCoruja()} observa a toca e acompanha suas descobertas.`;
+ if(dormir)dormir.disabled=cuidadoAtivo||vida.mode==='exploring';
+ const carinho=tocaCoruja.querySelector('[data-owl-care=pet]');if(carinho)carinho.disabled=imovel||vida.mode==='exploring';
+ const explorar=$('owl-explore');if(explorar){explorar.disabled=vida.mode==='exploring'||imovel;explorar.textContent=vida.mode==='exploring'?'Exploração em andamento':'Enviar para explorar';}
+ const cuidadoConcluido=vida.care?.status==='complete'?(vida.care.action==='charge'?`A recarga de ${nomeCoruja()} terminou. O núcleo está completo.`:vida.care.action==='adjust'?`As engrenagens de ${nomeCoruja()} ficaram perfeitamente ajustadas.`:`As placas de ${nomeCoruja()} estão limpas e brilhantes.`):'';
+ const estadoPadrao=vida.mode==='resting'?`${nomeCoruja()} está descansando no ninho. O descanso continua mesmo com a Sala fechada.`:vida.mode==='charging'?`${nomeCoruja()} está conectada ao carregador e não pode ser movida até a recarga terminar.`:vida.mode==='maintaining'?`As engrenagens de ${nomeCoruja()} estão sendo ajustadas na bancada.`:vida.mode==='polishing'?`As placas de ${nomeCoruja()} estão sendo polidas na bancada.`:vida.mode==='exploring'?`${nomeCoruja()} não está aqui. Atividade externa detectada: procure ${vida.exploration?.hint||'em outra página do blog'}. Se você não procurar, ela voltará sozinha.`:cuidadoConcluido||vida.exploration?.status==='returned'?cuidadoConcluido||`${nomeCoruja()} voltou de uma exploração e deixou um novo achado na prateleira.`:vida.rest<=25?`${nomeCoruja()} está com pouca disposição e quase cochilando. O ninho parece uma boa ideia.`:`${nomeCoruja()} observa a toca e acompanha suas descobertas.`;
  $('owl-life-message').textContent=mensagem||estadoPadrao;
  if(mensagem)avisarNaToca(mensagem);
  const lista=$('owl-findings');lista.replaceChildren();
  if(!vida.findings.length)lista.append(el('p',`${nomeCoruja()} ainda não trouxe nenhum achado. Investigações despertam sua curiosidade.`));
  for(const achado of vida.findings){const artigo=el('article');artigo.append(el('strong',achado.name),el('p',achado.text),el('small',`Encontrado por ${nomeCoruja()}.`));lista.append(artigo);}
 }
-tocaCoruja?.querySelectorAll('[data-owl-action]').forEach(botao=>botao.addEventListener('click',()=>{
- const acao=botao.dataset.owlAction;if(acao==='findings'){$('owl-findings').hidden=!$('owl-findings').hidden;renderVidaCoruja($('owl-findings').hidden?'A prateleira foi fechada.':'A prateleira mostra o que a curiosidade encontrou.');if(visualCoruja)window.CorujaVisual.motion(visualCoruja,'inspect');if(!$('owl-findings').hidden)$('owl-findings').scrollIntoView({behavior:'smooth',block:'nearest'});return;}
- if(visita)return;
- const resultado=vidaCoruja.act(acao);if(resultado.ok){window.CorujaSom?.play(({rest:'rest',wake:'chirp',charge:'charge',maintain:'maintain',explore:'chirp'})[acao]||'chirp',{special:corujaDeOculos});if(acao==='rest')voltarAoNinho();if(visualCoruja&&acao==='charge')window.CorujaVisual.motion(visualCoruja,'light');if(visualCoruja&&acao==='maintain')window.CorujaVisual.motion(visualCoruja,'puff');}const mensagens={rest:`${nomeCoruja()} se acomodou no ninho. A disposição volta aos poucos.`,wake:`${nomeCoruja()} abriu os olhos e se espreguiçou.`,charge:`O núcleo de ${nomeCoruja()} recebeu uma recarga rápida.`,maintain:`As engrenagens de ${nomeCoruja()} foram ajustadas com cuidado.`,explore:`${nomeCoruja()} partiu para explorar. Pista: procure ${resultado.exploration?.hint||'em outra página do blog'}.`};
+function executarAcao(acao){
+ if(acao==='bench'){if(['charging','maintaining','polishing','resting','exploring'].includes(vidaCoruja.snapshot().mode)){renderVidaCoruja('A coruja precisa terminar o cuidado atual antes de usar a bancada.');return;}encaixarNaEstacao('bench');menuBancada.hidden=false;menuBancada.querySelector('[data-owl-action=maintain]')?.focus();return;}
+ if(acao==='findings'){$('owl-findings').hidden=!$('owl-findings').hidden;renderVidaCoruja($('owl-findings').hidden?'A prateleira foi fechada.':'A prateleira mostra o que a curiosidade encontrou.');if(visualCoruja)window.CorujaVisual.motion(visualCoruja,'inspect');if(!$('owl-findings').hidden)$('owl-findings').scrollIntoView({behavior:'smooth',block:'nearest'});return;}
+ if(visita&&!previewToca)return;
+ const resultado=vidaCoruja.act(acao);if(resultado.ok){menuBancada.hidden=true;const som={rest:['carinho','rest'],wake:['olhe_aqui','chirp'],charge:['empolgacao','charge'],maintain:['duvida','maintain'],polish:['empolgacao','happy'],explore:['quero_contar','chirp']}[acao]||['olhe_aqui','chirp'];tocarSomCoruja(som[0],som[1],{special:corujaDeOculos});if(acao==='rest')voltarAoNinho();if(acao==='charge')encaixarNaEstacao('charger');if(acao==='maintain'||acao==='polish')encaixarNaEstacao('bench');if(visualCoruja&&acao==='charge')window.CorujaVisual.motion(visualCoruja,'light');if(visualCoruja&&acao==='maintain')window.CorujaVisual.motion(visualCoruja,'puff');if(visualCoruja&&acao==='polish')window.CorujaVisual.motion(visualCoruja,'happy');}const mensagens={rest:`${nomeCoruja()} se acomodou no ninho. A disposição volta aos poucos.`,wake:`${nomeCoruja()} abriu os olhos e se espreguiçou.`,charge:`${nomeCoruja()} foi conectada ao carregador. A recarga leva 3 minutos.`,maintain:`O ajuste das engrenagens de ${nomeCoruja()} começou.`,polish:`O polimento das placas de ${nomeCoruja()} começou.`,explore:`${nomeCoruja()} partiu para explorar. Pista: procure ${resultado.exploration?.hint||'em outra página do blog'}.`};
  renderVidaCoruja(resultado.ok?mensagens[acao]:resultado.message);
-}));
+}
+function usarFerramentaBancada(quanto=20){const antes=vidaCoruja.snapshot(),resultado=vidaCoruja.work(quanto);if(!resultado.ok){renderVidaCoruja(resultado.message);return;}if(visualCoruja)window.CorujaVisual.motion(visualCoruja,antes.mode==='maintaining'?'puff':'happy');window.CorujaSom?.play(antes.mode==='maintaining'?'maintain':'happy',{special:corujaDeOculos});const terminou=resultado.mode==='idle',recado=terminou?(antes.mode==='maintaining'?`As engrenagens de ${nomeCoruja()} ficaram firmes e alinhadas.`:`As placas de ${nomeCoruja()} ficaram limpas e brilhantes.`):'';renderVidaCoruja(recado||undefined);}
+const objetoFerramenta=ferramentaBancada.querySelector('[data-owl-tool]');let arrastoFerramenta=null,ferramentaMoveu=false;
+objetoFerramenta?.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;arrastoFerramenta={id:e.pointerId,x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY,acumulado:0,ultimoUso:0};ferramentaMoveu=false;objetoFerramenta.setPointerCapture?.(e.pointerId);objetoFerramenta.classList.add('is-usando');});
+objetoFerramenta?.addEventListener('pointermove',e=>{if(!arrastoFerramenta||e.pointerId!==arrastoFerramenta.id)return;const dx=e.clientX-arrastoFerramenta.x,dy=e.clientY-arrastoFerramenta.y;ferramentaMoveu=ferramentaMoveu||Math.hypot(dx,dy)>6;objetoFerramenta.style.transform=`translate(${dx}px,${dy}px) rotate(${Math.max(-18,Math.min(18,dx/5))}deg)`;const passo=Math.hypot(e.clientX-arrastoFerramenta.lastX,e.clientY-arrastoFerramenta.lastY);arrastoFerramenta.acumulado+=passo;arrastoFerramenta.lastX=e.clientX;arrastoFerramenta.lastY=e.clientY;const r=moradoraCoruja?.getBoundingClientRect(),sobre=r&&e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;if(sobre&&arrastoFerramenta.acumulado>=24&&Date.now()-arrastoFerramenta.ultimoUso>90){arrastoFerramenta.acumulado=0;arrastoFerramenta.ultimoUso=Date.now();usarFerramentaBancada(5);}});
+const soltarFerramenta=e=>{if(!arrastoFerramenta||e.pointerId!==arrastoFerramenta.id)return;arrastoFerramenta=null;objetoFerramenta.classList.remove('is-usando');objetoFerramenta.style.transform='';};objetoFerramenta?.addEventListener('pointerup',soltarFerramenta);objetoFerramenta?.addEventListener('pointercancel',soltarFerramenta);
+objetoFerramenta?.addEventListener('click',e=>{if(ferramentaMoveu){ferramentaMoveu=false;e.preventDefault();return;}usarFerramentaBancada(20);});
+ferramentaBancada.querySelector('[data-owl-tool-step]')?.addEventListener('click',()=>usarFerramentaBancada(25));
+tocaCoruja?.querySelectorAll('[data-owl-action]').forEach(botao=>botao.addEventListener('click',()=>executarAcao(botao.dataset.owlAction)));
 tocaCoruja?.addEventListener('close',()=>{if(!visita&&corujaIdentificada())vidaCoruja.save();});
 const nascimento=$('nascimento-coruja'),imagemNascimento=$('nascimento-coruja-imagem'),textoNascimento=$('nascimento-coruja-texto'),formNome=$('nomear-coruja'),campoNome=$('nome-coruja'),erroNome=$('erro-nome-coruja'),botaoAtivar=$('ativar-coruja');
 const pausaNascimento=matchMedia('(prefers-reduced-motion: reduce)').matches?80:900;
@@ -291,6 +331,7 @@ const cases=Object.entries(D.casos).filter(([k,c])=>progresso(c.chave)||(visita&
 if(!cases.some(([k])=>k===current))current=progresso(D.casos.tales.chave)?'tales':'heliopolis';
 for(const [k,c] of cases){const o=el('option',c.nome);o.value=k;$('case-select').append(o);}
 $('room-gate').hidden=true;$('room-content').hidden=false;
+if(previewToca)setTimeout(()=>abrirTela('toca-coruja'),0);
 if(leitura){
  /* Tudo o que altera o estado do aluno sai da tela. O Arquivo continua, porque
     só mostra; e as duas escritas ficam legíveis, porque são o que ela veio ler. */
